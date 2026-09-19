@@ -1,25 +1,627 @@
-// Adresse de base pour récupérer les fichiers bruts sur ton dépôt GitHub
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Joue Maths Gie</title>
+
+<style>
+:root {
+  --fond: #f5f1e8;
+  --papier: #fffdf8;
+  --brun: #5b4636;
+  --orange: #e9a23b;
+  --vert: #6b9b75;
+  --bleu: #75a9c8;
+  --rose: #d88787;
+  --violet: #9b8ac4;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--fond);
+  color: var(--brun);
+}
+header {
+  padding: 18px;
+  text-align: center;
+  background: var(--brun);
+  color: white;
+}
+h1 { margin: 0; font-size: clamp(1.4rem, 4vw, 2.2rem); }
+main { max-width: 1100px; margin: auto; padding: 20px; }
+.screen { display: none; }
+.screen.active { display: block; }
+.panel {
+  background: var(--papier);
+  border: 3px solid var(--brun);
+  border-radius: 20px;
+  padding: 24px;
+  margin: 18px auto;
+  max-width: 850px;
+  box-shadow: 0 5px 0 #d6c7b5;
+}
+button, select {
+  font: inherit;
+  padding: 12px 18px;
+  border: 2px solid var(--brun);
+  border-radius: 12px;
+  background: var(--orange);
+  color: #332519;
+  cursor: pointer;
+  margin: 5px;
+  font-weight: bold;
+}
+button:hover { filter: brightness(.95); transform: translateY(-1px); }
+button.secondary { background: #eee4d5; }
+button:disabled { opacity: .45; cursor: not-allowed; }
+.center { text-align: center; }
+.big { font-size: 1.3rem; }
+.muted { color: #796958; }
+.choices {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
+}
+#die {
+  width: 220px; height: 120px;
+  margin: 25px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: white;
+  border: 5px solid var(--brun);
+  border-radius: 22px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 10px;
+  box-shadow: 0 8px 0 #c7b6a3;
+  transition: transform .4s, background-color 0.3s, color 0.3s;
+}
+#die.rolling { transform: rotate(720deg) scale(1.1); }
+
+/* CONTENEUR DU PAQUET DE CARTES */
+.deck-container {
+  position: relative;
+  width: min(100%, 320px);
+  height: 480px;
+  margin: 25px auto;
+}
+
+/* EFFET DE PILE POUR LE DOS */
+.deck-stack {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background-color: var(--brun);
+  border: 4px solid var(--brun);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 
+    4px 4px 0px rgba(0,0,0,0.15),
+    8px 8px 0px rgba(0,0,0,0.1);
+  transform: translate(-6px, 6px);
+}
+
+/* CARTE PRINCIPALE */
+.card {
+  position: absolute;
+  inset: 0;
+  perspective: 1000px;
+  cursor: pointer;
+}
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+/* PIVOTEMENT DE LA CARTE */
+.card[data-state="back"] .card-inner { transform: rotateY(0deg); }
+.card[data-state="question"] .card-inner { transform: rotateY(180deg); }
+.card[data-state="answer"] .card-inner { transform: rotateY(360deg); }
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  padding: 24px;
+  border: 5px solid var(--brun);
+  border-radius: 20px;
+  background: white;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+/* DOS DE LA CARTE */
+.card-back-face {
+  background-color: var(--brun);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white;
+  border: 4px solid var(--brun);
+  overflow: hidden;
+}
+
+.card-back-pattern {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  padding: 15px;
+}
+
+/* Cacher le texte par défaut quand une image de fond est appliquée */
+.card-back-face.has-image .card-back-pattern {
+  display: none !important;
+}
+
+.card-back-title {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-top: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
+}
+
+/* FACES RECTO */
+.card-question-face {
+  transform: rotateY(180deg);
+  background: #ffffff;
+}
+
+.card-answer-face {
+  transform: rotateY(0deg);
+  background: #fff8e7;
+}
+
+.card-question { font-size: clamp(1.1rem, 2.5vw, 1.3rem); line-height: 1.4; font-weight: bold; margin: auto 0; }
+.card-answer { font-size: 1.2rem; line-height: 1.4; color: #2e7d32; font-weight: bold; margin: auto 0; }
+.card-label { font-size: .85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--brun); font-weight: bold; }
+
+#board {
+  position: relative;
+  width: min(92vw, 650px);
+  aspect-ratio: 1;
+  margin: 20px auto;
+  border: 4px solid var(--brun);
+  border-radius: 20px;
+  background: #ffffff;
+  overflow: hidden;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+.board-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.pawn {
+  position: absolute;
+  width: 30px; height: 30px;
+  border-radius: 50% 50% 50% 8px;
+  border: 3px solid white;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+  cursor: grab;
+  touch-action: none;
+  z-index: 10;
+  transition: transform 0.2s;
+}
+.pawn:active { transform: scale(1.2); cursor: grabbing; }
+#pawns {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+}
+.pawn-choice {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 2px solid var(--brun);
+  background: white;
+  cursor: pointer;
+}
+#feedback { font-weight: bold; min-height: 1.5em; }
+footer { text-align: center; padding: 20px; color: #796958; }
+@media (max-width: 600px) {
+  main { padding: 10px; }
+  .panel { padding: 16px; }
+  #die { width: 180px; font-size: 1rem; }
+  .pawn { width: 24px; height: 24px; }
+  .deck-container { height: 430px; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>Joue Maths Gie</h1>
+</header>
+
+<main>
+  <section id="accueil" class="screen active">
+    <div class="panel center">
+      <h2>Bienvenue dans le jeu !</h2>
+      <p class="big">Joue avec les maths, réponds aux questions et avance sur le plateau.</p>
+      <button onclick="aller('de')">Commencer la partie</button>
+    </div>
+  </section>
+
+  <section id="de" class="screen">
+    <div class="panel center">
+      <h2>Lance le dé</h2>
+      <p>Le résultat indique le domaine de la carte à jouer.</p>
+      <div id="die">?</div>
+      <button onclick="lancerDe()">Lancer le dé</button>
+      <p id="deResultat" class="big"></p>
+      <button id="continuerDe" onclick="aller('niveau')" disabled>Continuer</button>
+      <br><button class="secondary" onclick="aller('accueil')">Retour à l'accueil</button>
+    </div>
+  </section>
+
+  <section id="niveau" class="screen">
+    <div class="panel center">
+      <h2>Choisis ton niveau</h2>
+      <div class="choices">
+        <button onclick="choisirNiveau('CM1')">CM1</button>
+        <button onclick="choisirNiveau('CM2')">CM2</button>
+        <button onclick="choisirNiveau('6E')">6e</button>
+      </div>
+      <p id="niveauInfo" class="muted"></p>
+      <button class="secondary" onclick="aller('de')">Retour</button>
+    </div>
+  </section>
+
+  <section id="paquet" class="screen">
+    <div class="panel center">
+      <h2 id="titrePaquet">Carte</h2>
+      <p id="numeroCarte" class="muted"></p>
+      
+      <div class="deck-container">
+        <div class="deck-stack" id="deckStackStyle"></div>
+
+        <div id="carte" class="card" data-state="back" onclick="pivoterCarte()">
+          <div class="card-inner">
+            
+            <div class="card-face card-back-face" id="cardBackStyle">
+              <div class="card-back-pattern">
+                <div class="card-label" id="backCardLabel" style="color: white;">Jumathsji</div>
+                <div class="card-back-title" id="backDomaineTitle">Domaine</div>
+              </div>
+            </div>
+            
+            <div class="card-face card-question-face">
+              <div class="card-label">Question</div>
+              <p id="question" class="card-question"></p>
+              <p class="muted" style="font-size: 0.85rem;">Clique pour voir la réponse</p>
+            </div>
+
+            <div class="card-face card-answer-face">
+              <div class="card-label">Réponse</div>
+              <p id="reponse" class="card-answer"></p>
+              <p class="muted" style="font-size: 0.85rem;">Clique pour remettre sur le paquet</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <p id="aide" class="muted"></p>
+      <p id="reponseAffichee" class="muted"></p>
+      <p id="feedback"></p>
+      <button onclick="afficherAide()">Afficher l'aide</button>
+      <button onclick="afficherReponse()">Afficher la réponse</button>
+      <button onclick="lireQuestion()">Lire la question</button>
+      <br>
+      <button onclick="nouvelleCarte()">Piocher une autre carte</button>
+      <button class="secondary" onclick="aller('plateau')">Accéder au plateau</button>
+    </div>
+  </section>
+
+  <section id="plateau" class="screen">
+    <div class="panel center">
+      <h2>Le plateau de jeu</h2>
+      <p>Déplace les pions sur le plateau Jumathsji.</p>
+      <div id="board">
+        <img id="boardImg" src="" alt="Plateau de jeu Jumathsji" class="board-img">
+      </div>
+      <div id="pawns"></div>
+      <br>
+      <button onclick="aller('de')">Reprendre la partie</button>
+      <button class="secondary" onclick="aller('accueil')">Accueil</button>
+    </div>
+  </section>
+</main>
+
+<footer>Joue Maths Gie</footer>
+
+<script>
+const domaines = {
+  VDN:  { nom: "Vallée des nombres", couleur: "#0066b2", textCouleur: "#ffffff" },
+  MDP:  { nom: "Montagne des problèmes", couleur: "#f39c12", textCouleur: "#ffffff" },
+  P2D:  { nom: "Plaine 2D", couleur: "#27ae60", textCouleur: "#ffffff" },
+  E3D:  { nom: "Espace 3D", couleur: "#8e44ad", textCouleur: "#ffffff" },
+  EM:   { nom: "English Maths", couleur: "#e74c3c", textCouleur: "#ffffff" }
+};
+
+// URL de base pointant vers ton dépôt GitHub officiel
 const githubBase = "https://raw.githubusercontent.com/phcasarotto/JMG/main/";
 
+// Plateau de jeu
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('boardImg').src = githubBase + "plateau definitif.png";
+});
+
+// Dictionnaire des visuels de cartes
 const imagesDos = {
-  // --- NIVEAU 6ème ---
-  "6E_EM":  githubBase + "fond%20sixieme%206x9%20EM_2.png",
-  "6E_MDP": githubBase + "fond%20sixieme%206x9%20MDP_2.png",
-  "6E_P2D": githubBase + "fond%20sixieme%206x9%20P2D_2.png",
-  "6E_VDN": githubBase + "fond%20sixieme%206x9%20VDN_2.png",
-  "6E_E3D": githubBase + "fond%20carte%20cm1%206x9%20E3D.png",
+  // 6ème
+  "6E_EM":  githubBase + "fond sixieme 6x9 EM_2.png",
+  "6E_MDP": githubBase + "fond sixieme 6x9 MDP_2.png",
+  "6E_P2D": githubBase + "fond sixieme 6x9 P2D_2.png",
+  "6E_VDN": githubBase + "fond sixieme 6x9 VDN_2.png",
+  "6E_E3D": githubBase + "fond carte cm1 6x9 E3D.png",
 
-  // --- NIVEAU CM1 ---
-  "CM1_E3D": githubBase + "fond%20carte%20cm1%206x9%20E3D.png",
-  "CM1_EM":  githubBase + "fond%20carte%20cm1%206x9%20EM_2.png",
-  "CM1_MDP": githubBase + "fond%20carte%20cm1%206x9%20MDP.png",
-  "CM1_P2D": githubBase + "fond%20carte%20cm1%206x9%20P2D.png",
-  "CM1_VDN": githubBase + "fond%20carte%20cm1%206x9%20VDN.png",
+  // CM1
+  "CM1_E3D": githubBase + "fond carte cm1 6x9 E3D.png",
+  "CM1_EM":  githubBase + "fond carte cm1 6x9 EM_2.png",
+  "CM1_MDP": githubBase + "fond carte cm1 6x9 MDP.png",
+  "CM1_P2D": githubBase + "fond carte cm1 6x9 P2D.png",
+  "CM1_VDN": githubBase + "fond carte cm1 6x9 VDN.png",
 
-  // --- NIVEAU CM2 ---
-  "CM2_E3D": githubBase + "fond%20carte%20cm2%206x9%20E3D.png",
-  "CM2_EM":  githubBase + "fond%20carte%20cm1%206x9%20EM_2.png",
-  "CM2_MDP": githubBase + "fond%20carte%20cm1%206x9%20MDP.png",
-  "CM2_P2D": githubBase + "fond%20carte%20cm1%206x9%20P2D.png",
-  "CM2_VDN": githubBase + "fond%20carte%20cm1%206x9%20VDN.png"
+  // CM2
+  "CM2_E3D": githubBase + "fond carte cm2 6x9 E3D.png",
+  "CM2_EM":  githubBase + "fond carte cm1 6x9 EM_2.png",
+  "CM2_MDP": githubBase + "fond carte cm1 6x9 MDP.png",
+  "CM2_P2D": githubBase + "fond carte cm1 6x9 P2D.png",
+  "CM2_VDN": githubBase + "fond carte cm1 6x9 VDN.png"
 };
+
+function genererBanqueCartes() {
+  const banque = { VDN: {}, MDP: {}, P2D: {}, E3D: {}, EM: {} };
+  const niveaux = ["CM1", "CM2", "6E"];
+
+  niveaux.forEach(n => {
+    banque.VDN[n] = Array.from({length: 20}, (_, i) => ({
+      id: `VDN_${n}_${i+1}`,
+      q: `Quel est le résultat de ${ (i+1)*5 } + ${ (i+1)*3 } ?`,
+      a: `${ (i+1)*8 }`,
+      h: "Effectue l'addition étape par étape."
+    }));
+
+    banque.MDP[n] = Array.from({length: 20}, (_, i) => ({
+      id: `MDP_${n}_${i+1}`,
+      q: `Un marchand a ${ (i+1)*10 } pommes. Il en vend ${ (i+1)*2 }. Combien lui en reste-t-il ?`,
+      a: `${ (i+1)*8 } pommes.`,
+      h: "Soustrais la quantité vendue du total."
+    }));
+
+    banque.P2D[n] = Array.from({length: 20}, (_, i) => ({
+      id: `P2D_${n}_${i+1}`,
+      q: `Quel est le périmètre d'un carré de ${ i+2 } cm de côté ?`,
+      a: `${ (i+2)*4 } cm.`,
+      h: "Multiplie la longueur d'un côté par 4."
+    }));
+
+    banque.E3D[n] = Array.from({length: 20}, (_, i) => ({
+      id: `E3D_${n}_${i+1}`,
+      q: `Combien de faces possède un prisme à base à ${ i+3 } côtés ?`,
+      a: `${ i+5 } faces.`,
+      h: "Ajoute les 2 bases au nombre de faces latérales."
+    }));
+
+    banque.EM[n] = Array.from({length: 20}, (_, i) => ({
+      id: `EM_${n}_${i+1}`,
+      q: `What is ${ i+1 } plus ${ i+2 }?`,
+      a: `${ (i+1) + (i+2) }`,
+      h: "Add the two numbers in English."
+    }));
+  });
+
+  return banque;
+}
+
+const banqueCartes = genererBanqueCartes();
+
+let domaineActuel = "";
+let niveauActuel = "";
+let carteActuelle = null;
+let cartesDisponibles = [];
+let cartesUtilisees = [];
+
+function aller(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+const facesDe = ["VDN", "MDP", "P2D", "E3D", "EM"];
+
+function lancerDe() {
+  const die = document.getElementById("die");
+  const bouton = document.getElementById("continuerDe");
+  const texte = document.getElementById("deResultat");
+  
+  bouton.disabled = true;
+  texte.textContent = "";
+  die.classList.add("rolling");
+  
+  setTimeout(() => {
+    const idx = Math.floor(Math.random() * facesDe.length);
+    const face = facesDe[idx];
+    const infoDomaine = domaines[face];
+    
+    die.classList.remove("rolling");
+    die.textContent = infoDomaine.nom;
+    die.style.backgroundColor = infoDomaine.couleur;
+    die.style.color = infoDomaine.textCouleur;
+    
+    domaineActuel = face;
+    texte.textContent = "Catégorie : " + infoDomaine.nom;
+    bouton.disabled = false;
+  }, 450);
+}
+
+function choisirNiveau(niveau) {
+  niveauActuel = niveau;
+  cartesUtilisees = [];
+  
+  if (banqueCartes[domaineActuel] && banqueCartes[domaineActuel][niveau]) {
+    cartesDisponibles = [...banqueCartes[domaineActuel][niveau]];
+  } else {
+    cartesDisponibles = [];
+  }
+  
+  if (!cartesDisponibles.length) {
+    document.getElementById("niveauInfo").textContent = "Aucune carte disponible pour ce niveau.";
+    return;
+  }
+  afficherPaquet();
+  aller("paquet");
+}
+
+function afficherPaquet() {
+  const dom = domaines[domaineActuel];
+  document.getElementById("titrePaquet").textContent = (dom ? dom.nom : domaineActuel) + " - " + niveauActuel;
+  
+  const dosCard = document.getElementById("cardBackStyle");
+  const deckStack = document.getElementById("deckStackStyle");
+  
+  const cleImage = `${niveauActuel}_${domaineActuel}`;
+  const urlImage = imagesDos[cleImage];
+
+  if (urlImage) {
+    const cssUrl = `url("${urlImage}")`;
+    dosCard.style.backgroundImage = cssUrl;
+    deckStack.style.backgroundImage = cssUrl;
+    dosCard.classList.add("has-image");
+  } else {
+    dosCard.classList.remove("has-image");
+    dosCard.style.backgroundImage = "none";
+    deckStack.style.backgroundImage = "none";
+    if (dom) {
+      dosCard.style.backgroundColor = dom.couleur;
+      deckStack.style.backgroundColor = dom.couleur;
+      document.getElementById("backDomaineTitle").textContent = dom.nom;
+      document.getElementById("backCardLabel").textContent = "Jumathsji";
+    }
+  }
+
+  tirerCarte();
+}
+
+function tirerCarte() {
+  if (!cartesDisponibles.length) return;
+  
+  let restantes = cartesDisponibles.filter(c => !cartesUtilisees.includes(c.id));
+  
+  if (!restantes.length) {
+    cartesUtilisees = [];
+    restantes = [...cartesDisponibles];
+  }
+  
+  const index = Math.floor(Math.random() * restantes.length);
+  carteActuelle = restantes[index];
+  cartesUtilisees.push(carteActuelle.id);
+  
+  document.getElementById("question").textContent = carteActuelle.q;
+  document.getElementById("reponse").textContent = carteActuelle.a;
+  document.getElementById("numeroCarte").textContent = "Carte " + cartesUtilisees.length + " / 20 (" + carteActuelle.id + ")";
+  
+  const cardElement = document.getElementById("carte");
+  cardElement.setAttribute("data-state", "back");
+  
+  document.getElementById("aide").textContent = "";
+  document.getElementById("reponseAffichee").textContent = "";
+  document.getElementById("feedback").textContent = "";
+}
+
+function pivoterCarte() {
+  const cardElement = document.getElementById("carte");
+  const state = cardElement.getAttribute("data-state");
+
+  if (state === "back") {
+    cardElement.setAttribute("data-state", "question");
+  } else if (state === "question") {
+    cardElement.setAttribute("data-state", "answer");
+  } else {
+    cardElement.setAttribute("data-state", "back");
+  }
+}
+
+function afficherAide() {
+  if (carteActuelle) document.getElementById("aide").textContent = "Aide : " + (carteActuelle.h || "Réfléchis à la méthode.");
+}
+
+function afficherReponse() {
+  if (carteActuelle) document.getElementById("reponseAffichee").textContent = "Réponse : " + carteActuelle.a;
+}
+
+function nouvelleCarte() { tirerCarte(); }
+
+function parler(texte, lang) {
+  if (!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
+  const msg = new SpeechSynthesisUtterance(texte);
+  msg.lang = lang || "fr-FR";
+  speechSynthesis.speak(msg);
+}
+
+function lireQuestion() { if (carteActuelle) parler(carteActuelle.q, domaineActuel === "EM" ? "en-GB" : "fr-FR"); }
+
+let boardEl;
+const couleursPions = ["#e74c3c", "#3498db", "#2ecc71", "#f1c40f", "#9b59b6"];
+
+document.addEventListener('DOMContentLoaded', function() {
+  boardEl = document.getElementById("board");
+  creerPions();
+});
+
+function creerPions() {
+  const boite = document.getElementById("pawns");
+  
+  couleursPions.forEach((couleur, i) => {
+    const choix = document.createElement("button");
+    choix.className = "pawn-choice";
+    choix.textContent = "Pion " + (i + 1);
+    choix.style.borderBottom = "6px solid " + couleur;
+    boite.appendChild(choix);
+    
+    const pion = document.createElement("div");
+    pion.className = "pawn";
+    pion.id = "pion" + i;
+    pion.style.background = couleur;
+    pion.style.left = (45 + i * 2) + "%";
+    pion.style.top = "48%";
+    boardEl.appendChild(pion);
+    rendreDeplacable(pion);
+  });
+}
+
+function rendreDeplacable(pion) {
+  let actif = false, decX = 0, decY = 0;
+  pion.addEventListener("pointerdown", e => {
+    actif = true;
+    pion.setPointerCapture(e.pointerId);
+    const r = pion.getBoundingClientRect();
+    decX = e.clientX - r.left - r.width / 2;
+    decY = e.clientY - r.top - r.height / 2;
+  });
+  pion.addEventListener("pointermove", e => {
+    if (!actif) return;
+    const r = boardEl.getBoundingClientRect();
+    pion.style.left = ((e.clientX - r.left - decX) / r.width) * 100 + "%";
+    pion.style.top = ((e.clientY - r.top - decY) / r.width) * 100 + "%";
+  });
+  ["pointerup", "pointercancel"].forEach(ev => pion.addEventListener(ev, () => { actif = false; }));
+}
+</script>
+</body>
+</html>
