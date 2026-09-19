@@ -61,6 +61,96 @@ button:disabled { opacity: .45; cursor: not-allowed; }
 .muted { color: #796958; }
 .choices { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
 
+/* GRILLE DES PERSONNAGES : 2 rangées de 5 */
+.perso-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin: 20px 0;
+}
+@media (max-width: 700px) {
+  .perso-grid {
+    grid-template-columns: repeat(5, minmax(60px, 1fr));
+    gap: 6px;
+  }
+}
+.perso-card {
+  background: white;
+  border: 3px solid var(--brun);
+  border-radius: 14px;
+  padding: 6px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 0 #d6c7b5;
+  position: relative;
+}
+.perso-card:hover {
+  transform: translateY(-3px);
+  filter: brightness(1.03);
+}
+/* 1er Clic : Sélection simple */
+.perso-card.selected {
+  border-color: var(--orange);
+  background: #fdf6ec;
+  box-shadow: 0 0 0 2px var(--orange), 0 4px 0 #d6c7b5;
+}
+/* 3ème Clic : Validé définitivement */
+.perso-card.validated {
+  border-color: var(--vert);
+  background: #eaf2ec;
+  box-shadow: 0 0 0 4px var(--vert), 0 4px 0 #d6c7b5;
+}
+.perso-card.validated::after {
+  content: "✔";
+  position: absolute;
+  top: 5px; right: 5px;
+  background: var(--vert); color: white;
+  border-radius: 50%; width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: bold;
+}
+.perso-img {
+  width: 100%;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  pointer-events: none;
+}
+
+/* MODALE PLEIN ÉCRAN POUR LECTURE */
+#modalPleinEcran {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+#modalPleinEcran.active {
+  display: flex;
+}
+.modal-content {
+  background: var(--papier);
+  border: 4px solid var(--brun);
+  border-radius: 20px;
+  padding: 20px;
+  max-width: 450px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+.modal-img {
+  width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 2px solid var(--brun);
+  margin-bottom: 15px;
+}
+
 #die {
   width: 220px; height: 120px;
   margin: 25px auto;
@@ -73,7 +163,7 @@ button:disabled { opacity: .45; cursor: not-allowed; }
 }
 #die.rolling { transform: rotate(720deg) scale(1.1); }
 
-/* CONTENEUR ET CARTES */
+/* CONTENEUR ET CARTES DE QUESTION */
 .deck-container {
   position: relative;
   width: min(100%, 320px);
@@ -122,7 +212,6 @@ button:disabled { opacity: .45; cursor: not-allowed; }
   box-shadow: 0 8px 16px rgba(0,0,0,0.15);
 }
 
-/* DOS ET QUESTION */
 .card-back-face {
   transform: rotateY(0deg);
   background-color: var(--brun);
@@ -163,14 +252,15 @@ button:disabled { opacity: .45; cursor: not-allowed; }
 }
 .board-img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .pawn {
-  position: absolute; width: 30px; height: 30px;
-  border-radius: 50% 50% 50% 8px; border: 3px solid white;
+  position: absolute; width: 36px; height: 36px;
+  border-radius: 50%; border: 3px solid white;
   box-shadow: 0 3px 6px rgba(0,0,0,0.4); cursor: grab;
-  touch-action: none; z-index: 10; transition: transform 0.2s;
+  touch-action: none; z-index: 10;
+  background-size: cover; background-position: center;
 }
-.pawn:active { transform: scale(1.2); cursor: grabbing; }
+.pawn:active { transform: scale(1.15); cursor: grabbing; }
 #pawns { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
-.pawn-choice { padding: 10px 14px; border-radius: 12px; border: 2px solid var(--brun); background: white; cursor: pointer; }
+.pawn-choice { padding: 10px 14px; border-radius: 12px; border: 2px solid var(--brun); background: white; cursor: pointer; font-weight: bold; }
 #feedback { font-weight: bold; min-height: 1.5em; }
 footer { text-align: center; padding: 20px; color: #796958; }
 </style>
@@ -182,26 +272,52 @@ footer { text-align: center; padding: 20px; color: #796958; }
 </header>
 
 <main>
+  <!-- ACCUEIL -->
   <section id="accueil" class="screen active">
     <div class="panel center">
       <h2>Bienvenue dans le jeu !</h2>
       <p class="big">Joue avec les maths, réponds aux questions et avance sur le plateau.</p>
-      <button onclick="aller('de')">Commencer la partie</button>
+      <button onclick="aller('personnages')">Commencer la partie</button>
     </div>
   </section>
 
+  <!-- CHOIX DES PERSONNAGES -->
+  <section id="personnages" class="screen">
+    <div class="panel center">
+      <h2>Choisis 5 personnages</h2>
+      <p>Sélectionne tes avatars pour la partie parmi les 10 personnages disponibles. (<span id="compteurSelection">0</span>/5 validés)</p>
+      <div class="perso-grid" id="grillePersos"></div>
+      <br>
+      <button id="validerPerso" onclick="aller('de')" disabled>Jouer avec ces personnages</button>
+    </div>
+  </section>
+
+  <!-- MODALE PLEIN ÉCRAN POUR LECTURE -->
+  <div id="modalPleinEcran" onclick="fermerModalSurFond(event)">
+    <div class="modal-content">
+      <img id="imgModalPleinEcran" class="modal-img" src="" alt="Carte en grand">
+      <br>
+      <div id="modalBoutonsValidation">
+        <button onclick="troisiemeClicValider()">Valider cette carte</button>
+      </div>
+      <button onclick="lirePersonnageActuel()">🔊 Lire la carte</button>
+      <button class="secondary" onclick="fermerSansValider()">Fermer</button>
+    </div>
+  </div>
+
+  <!-- LANCER DU DÉ -->
   <section id="de" class="screen">
     <div class="panel center">
       <h2>Lance le dé</h2>
       <p>Le résultat indique le domaine de la carte à jouer.</p>
       <div id="die">?</div>
       <button onclick="lancerDe()">Lancer le dé</button>
-      <p id="deResultat" class="big"></p>
+      <br>
       <button id="continuerDe" onclick="aller('niveau')" disabled>Continuer</button>
-      <br><button class="secondary" onclick="aller('accueil')">Retour à l'accueil</button>
     </div>
   </section>
 
+  <!-- NIVEAU -->
   <section id="niveau" class="screen">
     <div class="panel center">
       <h2>Choisis ton niveau</h2>
@@ -211,14 +327,13 @@ footer { text-align: center; padding: 20px; color: #796958; }
         <button onclick="choisirNiveau('6E')">6e</button>
       </div>
       <p id="niveauInfo" class="muted"></p>
-      <button class="secondary" onclick="aller('de')">Retour</button>
     </div>
   </section>
 
+  <!-- PAQUET DE CARTES -->
   <section id="paquet" class="screen">
     <div class="panel center">
       <h2 id="titrePaquet">Carte</h2>
-      <p id="numeroCarte" class="muted"></p>
       
       <div class="deck-container">
         <div class="deck-stack" id="deckStackStyle"></div>
@@ -226,17 +341,15 @@ footer { text-align: center; padding: 20px; color: #796958; }
         <div id="carte" class="card" data-state="back" onclick="pivoterCarte()">
           <div class="card-inner">
             
-            <!-- DOS DE LA CARTE -->
             <div class="card-face card-back-face" id="cardBackStyle">
               <div class="card-back-pattern" id="backPattern">
-                <div class="card-label" style="color: white;">Jumathsji</div>
+                <div class="card-label" style="color: white;">Joue Maths Gie</div>
                 <div class="card-back-title" id="backDomaineTitle">Domaine</div>
               </div>
             </div>
             
-            <!-- QUESTION -->
             <div class="card-face card-question-face">
-              <div class="card-label">Question</div>
+              <div class="card-label" id="cardCodeLabel">Code carte</div>
               <p id="question" class="card-question"></p>
               <p class="muted" style="font-size: 0.85rem;">Clique pour remettre sur le dos</p>
             </div>
@@ -257,17 +370,18 @@ footer { text-align: center; padding: 20px; color: #796958; }
     </div>
   </section>
 
+  <!-- PLATEAU -->
   <section id="plateau" class="screen">
     <div class="panel center">
       <h2>Le plateau de jeu</h2>
-      <p>Déplace les pions sur le plateau Jumathsji.</p>
+      <p>En fonction de tes réponses aux questions déplace les pions sur le plateau Joue Maths Gie.<br><i>Astuce : clique sur un pion pour l'afficher en grand !</i></p>
       <div id="board">
-        <img id="boardImg" src="https://raw.githubusercontent.com/phcasarotto/JMG/main/plateau%20definitif.png" alt="Plateau de jeu" class="board-img">
+        <img id="boardImg" src="https://raw.githubusercontent.com/phcasarotto/JMG/main/plateau_definitif.png" alt="Plateau de jeu" class="board-img">
       </div>
       <div id="pawns"></div>
       <br>
-      <button onclick="aller('de')">Reprendre la partie</button>
-      <button class="secondary" onclick="aller('accueil')">Accueil</button>
+      <button onclick="aller('de')">Retour au dé</button>
+      <button class="secondary" onclick="finDePartie()">Fin de partie</button>
     </div>
   </section>
 </main>
@@ -285,6 +399,199 @@ const domaines = {
 
 const baseUrl = "https://raw.githubusercontent.com/phcasarotto/JMG/main/";
 
+const nomsPersonnages = {
+  1: "Euclide",
+  2: "Hipparque",
+  3: "Hypatie d'Alexandrie",
+  4: "Maria Gaetana Agnesi",
+  5: "Isaac Newton",
+  6: "Claude Ptolémée",
+  7: "Pythagore",
+  8: "Thalès",
+  9: "François Viète",
+  10: "Cédric Villani"
+};
+
+const etatsPersonnages = {}; 
+let carteEnCoursEnGrand = null;
+let audioActuel = null;
+
+function initialiserPersonnages() {
+  const grille = document.getElementById("grillePersos");
+  grille.innerHTML = "";
+  
+  for (let i = 1; i <= 10; i++) {
+    const url = baseUrl + `perso_${i}.png`;
+    etatsPersonnages[url] = { etat: 0, numero: i };
+
+    const card = document.createElement("div");
+    card.className = "perso-card";
+    card.id = `card_perso_${i}`;
+    
+    card.onclick = () => gererClicPersonnage(url, card, i);
+    
+    const img = document.createElement("img");
+    img.className = "perso-img";
+    img.src = url;
+    img.alt = `Personnage ${i}`;
+    
+    card.appendChild(img);
+    grille.appendChild(card);
+  }
+}
+
+function gererClicPersonnage(url, elementCard, numero) {
+  let etatActuel = etatsPersonnages[url].etat;
+
+  if (etatActuel === 0) {
+    etatsPersonnages[url].etat = 1;
+    elementCard.classList.add("selected");
+  } 
+  else if (etatActuel === 1) {
+    ouvrirModalPleinEcran(url, numero, true);
+  } 
+  else if (etatActuel === 3) {
+    etatsPersonnages[url].etat = 0;
+    elementCard.classList.remove("validated", "selected");
+    mettreAJourInterfaceSelection();
+  }
+}
+
+function ouvrirModalPleinEcran(url, numero, modeSelection = false) {
+  carteEnCoursEnGrand = { url, numero, modeSelection };
+  document.getElementById("imgModalPleinEcran").src = url;
+  
+  const boutonValidationDiv = document.getElementById("modalBoutonsValidation");
+  if (modeSelection) {
+    boutonValidationDiv.style.display = "block";
+  } else {
+    boutonValidationDiv.style.display = "none";
+  }
+
+  document.getElementById("modalPleinEcran").classList.add("active");
+}
+
+function troisiemeClicValider() {
+  if (!carteEnCoursEnGrand || !carteEnCoursEnGrand.modeSelection) return;
+  const { url } = carteEnCoursEnGrand;
+  const numero = carteEnCoursEnGrand.numero;
+
+  const nbvalides = Object.values(etatsPersonnages).filter(v => v.etat === 3).length;
+  if (nbvalides >= 5) {
+    alert("Tu as déjà validé 5 personnages maximum !");
+    fermerModalPleinEcran();
+    return;
+  }
+
+  etatsPersonnages[url].etat = 3;
+  const cardElement = document.getElementById(`card_perso_${numero}`);
+  if (cardElement) {
+    cardElement.classList.remove("selected");
+    cardElement.classList.add("validated");
+  }
+  
+  fermerModalPleinEcran();
+  mettreAJourInterfaceSelection();
+}
+
+function fermerSansValider() {
+  if (!carteEnCoursEnGrand) return;
+  if (carteEnCoursEnGrand.modeSelection) {
+    const { url, numero } = carteEnCoursEnGrand;
+    etatsPersonnages[url].etat = 0;
+    const cardElement = document.getElementById(`card_perso_${numero}`);
+    if (cardElement) {
+      cardElement.classList.remove("selected", "validated");
+    }
+  }
+
+  fermerModalPleinEcran();
+  mettreAJourInterfaceSelection();
+}
+
+function fermerModalPleinEcran() {
+  if (audioActuel) {
+    audioActuel.pause();
+    audioActuel = null;
+  }
+  document.getElementById("modalPleinEcran").classList.remove("active");
+  carteEnCoursEnGrand = null;
+}
+
+function fermerModalSurFond(e) {
+  if (e.target.id === "modalPleinEcran") {
+    fermerSansValider();
+  }
+}
+
+function lirePersonnageActuel() {
+  if (!carteEnCoursEnGrand) return;
+  
+  if (audioActuel) {
+    audioActuel.pause();
+  }
+
+  let nomFichierAudio;
+  const num = carteEnCoursEnGrand.numero;
+  
+  if (num === 9) {
+    nomFichierAudio = "Viete.mp3";
+  } else if (num === 10) {
+    nomFichierAudio = "Villani.mp3";
+  } else if (num === 6) {
+    nomFichierAudio = "Ptolemee.mp3";
+  } else if (num === 4) {
+    nomFichierAudio = "Maria.mp3";
+  } else if (num === 3) {
+    nomFichierAudio = "Hypathie.mp3";
+  } else {
+    nomFichierAudio = `perso${num}.mp3`;
+  }
+
+  const mp3Url = baseUrl + nomFichierAudio;
+  audioActuel = new Audio(mp3Url);
+  audioActuel.play().catch(error => {
+    console.log("Fichier audio non trouvé ou erreur de lecture :", error);
+    alert(`Le fichier audio '${nomFichierAudio}' n'est pas encore disponible sur GitHub.`);
+  });
+}
+
+function mettreAJourInterfaceSelection() {
+  const personnagesValides = Object.entries(etatsPersonnages).filter(([url, data]) => data.etat === 3);
+  
+  document.getElementById("compteurSelection").textContent = personnagesValides.length;
+  document.getElementById("validerPerso").disabled = personnagesValides.length !== 5;
+
+  const boite = document.getElementById("pawns");
+  boite.innerHTML = "";
+
+  personnagesValides.forEach(([url, data], i) => {
+    const couleur = couleursPions[i];
+    
+    const choix = document.createElement("button");
+    choix.className = "pawn-choice";
+    choix.textContent = nomsPersonnages[data.numero] || `Personnage ${data.numero}`;
+    choix.style.borderBottom = "6px solid " + couleur;
+    boite.appendChild(choix);
+
+    const pion = document.getElementById("pion" + i);
+    if (pion) {
+      pion.style.backgroundImage = `url("${url}")`;
+      pion.style.backgroundColor = "transparent";
+      pion.style.display = "block";
+      pion.dataset.url = url;
+      pion.dataset.numero = data.numero;
+    }
+  });
+
+  for (let i = personnagesValides.length; i < 5; i++) {
+    const pion = document.getElementById("pion" + i);
+    if (pion) {
+      pion.style.display = "none";
+    }
+  }
+}
+
 function genererBanqueCartes() {
   const banque = { VDN: {}, MDP: {}, P2D: {}, E3D: {}, EM: {} };
   const niveaux = ["CM1", "CM2", "6E"];
@@ -296,28 +603,24 @@ function genererBanqueCartes() {
       a: `${ (i+1)*8 }`,
       h: "Effectue l'addition étape par étape."
     }));
-
     banque.MDP[n] = Array.from({length: 20}, (_, i) => ({
       id: `MDP_${n}_${i+1}`,
       q: `Un marchand a ${ (i+1)*10 } pommes. Il en vend ${ (i+1)*2 }. Combien lui en reste-t-il ?`,
       a: `${ (i+1)*8 } pommes.`,
       h: "Soustrais la quantité vendue du total."
     }));
-
     banque.P2D[n] = Array.from({length: 20}, (_, i) => ({
       id: `P2D_${n}_${i+1}`,
       q: `Quel est le périmètre d'un carré de ${ i+2 } cm de côté ?`,
       a: `${ (i+2)*4 } cm.`,
       h: "Multiplie la longueur d'un côté par 4."
     }));
-
     banque.E3D[n] = Array.from({length: 20}, (_, i) => ({
       id: `E3D_${n}_${i+1}`,
       q: `Combien de faces possède un prisme à base à ${ i+3 } côtés ?`,
       a: `${ i+5 } faces.`,
       h: "Ajoute les 2 bases au nombre de faces latérales."
     }));
-
     banque.EM[n] = Array.from({length: 20}, (_, i) => ({
       id: `EM_${n}_${i+1}`,
       q: `What is ${ i+1 } plus ${ i+2 }?`,
@@ -339,6 +642,20 @@ let cartesUtilisees = [];
 function aller(id) {
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
+
+  if (id === 'de') {
+    const die = document.getElementById("die");
+    die.textContent = "?";
+    die.style.backgroundColor = "white";
+    die.style.color = "inherit";
+    document.getElementById("continuerDe").disabled = true;
+  }
+}
+
+function finDePartie() {
+  initialiserPersonnages();
+  mettreAJourInterfaceSelection();
+  aller('accueil');
 }
 
 const facesDe = ["VDN", "MDP", "P2D", "E3D", "EM"];
@@ -346,10 +663,8 @@ const facesDe = ["VDN", "MDP", "P2D", "E3D", "EM"];
 function lancerDe() {
   const die = document.getElementById("die");
   const bouton = document.getElementById("continuerDe");
-  const texte = document.getElementById("deResultat");
   
   bouton.disabled = true;
-  texte.textContent = "";
   die.classList.add("rolling");
   
   setTimeout(() => {
@@ -363,7 +678,6 @@ function lancerDe() {
     die.style.color = infoDomaine.textCouleur;
     
     domaineActuel = face;
-    texte.textContent = "Catégorie : " + infoDomaine.nom;
     bouton.disabled = false;
   }, 450);
 }
@@ -388,13 +702,12 @@ function choisirNiveau(niveau) {
 
 function afficherPaquet() {
   const dom = domaines[domaineActuel];
-  document.getElementById("titrePaquet").textContent = (dom ? dom.nom : domaineActuel) + " - " + niveauActuel;
+  document.getElementById("titrePaquet").textContent = dom ? dom.nom : domaineActuel;
   
   const dosCard = document.getElementById("cardBackStyle");
   const deckStack = document.getElementById("deckStackStyle");
   const pattern = document.getElementById("backPattern");
   
-  // Génération automatique du nom : dos_cm1_vdn.png
   const nomFichier = `dos_${niveauActuel.toLowerCase()}_${domaineActuel.toLowerCase()}.png`;
   const urlImage = baseUrl + nomFichier;
 
@@ -420,8 +733,8 @@ function tirerCarte() {
   carteActuelle = restantes[index];
   cartesUtilisees.push(carteActuelle.id);
   
+  document.getElementById("cardCodeLabel").textContent = carteActuelle.id;
   document.getElementById("question").textContent = carteActuelle.q;
-  document.getElementById("numeroCarte").textContent = "Carte " + cartesUtilisees.length + " / 20 (" + carteActuelle.id + ")";
   
   document.getElementById("carte").setAttribute("data-state", "back");
   document.getElementById("aide").textContent = "";
@@ -462,49 +775,65 @@ function lireQuestion() { if (carteActuelle) parler(carteActuelle.q, domaineActu
 let boardEl;
 const couleursPions = ["#e74c3c", "#3498db", "#2ecc71", "#f1c40f", "#9b59b6"];
 
+const positionsDepart = [
+  { left: "74%", top: "68%" },
+  { left: "78%", top: "72%" },
+  { left: "70%", top: "72%" },
+  { left: "74%", top: "75%" },
+  { left: "71%", top: "65%" }
+];
+
 document.addEventListener('DOMContentLoaded', function() {
   boardEl = document.getElementById("board");
-  creerPions();
+  initialiserPersonnages();
+  initialiserPionsPlateau();
 });
 
-function creerPions() {
-  const boite = document.getElementById("pawns");
-  boite.innerHTML = "";
-  
-  couleursPions.forEach((couleur, i) => {
-    const choix = document.createElement("button");
-    choix.className = "pawn-choice";
-    choix.textContent = "Pion " + (i + 1);
-    choix.style.borderBottom = "6px solid " + couleur;
-    boite.appendChild(choix);
-    
+function initialiserPionsPlateau() {
+  for (let i = 0; i < 5; i++) {
     const pion = document.createElement("div");
     pion.className = "pawn";
     pion.id = "pion" + i;
-    pion.style.background = couleur;
-    pion.style.left = (45 + i * 2) + "%";
-    pion.style.top = "48%";
+    pion.style.left = positionsDepart[i].left;
+    pion.style.top = positionsDepart[i].top;
+    pion.style.display = "none";
     boardEl.appendChild(pion);
     rendreDeplacable(pion);
-  });
+  }
 }
 
 function rendreDeplacable(pion) {
-  let actif = false, decX = 0, decY = 0;
+  let actif = false, aBouge = false, decX = 0, decY = 0;
+  
   pion.addEventListener("pointerdown", e => {
     actif = true;
+    aBouge = false;
     pion.setPointerCapture(e.pointerId);
     const r = pion.getBoundingClientRect();
     decX = e.clientX - r.left - r.width / 2;
     decY = e.clientY - r.top - r.height / 2;
   });
+
   pion.addEventListener("pointermove", e => {
     if (!actif) return;
+    aBouge = true;
     const r = boardEl.getBoundingClientRect();
     pion.style.left = ((e.clientX - r.left - decX) / r.width) * 100 + "%";
     pion.style.top = ((e.clientY - r.top - decY) / r.width) * 100 + "%";
   });
-  ["pointerup", "pointercancel"].forEach(ev => pion.addEventListener(ev, () => { actif = false; }));
+
+  pion.addEventListener("pointerup", e => {
+    if (actif && !aBouge) {
+      const url = pion.dataset.url;
+      const numero = parseInt(pion.dataset.numero, 10);
+      if (url && numero) {
+        ouvrirModalPleinEcran(url, numero, false);
+      }
+    }
+    actif = false;
+  });
+
+  pion.addEventListener("pointercancel", () => { actif = false; });
 }
 </script>
 </body>
