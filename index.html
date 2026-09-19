@@ -59,28 +59,21 @@ button:disabled { opacity: .45; cursor: not-allowed; }
 .center { text-align: center; }
 .big { font-size: 1.3rem; }
 .muted { color: #796958; }
-.choices {
-  display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
-}
+.choices { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+
 #die {
   width: 220px; height: 120px;
   margin: 25px auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  background: white;
-  border: 5px solid var(--brun);
-  border-radius: 22px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  padding: 10px;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; background: white;
+  border: 5px solid var(--brun); border-radius: 22px;
+  font-size: 1.2rem; font-weight: bold; padding: 10px;
   box-shadow: 0 8px 0 #c7b6a3;
   transition: transform .4s, background-color 0.3s, color 0.3s;
 }
 #die.rolling { transform: rotate(720deg) scale(1.1); }
 
-/* CONTENEUR DU PAQUET DE CARTES */
+/* CONTENEUR ET CARTES */
 .deck-container {
   position: relative;
   width: min(100%, 320px);
@@ -88,7 +81,6 @@ button:disabled { opacity: .45; cursor: not-allowed; }
   margin: 25px auto;
 }
 
-/* EFFET DE PILE POUR LE DOS */
 .deck-stack {
   position: absolute;
   inset: 0;
@@ -97,143 +89,90 @@ button:disabled { opacity: .45; cursor: not-allowed; }
   border: 4px solid var(--brun);
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
-  box-shadow: 
-    4px 4px 0px rgba(0,0,0,0.15),
-    8px 8px 0px rgba(0,0,0,0.1);
+  box-shadow: 4px 4px 0px rgba(0,0,0,0.15), 8px 8px 0px rgba(0,0,0,0.1);
   transform: translate(-6px, 6px);
 }
 
-/* CARTE PRINCIPALE */
 .card {
   position: absolute;
-  inset: 0;
+  inset: 0; width: 100%; height: 100%;
   perspective: 1000px;
   cursor: pointer;
 }
+
 .card-inner {
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: 100%; height: 100%;
   transform-style: preserve-3d;
   transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
 }
 
-/* PIVOTEMENT DE LA CARTE */
-.card[data-state="back"] .card-inner { transform: rotateY(0deg); }
-.card[data-state="question"] .card-inner { transform: rotateY(180deg); }
-.card[data-state="answer"] .card-inner { transform: rotateY(360deg); }
-
 .card-face {
   position: absolute;
-  inset: 0;
+  inset: 0; width: 100%; height: 100%;
   padding: 24px;
   border: 5px solid var(--brun);
   border-radius: 20px;
-  background: white;
+  background-color: white;
   backface-visibility: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
+  -webkit-backface-visibility: hidden;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: space-between;
   text-align: center;
   box-shadow: 0 8px 16px rgba(0,0,0,0.15);
 }
 
-/* DOS DE LA CARTE */
+/* DOS ET QUESTION */
 .card-back-face {
+  transform: rotateY(0deg);
   background-color: var(--brun);
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
   color: white;
   border: 4px solid var(--brun);
-  overflow: hidden;
 }
 
-.card-back-pattern {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-  padding: 15px;
-}
-
-.card-back-title {
-  font-size: 1.6rem;
-  font-weight: bold;
-  margin-top: 10px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
-}
-
-/* FACES RECTO */
 .card-question-face {
   transform: rotateY(180deg);
   background: #ffffff;
 }
 
-.card-answer-face {
-  transform: rotateY(0deg);
-  background: #fff8e7;
+.card[data-state="back"] .card-inner { transform: rotateY(0deg); }
+.card[data-state="question"] .card-inner { transform: rotateY(180deg); }
+
+.card-back-pattern {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  border-radius: 12px; padding: 15px;
+}
+
+.card-back-title {
+  font-size: 1.6rem; font-weight: bold; margin-top: 10px;
+  text-transform: uppercase; letter-spacing: 1px;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
 }
 
 .card-question { font-size: clamp(1.1rem, 2.5vw, 1.3rem); line-height: 1.4; font-weight: bold; margin: auto 0; }
-.card-answer { font-size: 1.2rem; line-height: 1.4; color: #2e7d32; font-weight: bold; margin: auto 0; }
 .card-label { font-size: .85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--brun); font-weight: bold; }
 
 #board {
-  position: relative;
-  width: min(92vw, 650px);
-  aspect-ratio: 1;
-  margin: 20px auto;
-  border: 4px solid var(--brun);
-  border-radius: 20px;
-  background: #ffffff;
-  overflow: hidden;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  position: relative; width: min(92vw, 650px); aspect-ratio: 1;
+  margin: 20px auto; border: 4px solid var(--brun); border-radius: 20px;
+  background: #ffffff; overflow: hidden; box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
-.board-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
+.board-img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .pawn {
-  position: absolute;
-  width: 30px; height: 30px;
-  border-radius: 50% 50% 50% 8px;
-  border: 3px solid white;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.4);
-  cursor: grab;
-  touch-action: none;
-  z-index: 10;
-  transition: transform 0.2s;
+  position: absolute; width: 30px; height: 30px;
+  border-radius: 50% 50% 50% 8px; border: 3px solid white;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.4); cursor: grab;
+  touch-action: none; z-index: 10; transition: transform 0.2s;
 }
 .pawn:active { transform: scale(1.2); cursor: grabbing; }
-#pawns {
-  display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
-}
-.pawn-choice {
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: 2px solid var(--brun);
-  background: white;
-  cursor: pointer;
-}
+#pawns { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.pawn-choice { padding: 10px 14px; border-radius: 12px; border: 2px solid var(--brun); background: white; cursor: pointer; }
 #feedback { font-weight: bold; min-height: 1.5em; }
 footer { text-align: center; padding: 20px; color: #796958; }
-@media (max-width: 600px) {
-  main { padding: 10px; }
-  .panel { padding: 16px; }
-  #die { width: 180px; font-size: 1rem; }
-  .pawn { width: 24px; height: 24px; }
-  .deck-container { height: 430px; }
-}
 </style>
 </head>
 
@@ -287,7 +226,7 @@ footer { text-align: center; padding: 20px; color: #796958; }
         <div id="carte" class="card" data-state="back" onclick="pivoterCarte()">
           <div class="card-inner">
             
-            <!-- Face Dos -->
+            <!-- DOS DE LA CARTE -->
             <div class="card-face card-back-face" id="cardBackStyle">
               <div class="card-back-pattern" id="backPattern">
                 <div class="card-label" style="color: white;">Jumathsji</div>
@@ -295,18 +234,11 @@ footer { text-align: center; padding: 20px; color: #796958; }
               </div>
             </div>
             
-            <!-- Face Question -->
+            <!-- QUESTION -->
             <div class="card-face card-question-face">
               <div class="card-label">Question</div>
               <p id="question" class="card-question"></p>
-              <p class="muted" style="font-size: 0.85rem;">Clique pour voir la réponse</p>
-            </div>
-
-            <!-- Face Réponse -->
-            <div class="card-face card-answer-face">
-              <div class="card-label">Réponse</div>
-              <p id="reponse" class="card-answer"></p>
-              <p class="muted" style="font-size: 0.85rem;">Clique pour remettre sur le paquet</p>
+              <p class="muted" style="font-size: 0.85rem;">Clique pour remettre sur le dos</p>
             </div>
 
           </div>
@@ -330,7 +262,7 @@ footer { text-align: center; padding: 20px; color: #796958; }
       <h2>Le plateau de jeu</h2>
       <p>Déplace les pions sur le plateau Jumathsji.</p>
       <div id="board">
-        <img id="boardImg" src="plateau definitif.png" alt="Plateau de jeu Jumathsji" class="board-img">
+        <img id="boardImg" src="https://raw.githubusercontent.com/phcasarotto/JMG/main/plateau%20definitif.png" alt="Plateau de jeu" class="board-img">
       </div>
       <div id="pawns"></div>
       <br>
@@ -351,29 +283,7 @@ const domaines = {
   EM:   { nom: "English Maths", couleur: "#e74c3c", textCouleur: "#ffffff" }
 };
 
-// Noms exacts des fichiers images présentés dans la racine du dépôt
-const imagesDos = {
-  // 6ème
-  "6E_EM":  "fond sixieme 6x9 EM_2.png",
-  "6E_MDP": "fond sixieme 6x9 MDP_2.png",
-  "6E_P2D": "fond sixieme 6x9 P2D_2.png",
-  "6E_VDN": "fond sixieme 6x9 VDN_2.png",
-  "6E_E3D": "fond carte cm1 6x9 E3D_2.png",
-
-  // CM1
-  "CM1_E3D": "fond carte cm1 6x9 E3D_2.png",
-  "CM1_EM":  "fond carte cm1 6x9 EM_2.png",
-  "CM1_MDP": "fond carte cm1 6x9 MDP.png",
-  "CM1_P2D": "fond carte cm1 6x9 P2D.png",
-  "CM1_VDN": "fond carte cm1 6x9 VDN.png",
-
-  // CM2
-  "CM2_E3D": "fond carte cm2 6x9 E3D.png",
-  "CM2_EM":  "fond carte cm1 6x9 EM_2.png",
-  "CM2_MDP": "fond carte cm1 6x9 MDP.png",
-  "CM2_P2D": "fond carte cm1 6x9 P2D.png",
-  "CM2_VDN": "fond carte cm1 6x9 VDN.png"
-};
+const baseUrl = "https://raw.githubusercontent.com/phcasarotto/JMG/main/";
 
 function genererBanqueCartes() {
   const banque = { VDN: {}, MDP: {}, P2D: {}, E3D: {}, EM: {} };
@@ -420,7 +330,6 @@ function genererBanqueCartes() {
 }
 
 const banqueCartes = genererBanqueCartes();
-
 let domaineActuel = "";
 let niveauActuel = "";
 let carteActuelle = null;
@@ -485,25 +394,15 @@ function afficherPaquet() {
   const deckStack = document.getElementById("deckStackStyle");
   const pattern = document.getElementById("backPattern");
   
-  const cleImage = `${niveauActuel}_${domaineActuel}`;
-  const nomFichier = imagesDos[cleImage];
+  // Génération automatique du nom : dos_cm1_vdn.png
+  const nomFichier = `dos_${niveauActuel.toLowerCase()}_${domaineActuel.toLowerCase()}.png`;
+  const urlImage = baseUrl + nomFichier;
 
-  if (nomFichier) {
-    // Encapsulation propre pour la gestion des espaces dans le CSS
-    const urlCss = `url('${encodeURI(nomFichier)}')`;
-    dosCard.style.backgroundImage = urlCss;
-    deckStack.style.backgroundImage = urlCss;
-    if (pattern) pattern.style.display = "none";
-  } else {
-    dosCard.style.backgroundImage = "none";
-    deckStack.style.backgroundImage = "none";
-    if (pattern) pattern.style.display = "flex";
-    if (dom) {
-      dosCard.style.backgroundColor = dom.couleur;
-      deckStack.style.backgroundColor = dom.couleur;
-      document.getElementById("backDomaineTitle").textContent = dom.nom;
-    }
-  }
+  const bgValue = `url("${urlImage}")`;
+  
+  dosCard.style.backgroundImage = bgValue;
+  deckStack.style.backgroundImage = bgValue;
+  if (pattern) pattern.style.display = "none";
 
   tirerCarte();
 }
@@ -512,7 +411,6 @@ function tirerCarte() {
   if (!cartesDisponibles.length) return;
   
   let restantes = cartesDisponibles.filter(c => !cartesUtilisees.includes(c.id));
-  
   if (!restantes.length) {
     cartesUtilisees = [];
     restantes = [...cartesDisponibles];
@@ -523,15 +421,11 @@ function tirerCarte() {
   cartesUtilisees.push(carteActuelle.id);
   
   document.getElementById("question").textContent = carteActuelle.q;
-  document.getElementById("reponse").textContent = carteActuelle.a;
   document.getElementById("numeroCarte").textContent = "Carte " + cartesUtilisees.length + " / 20 (" + carteActuelle.id + ")";
   
-  const cardElement = document.getElementById("carte");
-  cardElement.setAttribute("data-state", "back");
-  
+  document.getElementById("carte").setAttribute("data-state", "back");
   document.getElementById("aide").textContent = "";
   document.getElementById("reponseAffichee").textContent = "";
-  document.getElementById("feedback").textContent = "";
 }
 
 function pivoterCarte() {
@@ -540,8 +434,6 @@ function pivoterCarte() {
 
   if (state === "back") {
     cardElement.setAttribute("data-state", "question");
-  } else if (state === "question") {
-    cardElement.setAttribute("data-state", "answer");
   } else {
     cardElement.setAttribute("data-state", "back");
   }
@@ -577,6 +469,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function creerPions() {
   const boite = document.getElementById("pawns");
+  boite.innerHTML = "";
   
   couleursPions.forEach((couleur, i) => {
     const choix = document.createElement("button");
