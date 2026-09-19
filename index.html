@@ -162,11 +162,6 @@ button:disabled { opacity: .45; cursor: not-allowed; }
   padding: 15px;
 }
 
-/* Cacher le texte par défaut quand une image de fond est appliquée */
-.card-back-face.has-image .card-back-pattern {
-  display: none !important;
-}
-
 .card-back-title {
   font-size: 1.6rem;
   font-weight: bold;
@@ -292,19 +287,22 @@ footer { text-align: center; padding: 20px; color: #796958; }
         <div id="carte" class="card" data-state="back" onclick="pivoterCarte()">
           <div class="card-inner">
             
+            <!-- Face Dos -->
             <div class="card-face card-back-face" id="cardBackStyle">
-              <div class="card-back-pattern">
-                <div class="card-label" id="backCardLabel" style="color: white;">Jumathsji</div>
+              <div class="card-back-pattern" id="backPattern">
+                <div class="card-label" style="color: white;">Jumathsji</div>
                 <div class="card-back-title" id="backDomaineTitle">Domaine</div>
               </div>
             </div>
             
+            <!-- Face Question -->
             <div class="card-face card-question-face">
               <div class="card-label">Question</div>
               <p id="question" class="card-question"></p>
               <p class="muted" style="font-size: 0.85rem;">Clique pour voir la réponse</p>
             </div>
 
+            <!-- Face Réponse -->
             <div class="card-face card-answer-face">
               <div class="card-label">Réponse</div>
               <p id="reponse" class="card-answer"></p>
@@ -332,7 +330,7 @@ footer { text-align: center; padding: 20px; color: #796958; }
       <h2>Le plateau de jeu</h2>
       <p>Déplace les pions sur le plateau Jumathsji.</p>
       <div id="board">
-        <img id="boardImg" src="" alt="Plateau de jeu Jumathsji" class="board-img">
+        <img id="boardImg" src="plateau definitif.png" alt="Plateau de jeu Jumathsji" class="board-img">
       </div>
       <div id="pawns"></div>
       <br>
@@ -353,36 +351,28 @@ const domaines = {
   EM:   { nom: "English Maths", couleur: "#e74c3c", textCouleur: "#ffffff" }
 };
 
-// URL de base pointant vers ton dépôt GitHub officiel
-const githubBase = "https://raw.githubusercontent.com/phcasarotto/JMG/main/";
-
-// Plateau de jeu
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('boardImg').src = githubBase + "plateau definitif.png";
-});
-
-// Dictionnaire des visuels de cartes
+// Noms exacts des fichiers images présentés dans la racine du dépôt
 const imagesDos = {
   // 6ème
-  "6E_EM":  githubBase + "fond sixieme 6x9 EM_2.png",
-  "6E_MDP": githubBase + "fond sixieme 6x9 MDP_2.png",
-  "6E_P2D": githubBase + "fond sixieme 6x9 P2D_2.png",
-  "6E_VDN": githubBase + "fond sixieme 6x9 VDN_2.png",
-  "6E_E3D": githubBase + "fond carte cm1 6x9 E3D.png",
+  "6E_EM":  "fond sixieme 6x9 EM_2.png",
+  "6E_MDP": "fond sixieme 6x9 MDP_2.png",
+  "6E_P2D": "fond sixieme 6x9 P2D_2.png",
+  "6E_VDN": "fond sixieme 6x9 VDN_2.png",
+  "6E_E3D": "fond carte cm1 6x9 E3D_2.png",
 
   // CM1
-  "CM1_E3D": githubBase + "fond carte cm1 6x9 E3D.png",
-  "CM1_EM":  githubBase + "fond carte cm1 6x9 EM_2.png",
-  "CM1_MDP": githubBase + "fond carte cm1 6x9 MDP.png",
-  "CM1_P2D": githubBase + "fond carte cm1 6x9 P2D.png",
-  "CM1_VDN": githubBase + "fond carte cm1 6x9 VDN.png",
+  "CM1_E3D": "fond carte cm1 6x9 E3D_2.png",
+  "CM1_EM":  "fond carte cm1 6x9 EM_2.png",
+  "CM1_MDP": "fond carte cm1 6x9 MDP.png",
+  "CM1_P2D": "fond carte cm1 6x9 P2D.png",
+  "CM1_VDN": "fond carte cm1 6x9 VDN.png",
 
   // CM2
-  "CM2_E3D": githubBase + "fond carte cm2 6x9 E3D.png",
-  "CM2_EM":  githubBase + "fond carte cm1 6x9 EM_2.png",
-  "CM2_MDP": githubBase + "fond carte cm1 6x9 MDP.png",
-  "CM2_P2D": githubBase + "fond carte cm1 6x9 P2D.png",
-  "CM2_VDN": githubBase + "fond carte cm1 6x9 VDN.png"
+  "CM2_E3D": "fond carte cm2 6x9 E3D.png",
+  "CM2_EM":  "fond carte cm1 6x9 EM_2.png",
+  "CM2_MDP": "fond carte cm1 6x9 MDP.png",
+  "CM2_P2D": "fond carte cm1 6x9 P2D.png",
+  "CM2_VDN": "fond carte cm1 6x9 VDN.png"
 };
 
 function genererBanqueCartes() {
@@ -493,24 +483,25 @@ function afficherPaquet() {
   
   const dosCard = document.getElementById("cardBackStyle");
   const deckStack = document.getElementById("deckStackStyle");
+  const pattern = document.getElementById("backPattern");
   
   const cleImage = `${niveauActuel}_${domaineActuel}`;
-  const urlImage = imagesDos[cleImage];
+  const nomFichier = imagesDos[cleImage];
 
-  if (urlImage) {
-    const cssUrl = `url("${urlImage}")`;
-    dosCard.style.backgroundImage = cssUrl;
-    deckStack.style.backgroundImage = cssUrl;
-    dosCard.classList.add("has-image");
+  if (nomFichier) {
+    // Encapsulation propre pour la gestion des espaces dans le CSS
+    const urlCss = `url('${encodeURI(nomFichier)}')`;
+    dosCard.style.backgroundImage = urlCss;
+    deckStack.style.backgroundImage = urlCss;
+    if (pattern) pattern.style.display = "none";
   } else {
-    dosCard.classList.remove("has-image");
     dosCard.style.backgroundImage = "none";
     deckStack.style.backgroundImage = "none";
+    if (pattern) pattern.style.display = "flex";
     if (dom) {
       dosCard.style.backgroundColor = dom.couleur;
       deckStack.style.backgroundColor = dom.couleur;
       document.getElementById("backDomaineTitle").textContent = dom.nom;
-      document.getElementById("backCardLabel").textContent = "Jumathsji";
     }
   }
 
