@@ -17,34 +17,49 @@
   --violet: #9b8ac4;
 }
 * { box-sizing: border-box; }
-body {
+
+html, body {
   margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
   font-family: Arial, sans-serif;
   background: var(--fond);
   color: var(--brun);
 }
+
 header {
-  padding: 18px;
+  padding: 15px;
   text-align: center;
   background: var(--brun);
   color: white;
 }
-h1 { margin: 0; font-size: clamp(1.4rem, 4vw, 2.2rem); }
-main { max-width: 1100px; margin: auto; padding: 20px; }
+h1 { margin: 0; font-size: clamp(1.3rem, 4vw, 2.2rem); }
+
+main {
+  width: 100%;
+  max-width: 1100px;
+  margin: auto;
+  padding: 10px;
+}
+
 .screen { display: none; }
 .screen.active { display: block; }
+
 .panel {
   background: var(--papier);
   border: 3px solid var(--brun);
   border-radius: 20px;
-  padding: 24px;
-  margin: 18px auto;
+  padding: 16px;
+  margin: 12px auto;
+  width: 100%;
   max-width: 850px;
   box-shadow: 0 5px 0 #d6c7b5;
 }
+
 button, select {
   font: inherit;
-  padding: 12px 18px;
+  padding: 10px 16px;
   border: 2px solid var(--brun);
   border-radius: 12px;
   background: var(--orange);
@@ -52,73 +67,93 @@ button, select {
   cursor: pointer;
   margin: 5px;
   font-weight: bold;
+  touch-action: manipulation;
 }
 button:hover { filter: brightness(.95); transform: translateY(-1px); }
 button.secondary { background: #eee4d5; }
 button:disabled { opacity: .45; cursor: not-allowed; }
-.center { text-align: center; }
-.big { font-size: 1.3rem; }
-.muted { color: #796958; }
-.choices { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
 
-/* GRILLE DES PERSONNAGES : 2 rangées de 5 */
+.center { text-align: center; }
+.big { font-size: clamp(1.1rem, 2.5vw, 1.3rem); }
+.muted { color: #796958; }
+.choices { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.button-row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px; margin: 10px 0; }
+
+/* STYLE DE LA BANNIÈRE D'ACCUEIL */
+.accueil-banniere {
+  width: 100%;
+  max-width: 850px;
+  height: auto;
+  border-radius: 16px;
+  border: 3px solid var(--brun);
+  margin-bottom: 15px;
+  box-shadow: 0 5px 0 #d6c7b5;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* GRILLE DES PERSONNAGES */
 .perso-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
-  margin: 20px 0;
+  gap: 10px;
+  margin: 15px 0;
 }
-@media (max-width: 700px) {
+
+@media (max-width: 768px) {
   .perso-grid {
-    grid-template-columns: repeat(5, minmax(60px, 1fr));
+    grid-template-columns: repeat(5, minmax(50px, 1fr));
     gap: 6px;
   }
+  .panel {
+    padding: 12px;
+    border-width: 2px;
+  }
 }
+
 .perso-card {
   background: white;
   border: 3px solid var(--brun);
-  border-radius: 14px;
-  padding: 6px;
+  border-radius: 12px;
+  padding: 4px;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 0 #d6c7b5;
+  box-shadow: 0 3px 0 #d6c7b5;
   position: relative;
 }
 .perso-card:hover {
-  transform: translateY(-3px);
-  filter: brightness(1.03);
+  transform: translateY(-2px);
 }
-/* 1er Clic : Sélection simple */
 .perso-card.selected {
   border-color: var(--orange);
   background: #fdf6ec;
-  box-shadow: 0 0 0 2px var(--orange), 0 4px 0 #d6c7b5;
+  box-shadow: 0 0 0 2px var(--orange), 0 3px 0 #d6c7b5;
 }
-/* 3ème Clic : Validé définitivement */
 .perso-card.validated {
   border-color: var(--vert);
   background: #eaf2ec;
-  box-shadow: 0 0 0 4px var(--vert), 0 4px 0 #d6c7b5;
+  box-shadow: 0 0 0 3px var(--vert), 0 3px 0 #d6c7b5;
 }
 .perso-card.validated::after {
   content: "✔";
   position: absolute;
-  top: 5px; right: 5px;
+  top: 3px; right: 3px;
   background: var(--vert); color: white;
-  border-radius: 50%; width: 22px; height: 22px;
+  border-radius: 50%; width: 18px; height: 18px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.75rem; font-weight: bold;
+  font-size: 0.65rem; font-weight: bold;
 }
 .perso-img {
   width: 100%;
   aspect-ratio: 2/3;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 6px;
   border: 1px solid #ccc;
   pointer-events: none;
 }
 
-/* MODALE PLEIN ÉCRAN POUR LECTURE */
+/* MODALE PLEIN ÉCRAN */
 #modalPleinEcran {
   display: none;
   position: fixed;
@@ -127,7 +162,7 @@ button:disabled { opacity: .45; cursor: not-allowed; }
   z-index: 1000;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 15px;
 }
 #modalPleinEcran.active {
   display: flex;
@@ -136,29 +171,32 @@ button:disabled { opacity: .45; cursor: not-allowed; }
   background: var(--papier);
   border: 4px solid var(--brun);
   border-radius: 20px;
-  padding: 20px;
-  max-width: 450px;
+  padding: 15px;
+  max-width: 400px;
   width: 100%;
   text-align: center;
   box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  max-height: 90vh;
+  overflow-y: auto;
 }
 .modal-img {
   width: 100%;
-  max-height: 60vh;
+  max-height: 50vh;
   object-fit: contain;
-  border-radius: 12px;
+  border-radius: 10px;
   border: 2px solid var(--brun);
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 #die {
-  width: 220px; height: 120px;
-  margin: 25px auto;
+  width: min(100%, 200px); 
+  height: 110px;
+  margin: 20px auto;
   display: flex; align-items: center; justify-content: center;
   text-align: center; background: white;
-  border: 5px solid var(--brun); border-radius: 22px;
-  font-size: 1.2rem; font-weight: bold; padding: 10px;
-  box-shadow: 0 8px 0 #c7b6a3;
+  border: 4px solid var(--brun); border-radius: 18px;
+  font-size: 1.1rem; font-weight: bold; padding: 10px;
+  box-shadow: 0 6px 0 #c7b6a3;
   transition: transform .4s, background-color 0.3s, color 0.3s;
 }
 #die.rolling { transform: rotate(720deg) scale(1.1); }
@@ -166,9 +204,10 @@ button:disabled { opacity: .45; cursor: not-allowed; }
 /* CONTENEUR ET CARTES DE QUESTION */
 .deck-container {
   position: relative;
-  width: min(100%, 320px);
-  height: 480px;
-  margin: 25px auto;
+  width: 100%;
+  max-width: 300px;
+  height: 420px;
+  margin: 20px auto;
 }
 
 .deck-stack {
@@ -179,8 +218,8 @@ button:disabled { opacity: .45; cursor: not-allowed; }
   border: 4px solid var(--brun);
   background-size: cover;
   background-position: center;
-  box-shadow: 4px 4px 0px rgba(0,0,0,0.15), 8px 8px 0px rgba(0,0,0,0.1);
-  transform: translate(-6px, 6px);
+  box-shadow: 4px 4px 0px rgba(0,0,0,0.15);
+  transform: translate(-4px, 4px);
 }
 
 .card {
@@ -200,8 +239,8 @@ button:disabled { opacity: .45; cursor: not-allowed; }
 .card-face {
   position: absolute;
   inset: 0; width: 100%; height: 100%;
-  padding: 24px;
-  border: 5px solid var(--brun);
+  padding: 12px;
+  border: 4px solid var(--brun);
   border-radius: 20px;
   background-color: white;
   backface-visibility: hidden;
@@ -209,7 +248,7 @@ button:disabled { opacity: .45; cursor: not-allowed; }
   display: flex; flex-direction: column;
   align-items: center; justify-content: space-between;
   text-align: center;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
 .card-back-face {
@@ -218,7 +257,6 @@ button:disabled { opacity: .45; cursor: not-allowed; }
   background-size: cover;
   background-position: center;
   color: white;
-  border: 4px solid var(--brun);
 }
 
 .card-question-face {
@@ -233,36 +271,207 @@ button:disabled { opacity: .45; cursor: not-allowed; }
   width: 100%; height: 100%;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  border-radius: 12px; padding: 15px;
+  border-radius: 12px; padding: 10px;
 }
 
 .card-back-title {
-  font-size: 1.6rem; font-weight: bold; margin-top: 10px;
+  font-size: 1.4rem; font-weight: bold; margin-top: 10px;
   text-transform: uppercase; letter-spacing: 1px;
   text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
 }
 
-.card-question { font-size: clamp(1.1rem, 2.5vw, 1.3rem); line-height: 1.4; font-weight: bold; margin: auto 0; }
-.card-label { font-size: .85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--brun); font-weight: bold; }
+.card-question-img {
+  width: 100%;
+  height: 100%;
+  max-height: 330px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin: auto 0;
+}
+
+.card-label { font-size: .8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--brun); font-weight: bold; }
+
+/* PLATEAU FLUIDE ET BLOCS CHANCE / BADGES / VIES / CARTE CONSERVÉE */
+.plateau-top-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 660px;
+  margin: 0 auto 10px auto;
+  gap: 4px;
+}
+
+.chance-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 75px;
+  text-align: center;
+}
+
+.chance-deck-preview {
+  width: 50px;
+  height: 75px;
+  background-image: url("https://raw.githubusercontent.com/phcasarotto/JMG/main/chance.png");
+  background-size: cover;
+  background-position: center;
+  border: 3px solid var(--brun);
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #d6c7b5;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.chance-deck-preview:hover {
+  transform: translateY(-2px);
+}
+
+.badges-square-box {
+  width: 75px;
+  height: 75px;
+  background: #fdf6ec;
+  border: 3px solid var(--brun);
+  border-radius: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-shadow: 0 3px 0 #d6c7b5;
+  padding: 4px;
+  flex-shrink: 0;
+  position: relative;
+  text-align: center;
+}
+.badges-square-label {
+  font-size: 0.6rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: var(--brun);
+  width: 100%;
+  text-align: center;
+  line-height: 1.2;
+  pointer-events: none;
+}
+
+.saved-chance-slot {
+  width: 50px;
+  height: 75px;
+  border: 3px dashed var(--brun);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fdf6ec;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #d6c7b5;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.saved-chance-slot:hover {
+  transform: translateY(-2px);
+}
+
+.badge-item {
+  width: 26px;
+  height: 26px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: transform 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.badge-item:hover {
+  transform: scale(1.1);
+}
+
+.vie-receptacle-box {
+  width: 50px;
+  height: 75px;
+  background: #fdf6ec;
+  border: 3px solid var(--brun);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  box-shadow: 0 3px 0 #d6c7b5;
+  padding: 2px;
+  flex-shrink: 0;
+}
+
+.vie-item {
+  width: 20px;
+  height: 20px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.vie-item:hover {
+  transform: scale(1.1);
+}
 
 #board {
-  position: relative; width: min(92vw, 650px); aspect-ratio: 1;
-  margin: 20px auto; border: 4px solid var(--brun); border-radius: 20px;
-  background: #ffffff; overflow: hidden; box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  position: relative; 
+  width: 100%; 
+  max-width: 500px;
+  aspect-ratio: 1;
+  border: 4px solid var(--brun); 
+  border-radius: 16px;
+  background: #ffffff; 
+  overflow: hidden; 
+  box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+  margin: 0 auto;
 }
 .board-img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
 .pawn {
-  position: absolute; width: 36px; height: 36px;
-  border-radius: 50%; border: 3px solid white;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.4); cursor: grab;
+  position: absolute; width: 38px; height: 50px;
+  border-radius: 6px; border: 2px solid white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.4); cursor: grab;
   touch-action: none; z-index: 10;
   background-size: cover; background-position: center;
+  background-color: white;
 }
 .pawn:active { transform: scale(1.15); cursor: grabbing; }
-#pawns { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
-.pawn-choice { padding: 10px 14px; border-radius: 12px; border: 2px solid var(--brun); background: white; cursor: pointer; font-weight: bold; }
+
+#pawns { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px; }
+
+.pawn-card-mini { 
+  width: 50px;
+  height: 75px;
+  border-radius: 8px; 
+  border: 3px solid var(--brun); 
+  background-size: cover;
+  background-position: center;
+  cursor: pointer; 
+  box-shadow: 0 3px 0 #d6c7b5;
+  transition: transform 0.1s, filter 0.1s;
+}
+.pawn-card-mini:hover {
+  filter: brightness(0.95);
+  transform: translateY(-2px);
+}
+
+.info-points {
+  color: var(--orange);
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 #feedback { font-weight: bold; min-height: 1.5em; }
-footer { text-align: center; padding: 20px; color: #796958; }
+footer { text-align: center; padding: 15px; color: #796958; font-size: 0.9rem; }
 </style>
 </head>
 
@@ -275,6 +484,9 @@ footer { text-align: center; padding: 20px; color: #796958; }
   <!-- ACCUEIL -->
   <section id="accueil" class="screen active">
     <div class="panel center">
+      <!-- Insertion de la bannière sur la page d'accueil -->
+      <img src="https://raw.githubusercontent.com/phcasarotto/JMG/main/BANNIERE.png" alt="Bannière Joue Maths Gie" class="accueil-banniere">
+      
       <h2>Bienvenue dans le jeu !</h2>
       <p class="big">Joue avec les maths, réponds aux questions et avance sur le plateau.</p>
       <button onclick="aller('personnages')">Commencer la partie</button>
@@ -286,21 +498,37 @@ footer { text-align: center; padding: 20px; color: #796958; }
     <div class="panel center">
       <h2>Choisis 5 personnages</h2>
       <p>Sélectionne tes avatars pour la partie parmi les 10 personnages disponibles. (<span id="compteurSelection">0</span>/5 validés)</p>
+      
+      <div class="button-row">
+        <button class="secondary" onclick="selectionnerCinqAleatoire()">Sélectionner pour moi 5 personnages</button>
+        <button id="validerPerso" onclick="aller('de')" disabled>Jouer avec ces personnages</button>
+      </div>
+      
       <div class="perso-grid" id="grillePersos"></div>
-      <br>
-      <button id="validerPerso" onclick="aller('de')" disabled>Jouer avec ces personnages</button>
     </div>
   </section>
 
-  <!-- MODALE PLEIN ÉCRAN POUR LECTURE -->
+  <!-- MODALE PLEIN ÉCRAN -->
   <div id="modalPleinEcran" onclick="fermerModalSurFond(event)">
     <div class="modal-content">
       <img id="imgModalPleinEcran" class="modal-img" src="" alt="Carte en grand">
-      <br>
       <div id="modalBoutonsValidation">
         <button onclick="troisiemeClicValider()">Valider cette carte</button>
       </div>
-      <button onclick="lirePersonnageActuel()">🔊 Lire la carte</button>
+      <div id="modalBoutonsChanceNouveau" style="display:none;">
+        <button onclick="utiliserMaintenantChance()">Utiliser maintenant</button>
+        <button onclick="conserverCarteChance()">Conserver</button>
+      </div>
+      <div id="modalBoutonsChanceConservee" style="display:none;">
+        <button onclick="utiliserMaintenantChance()">Utiliser maintenant</button>
+        <button onclick="conserverEncoreChance()">Conserver encore</button>
+      </div>
+      <div id="modalBoutonsBadge" style="display:none;">
+        <p style="font-weight: bold; margin-bottom: 8px;">Badge gagné ?</p>
+        <button onclick="validerBadgeGagne(true)">Oui</button>
+        <button class="secondary" onclick="validerBadgeGagne(false)">Non</button>
+      </div>
+      <button id="btnLirePerso" onclick="lirePersonnageActuel()">🔊 Lire la carte</button>
       <button class="secondary" onclick="fermerSansValider()">Fermer</button>
     </div>
   </div>
@@ -311,9 +539,10 @@ footer { text-align: center; padding: 20px; color: #796958; }
       <h2>Lance le dé</h2>
       <p>Le résultat indique le domaine de la carte à jouer.</p>
       <div id="die">?</div>
-      <button onclick="lancerDe()">Lancer le dé</button>
-      <br>
-      <button id="continuerDe" onclick="aller('niveau')" disabled>Continuer</button>
+      <div class="button-row">
+        <button onclick="lancerDe()">Lancer le dé</button>
+        <button id="continuerDe" onclick="aller('niveau')" disabled>Continuer</button>
+      </div>
     </div>
   </section>
 
@@ -350,8 +579,8 @@ footer { text-align: center; padding: 20px; color: #796958; }
             
             <div class="card-face card-question-face">
               <div class="card-label" id="cardCodeLabel">Code carte</div>
-              <p id="question" class="card-question"></p>
-              <p class="muted" style="font-size: 0.85rem;">Clique pour remettre sur le dos</p>
+              <img id="questionImg" class="card-question-img" src="" alt="Carte question">
+              <p class="muted" style="font-size: 0.8rem; margin: 0;">Clique pour remettre sur le dos</p>
             </div>
 
           </div>
@@ -361,865 +590,75 @@ footer { text-align: center; padding: 20px; color: #796958; }
       <p id="aide" class="muted"></p>
       <p id="reponseAffichee" class="muted"></p>
       <p id="feedback"></p>
-      <button onclick="afficherAide()">Afficher l'aide</button>
-      <button onclick="afficherReponse()">Afficher la réponse</button>
-      <button onclick="lireQuestion()">Lire la question</button>
-      <br>
-      <button onclick="nouvelleCarte()">Piocher une autre carte</button>
-      <button class="secondary" onclick="aller('plateau')">Accéder au plateau</button>
+      <div>
+        <button onclick="afficherAide()">Afficher l'aide</button>
+        <button onclick="afficherReponse()">Afficher la réponse</button>
+        <button onclick="lireQuestion()">🔊 Lire</button>
+      </div>
+      <div style="margin-top: 10px;">
+        <button onclick="nouvelleCarte()">Autre carte</button>
+        <button class="secondary" onclick="aller('plateau')">Plateau</button>
+      </div>
     </div>
   </section>
 
   <!-- PLATEAU -->
   <section id="plateau" class="screen">
     <div class="panel center">
-      <h2>Le plateau de jeu</h2>
-      <p>En fonction de tes réponses aux questions déplace les pions sur le plateau Joue Maths Gie.<br><i>Astuce : clique sur un pion pour l'afficher en grand !</i></p>
-      <div id="board">
-        <img id="boardImg" src="https://raw.githubusercontent.com/phcasarotto/JMG/main/plateau_definitif.png" alt="Plateau de jeu" class="board-img">
-      </div>
-      <div id="pawns"></div>
-      <br>
-      <button onclick="aller('de')">Retour au dé</button>
-      <button class="secondary" onclick="finDePartie()">Fin de partie</button>
-    </div>
-  </section>
-</main>
-
-<footer>Joue Maths Gie</footer>
-
-<script>
-const domaines = {
-  VDN:  { nom: "Vallée des nombres", couleur: "#0066b2", textCouleur: "#ffffff" },
-  MDP:  { nom: "Montagne des problèmes", couleur: "#f39c12", textCouleur: "#ffffff" },
-  P2D:  { nom: "Plaine 2D", couleur: "#27ae60", textCouleur: "#ffffff" },
-  E3D:  { nom: "Espace 3D", couleur: "#8e44ad", textCouleur: "#ffffff" },
-  EM:   { nom: "English Maths", couleur: "#e74c3c", textCouleur: "#ffffff" }
-};
-
-const baseUrl = "https://raw.githubusercontent.com/phcasarotto/JMG/main/";
-
-const nomsPersonnages = {
-  1: "Euclide",
-  2: "Hipparque",
-  3: "Hypatie d'Alexandrie",
-  4: "Maria Gaetana Agnesi",
-  5: "Isaac Newton",
-  6: "Claude Ptolémée",
-  7: "Pythagore",
-  8: "Thalès",
-  9: "François Viète",
-  10: "Cédric Villani"
-};
-
-const etatsPersonnages = {}; 
-let carteEnCoursEnGrand = null;
-let audioActuel = null;
-
-function initialiserPersonnages() {
-  const grille = document.getElementById("grillePersos");
-  grille.innerHTML = "";
-  
-  for (let i = 1; i <= 10; i++) {
-    const url = baseUrl + `perso_${i}.png`;
-    etatsPersonnages[url] = { etat: 0, numero: i };
-
-    const card = document.createElement("div");
-    card.className = "perso-card";
-    card.id = `card_perso_${i}`;
-    
-    card.onclick = () => gererClicPersonnage(url, card, i);
-    
-    const img = document.createElement("img");
-    img.className = "perso-img";
-    img.src = url;
-    img.alt = `Personnage ${i}`;
-    
-    card.appendChild(img);
-    grille.appendChild(card);
-  }
-}
-
-function gererClicPersonnage(url, elementCard, numero) {
-  let etatActuel = etatsPersonnages[url].etat;
-
-  if (etatActuel === 0) {
-    etatsPersonnages[url].etat = 1;
-    elementCard.classList.add("selected");
-  } 
-  else if (etatActuel === 1) {
-    ouvrirModalPleinEcran(url, numero, true);
-  } 
-  else if (etatActuel === 3) {
-    etatsPersonnages[url].etat = 0;
-    elementCard.classList.remove("validated", "selected");
-    mettreAJourInterfaceSelection();
-  }
-}
-
-function ouvrirModalPleinEcran(url, numero, modeSelection = false) {
-  carteEnCoursEnGrand = { url, numero, modeSelection };
-  document.getElementById("imgModalPleinEcran").src = url;
-  
-  const boutonValidationDiv = document.getElementById("modalBoutonsValidation");
-  if (modeSelection) {
-    boutonValidationDiv.style.display = "block";
-  } else {
-    boutonValidationDiv.style.display = "none";
-  }
-
-  document.getElementById("modalPleinEcran").classList.add("active");
-}
-
-function troisiemeClicValider() {
-  if (!carteEnCoursEnGrand || !carteEnCoursEnGrand.modeSelection) return;
-  const { url } = carteEnCoursEnGrand;
-  const numero = carteEnCoursEnGrand.numero;
-
-  const nbvalides = Object.values(etatsPersonnages).filter(v => v.etat === 3).length;
-  if (nbvalides >= 5) {
-    alert("Tu as déjà validé 5 personnages maximum !");
-    fermerModalPleinEcran();
-    return;
-  }
-
-  etatsPersonnages[url].etat = 3;
-  const cardElement = document.getElementById(`card_perso_${numero}`);
-  if (cardElement) {
-    cardElement.classList.remove("selected");
-    cardElement.classList.add("validated");
-  }
-  
-  fermerModalPleinEcran();
-  mettreAJourInterfaceSelection();
-}
-
-function fermerSansValider() {
-  if (!carteEnCoursEnGrand) return;
-  if (carteEnCoursEnGrand.modeSelection) {
-    const { url, numero } = carteEnCoursEnGrand;
-    etatsPersonnages[url].etat = 0;
-    const cardElement = document.getElementById(`card_perso_${numero}`);
-    if (cardElement) {
-      cardElement.classList.remove("selected", "validated");
-    }
-  }
-
-  fermerModalPleinEcran();
-  mettreAJourInterfaceSelection();
-}
-
-function fermerModalPleinEcran() {
-  if (audioActuel) {
-    audioActuel.pause();
-    audioActuel = null;
-  }
-  document.getElementById("modalPleinEcran").classList.remove("active");
-  carteEnCoursEnGrand = null;
-}
-
-function fermerModalSurFond(e) {
-  if (e.target.id === "modalPleinEcran") {
-    fermerSansValider();
-  }
-}
-
-function lirePersonnageActuel() {
-  if (!carteEnCoursEnGrand) return;
-  
-  if (audioActuel) {
-    audioActuel.pause();
-  }
-
-  let nomFichierAudio;
-  const num = carteEnCoursEnGrand.numero;
-  
-  if (num === 9) {
-    nomFichierAudio = "Viete.mp3";
-  } else if (num === 10) {
-    nomFichierAudio = "Villani.mp3";
-  } else if (num === 6) {
-    nomFichierAudio = "Ptolemee.mp3";
-  } else if (num === 4) {
-    nomFichierAudio = "Maria.mp3";
-  } else if (num === 3) {
-    nomFichierAudio = "Hypathie.mp3";
-  } else {
-    nomFichierAudio = `perso${num}.mp3`;
-  }
-
-  const mp3Url = baseUrl + nomFichierAudio;
-  audioActuel = new Audio(mp3Url);
-  audioActuel.play().catch(error => {
-    console.log("Fichier audio non trouvé ou erreur de lecture :", error);
-    alert(`Le fichier audio '${nomFichierAudio}' n'est pas encore disponible sur GitHub.`);
-  });
-}
-
-function mettreAJourInterfaceSelection() {
-  const personnagesValides = Object.entries(etatsPersonnages).filter(([url, data]) => data.etat === 3);
-  
-  document.getElementById("compteurSelection").textContent = personnagesValides.length;
-  document.getElementById("validerPerso").disabled = personnagesValides.length !== 5;
-
-  const boite = document.getElementById("pawns");
-  boite.innerHTML = "";
-
-  personnagesValides.forEach(([url, data], i) => {
-    const couleur = couleursPions[i];
-    
-    const choix = document.createElement("button");
-    choix.className = "pawn-choice";
-    choix.textContent = nomsPersonnages[data.numero] || `Personnage ${data.numero}`;
-    choix.style.borderBottom = "6px solid " + couleur;
-    boite.appendChild(choix);
-
-    const pion = document.getElementById("pion" + i);
-    if (pion) {
-      pion.style.backgroundImage = `url("${url}")`;
-      pion.style.backgroundColor = "transparent";
-      pion.style.display = "block";
-      pion.dataset.url = url;
-      pion.dataset.numero = data.numero;
-    }
-  });
-
-  for (let i = personnagesValides.length; i < 5; i++) {
-    const pion = document.getElementById("pion" + i);
-    if (pion) {
-      pion.style.display = "none";
-    }
-  }
-}
-
-function genererBanqueCartes() {
-  const banque = { VDN: {}, MDP: {}, P2D: {}, E3D: {}, EM: {} };
-  const niveaux = ["CM1", "CM2", "6E"];
-
-  niveaux.forEach(n => {
-    banque.VDN[n] = Array.from({length: 20}, (_, i) => ({
-      id: `VDN_${n}_${i+1}`,
-      q: `Quel est le résultat de ${ (i+1)*5 } + ${ (i+1)*3 } ?`,
-      a: `${ (i+1)*8 }`,
-      h: "Effectue l'addition étape par étape."
-    }));
-    banque.MDP[n] = Array.from({length: 20}, (_, i) => ({
-      id: `MDP_${n}_${i+1}`,
-      q: `Un marchand a ${ (i+1)*10 } pommes. Il en vend ${ (i+1)*2 }. Combien lui en reste-t-il ?`,
-      a: `${ (i+1)*8 } pommes.`,
-      h: "Soustrais la quantité vendue du total."
-    }));
-    banque.P2D[n] = Array.from({length: 20}, (_, i) => ({
-      id: `P2D_${n}_${i+1}`,
-      q: `Quel est le périmètre d'un carré de ${ i+2 } cm de côté ?`,
-      a: `${ (i+2)*4 } cm.`,
-      h: "Multiplie la longueur d'un côté par 4."
-    }));
-    banque.E3D[n] = Array.from({length: 20}, (_, i) => ({
-      id: `E3D_${n}_${i+1}`,
-      q: `Combien de faces possède un prisme à base à ${ i+3 } côtés ?`,
-      a: `${ i+5 } faces.`,
-      h: "Ajoute les 2 bases au nombre de faces latérales."
-    }));
-    banque.EM[n] = Array.from({length: 20}, (_, i) => ({
-      id: `EM_${n}_${i+1}`,
-      q: `What is ${ i+1 } plus ${ i+2 }?`,
-      a: `${ (i+1) + (i+2) }`,
-      h: "Add the two numbers in English."
-    }));
-  });
-
-  return banque;
-}
-
-const banqueCartes = genererBanqueCartes();
-let domaineActuel = "";
-let niveauActuel = "";
-let carteActuelle = null;
-let cartesDisponibles = [];
-let cartesUtilisees = [];
-
-function aller(id) {
-  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-
-  if (id === 'de') {
-    const die = document.getElementById("die");
-    die.textContent = "?";
-    die.style.backgroundColor = "white";
-    die.style.color = "inherit";
-    document.getElementById("continuerDe").disabled = true;
-  }
-}
-
-function finDePartie() {
-  initialiserPersonnages();
-  mettreAJourInterfaceSelection();
-  aller('accueil');
-}
-
-const facesDe = ["VDN", "MDP", "P2D", "E3D", "EM"];
-
-function lancerDe() {
-  const die = document.getElementById("die");
-  const bouton = document.getElementById("continuerDe");
-  
-  bouton.disabled = true;
-  die.classList.add("rolling");
-  
-  setTimeout(() => {
-    const idx = Math.floor(Math.random() * facesDe.length);
-    const face = facesDe[idx];
-    const infoDomaine = domaines[face];
-    
-    die.classList.remove("rolling");
-    die.textContent = infoDomaine.nom;
-    die.style.backgroundColor = infoDomaine.couleur;
-    die.style.color = infoDomaine.textCouleur;
-    
-    domaineActuel = face;
-    bouton.disabled = false;
-  }, 450);
-}
-
-function choisirNiveau(niveau) {
-  niveauActuel = niveau;
-  cartesUtilisees = [];
-  
-  if (banqueCartes[domaineActuel] && banqueCartes[domaineActuel][niveau]) {
-    cartesDisponibles = [...banqueCartes[domaineActuel][niveau]];
-  } else {
-    cartesDisponibles = [];
-  }
-  
-  if (!cartesDisponibles.length) {
-    document.getElementById("niveauInfo").textContent = "Aucune carte disponible pour ce niveau.";
-    return;
-  }
-  afficherPaquet();
-  aller("paquet");
-}
-
-function afficherPaquet() {
-  const dom = domaines[domaineActuel];
-  document.getElementById("titrePaquet").textContent = dom ? dom.nom : domaineActuel;
-  
-  const dosCard = document.getElementById("cardBackStyle");
-  const deckStack = document.getElementById("deckStackStyle");
-  const pattern = document.getElementById("backPattern");
-  
-  const nomFichier = `dos_${niveauActuel.toLowerCase()}_${domaineActuel.toLowerCase()}.png`;
-  const urlImage = baseUrl + nomFichier;
-
-  const bgValue = `url("${urlImage}")`;
-  
-  dosCard.style.backgroundImage = bgValue;
-  deckStack.style.backgroundImage = bgValue;
-  if (pattern) pattern.style.display = "none";
-
-  tirerCarte();
-}
-
-function tirerCarte() {
-  if (!cartesDisponibles.length) return;
-  
-  let restantes = cartesDisponibles.filter(c => !cartesUtilisees.includes(c.id));
-  if (!restantes.length) {
-    cartesUtilisees = [];
-    restantes = [...cartesDisponibles];
-  }
-  
-  const index = Math.floor(Math.random() * restantes.length);
-  carteActuelle = restantes[index];
-  cartesUtilisees.push(carteActuelle.id);
-  
-  document.getElementById("cardCodeLabel").textContent = carteActuelle.id;
-  document.getElementById("question").textContent = carteActuelle.q;
-  
-  document.getElementById("carte").setAttribute("data-state", "back");
-  document.getElementById("aide").textContent = "";
-  document.getElementById("reponseAffichee").textContent = "";
-}
-
-function pivoterCarte() {
-  const cardElement = document.getElementById("carte");
-  const state = cardElement.getAttribute("data-state");
-
-  if (state === "back") {
-    cardElement.setAttribute("data-state", "question");
-  } else {
-    cardElement.setAttribute("data-state", "back");
-  }
-}
-
-function afficherAide() {
-  if (carteActuelle) document.getElementById("aide").textContent = "Aide : " + (carteActuelle.h || "Réfléchis à la méthode.");
-}
-
-function afficherReponse() {
-  if (carteActuelle) document.getElementById("reponseAffichee").textContent = "Réponse : " + carteActuelle.a;
-}
-
-function nouvelleCarte() { tirerCarte(); }
-
-function parler(texte, lang) {
-  if (!("speechSynthesis" in window)) return;
-  speechSynthesis.cancel();
-  const msg = new SpeechSynthesisUtterance(texte);
-  msg.lang = lang || "fr-FR";
-  speechSynthesis.speak(msg);
-}
-
-function lireQuestion() { if (carteActuelle) parler(carteActuelle.q, domaineActuel === "EM" ? "en-GB" : "fr-FR"); }
-
-let boardEl;
-const couleursPions = ["#e74c3c", "#3498db", "#2ecc71", "#f1c40f", "#9b59b6"];
-
-const positionsDepart = [
-  { left: "74%", top: "68%" },
-  { left: "78%", top: "72%" },
-  { left: "70%", top: "72%" },
-  { left: "74%", top: "75%" },
-  { left: "71%", top: "65%" }
-];
-
-document.addEventListener('DOMContentLoaded', function() {
-  boardEl = document.getElementById("board");
-  initialiserPersonnages();
-  initialiserPionsPlateau();
-});
-
-function initialiserPionsPlateau() {
-  for (let i = 0; i < 5; i++) {
-    const pion = document.createElement("div");
-    pion.className = "pawn";
-    pion.id = "pion" + i;
-    pion.style.left = positionsDepart[i].left;
-    pion.style.top = positionsDepart[i].top;
-    pion.style.display = "none";
-    boardEl.appendChild(pion);
-    rendreDeplacable(pion);
-  }
-}
-
-function rendreDeplacable(pion) {
-  let actif = false, aBouge = false, decX = 0, decY = 0;
-  
-  pion.addEventListener("pointerdown", e => {
-    actif = true;
-    aBouge = false;
-    pion.setPointerCapture(e.pointerId);
-    const r = pion.getBoundingClientRect();
-    decX = e.clientX - r.left - r.width / 2;
-    decY = e.clientY - r.top - r.height / 2;
-  });
-
-  pion.addEventListener("pointermove", e => {
-    if (!actif) return;
-    aBouge = true;
-    const r = boardEl.getBoundingClientRect();
-    pion.style.left = ((e.clientX - r.left - decX) / r.width) * 100 + "%";
-    pion.style.top = ((e.clientY - r.top - decY) / r.width) * 100 + "%";
-  });
-
-  pion.addEventListener("pointerup", e => {
-    if (actif && !aBouge) {
-      const url = pion.dataset.url;
-      const numero = parseInt(pion.dataset.numero, 10);
-      if (url && numero) {
-        ouvrirModalPleinEcran(url, numero, false);
-      }
-    }
-    actif = false;
-  });
-
-  pion.addEventListener("pointercancel", () => { actif = false; });
-}
-</script>
-</body>
-</html><!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Joue Maths Gie</title>
-
-<style>
-:root {
-  --fond: #f5f1e8;
-  --papier: #fffdf8;
-  --brun: #5b4636;
-  --orange: #e9a23b;
-  --vert: #6b9b75;
-  --bleu: #75a9c8;
-  --rose: #d88787;
-  --violet: #9b8ac4;
-}
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: var(--fond);
-  color: var(--brun);
-}
-header {
-  padding: 18px;
-  text-align: center;
-  background: var(--brun);
-  color: white;
-}
-h1 { margin: 0; font-size: clamp(1.4rem, 4vw, 2.2rem); }
-main { max-width: 1100px; margin: auto; padding: 20px; }
-.screen { display: none; }
-.screen.active { display: block; }
-.panel {
-  background: var(--papier);
-  border: 3px solid var(--brun);
-  border-radius: 20px;
-  padding: 24px;
-  margin: 18px auto;
-  max-width: 850px;
-  box-shadow: 0 5px 0 #d6c7b5;
-}
-button, select {
-  font: inherit;
-  padding: 12px 18px;
-  border: 2px solid var(--brun);
-  border-radius: 12px;
-  background: var(--orange);
-  color: #332519;
-  cursor: pointer;
-  margin: 5px;
-  font-weight: bold;
-}
-button:hover { filter: brightness(.95); transform: translateY(-1px); }
-button.secondary { background: #eee4d5; }
-button:disabled { opacity: .45; cursor: not-allowed; }
-.center { text-align: center; }
-.big { font-size: 1.3rem; }
-.muted { color: #796958; }
-.choices { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
-
-/* GRILLE DES PERSONNAGES : 2 rangées de 5 */
-.perso-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
-  margin: 20px 0;
-}
-@media (max-width: 700px) {
-  .perso-grid {
-    grid-template-columns: repeat(5, minmax(60px, 1fr));
-    gap: 6px;
-  }
-}
-.perso-card {
-  background: white;
-  border: 3px solid var(--brun);
-  border-radius: 14px;
-  padding: 6px;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 0 #d6c7b5;
-  position: relative;
-}
-.perso-card:hover {
-  transform: translateY(-3px);
-  filter: brightness(1.03);
-}
-/* 1er Clic : Sélection simple */
-.perso-card.selected {
-  border-color: var(--orange);
-  background: #fdf6ec;
-  box-shadow: 0 0 0 2px var(--orange), 0 4px 0 #d6c7b5;
-}
-/* 3ème Clic : Validé définitivement */
-.perso-card.validated {
-  border-color: var(--vert);
-  background: #eaf2ec;
-  box-shadow: 0 0 0 4px var(--vert), 0 4px 0 #d6c7b5;
-}
-.perso-card.validated::after {
-  content: "✔";
-  position: absolute;
-  top: 5px; right: 5px;
-  background: var(--vert); color: white;
-  border-radius: 50%; width: 22px; height: 22px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.75rem; font-weight: bold;
-}
-.perso-img {
-  width: 100%;
-  aspect-ratio: 2/3;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  pointer-events: none;
-}
-
-/* MODALE PLEIN ÉCRAN POUR LECTURE */
-#modalPleinEcran {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.8);
-  z-index: 1000;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-#modalPleinEcran.active {
-  display: flex;
-}
-.modal-content {
-  background: var(--papier);
-  border: 4px solid var(--brun);
-  border-radius: 20px;
-  padding: 20px;
-  max-width: 450px;
-  width: 100%;
-  text-align: center;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-}
-.modal-img {
-  width: 100%;
-  max-height: 60vh;
-  object-fit: contain;
-  border-radius: 12px;
-  border: 2px solid var(--brun);
-  margin-bottom: 15px;
-}
-
-#die {
-  width: 220px; height: 120px;
-  margin: 25px auto;
-  display: flex; align-items: center; justify-content: center;
-  text-align: center; background: white;
-  border: 5px solid var(--brun); border-radius: 22px;
-  font-size: 1.2rem; font-weight: bold; padding: 10px;
-  box-shadow: 0 8px 0 #c7b6a3;
-  transition: transform .4s, background-color 0.3s, color 0.3s;
-}
-#die.rolling { transform: rotate(720deg) scale(1.1); }
-
-/* CONTENEUR ET CARTES DE QUESTION */
-.deck-container {
-  position: relative;
-  width: min(100%, 320px);
-  height: 480px;
-  margin: 25px auto;
-}
-
-.deck-stack {
-  position: absolute;
-  inset: 0;
-  border-radius: 20px;
-  background-color: var(--brun);
-  border: 4px solid var(--brun);
-  background-size: cover;
-  background-position: center;
-  box-shadow: 4px 4px 0px rgba(0,0,0,0.15), 8px 8px 0px rgba(0,0,0,0.1);
-  transform: translate(-6px, 6px);
-}
-
-.card {
-  position: absolute;
-  inset: 0; width: 100%; height: 100%;
-  perspective: 1000px;
-  cursor: pointer;
-}
-
-.card-inner {
-  position: relative;
-  width: 100%; height: 100%;
-  transform-style: preserve-3d;
-  transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
-}
-
-.card-face {
-  position: absolute;
-  inset: 0; width: 100%; height: 100%;
-  padding: 24px;
-  border: 5px solid var(--brun);
-  border-radius: 20px;
-  background-color: white;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: space-between;
-  text-align: center;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-}
-
-.card-back-face {
-  transform: rotateY(0deg);
-  background-color: var(--brun);
-  background-size: cover;
-  background-position: center;
-  color: white;
-  border: 4px solid var(--brun);
-}
-
-.card-question-face {
-  transform: rotateY(180deg);
-  background: #ffffff;
-}
-
-.card[data-state="back"] .card-inner { transform: rotateY(0deg); }
-.card[data-state="question"] .card-inner { transform: rotateY(180deg); }
-
-.card-back-pattern {
-  width: 100%; height: 100%;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  border-radius: 12px; padding: 15px;
-}
-
-.card-back-title {
-  font-size: 1.6rem; font-weight: bold; margin-top: 10px;
-  text-transform: uppercase; letter-spacing: 1px;
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
-}
-
-.card-question { font-size: clamp(1.1rem, 2.5vw, 1.3rem); line-height: 1.4; font-weight: bold; margin: auto 0; }
-.card-label { font-size: .85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--brun); font-weight: bold; }
-
-#board {
-  position: relative; width: min(92vw, 650px); aspect-ratio: 1;
-  margin: 20px auto; border: 4px solid var(--brun); border-radius: 20px;
-  background: #ffffff; overflow: hidden; box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-}
-.board-img { width: 100%; height: 100%; object-fit: contain; display: block; }
-.pawn {
-  position: absolute; width: 36px; height: 36px;
-  border-radius: 50%; border: 3px solid white;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.4); cursor: grab;
-  touch-action: none; z-index: 10;
-  background-size: cover; background-position: center;
-}
-.pawn:active { transform: scale(1.15); cursor: grabbing; }
-#pawns { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
-.pawn-choice { padding: 10px 14px; border-radius: 12px; border: 2px solid var(--brun); background: white; cursor: pointer; font-weight: bold; }
-#feedback { font-weight: bold; min-height: 1.5em; }
-footer { text-align: center; padding: 20px; color: #796958; }
-</style>
-</head>
-
-<body>
-<header>
-  <h1>Joue Maths Gie</h1>
-</header>
-
-<main>
-  <!-- ACCUEIL -->
-  <section id="accueil" class="screen active">
-    <div class="panel center">
-      <h2>Bienvenue dans le jeu !</h2>
-      <p class="big">Joue avec les maths, réponds aux questions et avance sur le plateau.</p>
-      <button onclick="aller('personnages')">Commencer la partie</button>
-    </div>
-  </section>
-
-  <!-- CHOIX DES PERSONNAGES -->
-  <section id="personnages" class="screen">
-    <div class="panel center">
-      <h2>Choisis 5 personnages</h2>
-      <p>Sélectionne tes avatars pour la partie parmi les 10 personnages disponibles. (<span id="compteurSelection">0</span>/5 validés)</p>
-      <div class="perso-grid" id="grillePersos"></div>
-      <br>
-      <button id="validerPerso" onclick="aller('de')" disabled>Jouer avec ces personnages</button>
-    </div>
-  </section>
-
-  <!-- MODALE PLEIN ÉCRAN POUR LECTURE -->
-  <div id="modalPleinEcran" onclick="fermerModalSurFond(event)">
-    <div class="modal-content">
-      <img id="imgModalPleinEcran" class="modal-img" src="" alt="Carte en grand">
-      <br>
-      <div id="modalBoutonsValidation">
-        <button onclick="troisiemeClicValider()">Valider cette carte</button>
-      </div>
-      <button onclick="lirePersonnageActuel()">🔊 Lire la carte</button>
-      <button class="secondary" onclick="fermerSansValider()">Fermer</button>
-    </div>
-  </div>
-
-  <!-- LANCER DU DÉ -->
-  <section id="de" class="screen">
-    <div class="panel center">
-      <h2>Lance le dé</h2>
-      <p>Le résultat indique le domaine de la carte à jouer.</p>
-      <div id="die">?</div>
-      <button onclick="lancerDe()">Lancer le dé</button>
-      <br>
-      <button id="continuerDe" onclick="aller('niveau')" disabled>Continuer</button>
-    </div>
-  </section>
-
-  <!-- NIVEAU -->
-  <section id="niveau" class="screen">
-    <div class="panel center">
-      <h2>Choisis ton niveau</h2>
-      <div class="choices">
-        <button onclick="choisirNiveau('CM1')">CM1</button>
-        <button onclick="choisirNiveau('CM2')">CM2</button>
-        <button onclick="choisirNiveau('6E')">6e</button>
-      </div>
-      <p id="niveauInfo" class="muted"></p>
-    </div>
-  </section>
-
-  <!-- PAQUET DE CARTES -->
-  <section id="paquet" class="screen">
-    <div class="panel center">
-      <h2 id="titrePaquet">Carte</h2>
       
-      <div class="deck-container">
-        <div class="deck-stack" id="deckStackStyle"></div>
-
-        <div id="carte" class="card" data-state="back" onclick="pivoterCarte()">
-          <div class="card-inner">
-            
-            <div class="card-face card-back-face" id="cardBackStyle">
-              <div class="card-back-pattern" id="backPattern">
-                <div class="card-label" style="color: white;">Joue Maths Gie</div>
-                <div class="card-back-title" id="backDomaineTitle">Domaine</div>
-              </div>
-            </div>
-            
-            <div class="card-face card-question-face">
-              <div class="card-label" id="cardCodeLabel">Code carte</div>
-              <p id="question" class="card-question"></p>
-              <p class="muted" style="font-size: 0.85rem;">Clique pour remettre sur le dos</p>
-            </div>
-
+      <div class="plateau-top-container">
+        <!-- 1. Badges gagnés -->
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+          <div id="badgesSquareBox" class="badges-square-box" title="Badges gagnés">
+            <span class="badges-square-label">Badges gagnés</span>
           </div>
+          <div id="badgesContainerList" style="display: flex; gap: 4px; align-items: center; justify-content: center; height: 26px;">
+            <div class="badge-item" id="badge-item-0" onclick="cliquerBadge(0)" title="Cliquer pour valider ce badge"></div>
+            <div class="badge-item" id="badge-item-1" onclick="cliquerBadge(1)" title="Cliquer pour valider ce badge"></div>
+            <div class="badge-item" id="badge-item-2" onclick="cliquerBadge(2)" title="Cliquer pour valider ce badge"></div>
+            <div class="badge-item" id="badge-item-3" onclick="cliquerBadge(3)" title="Cliquer pour valider ce badge"></div>
+            <div class="badge-item" id="badge-item-4" onclick="cliquerBadge(4)" title="Cliquer pour valider ce badge"></div>
+          </div>
+        </div>
+
+        <!-- 2. Réceptacle Vies Actives -->
+        <div class="chance-section">
+          <div id="receptacleViesActives" class="vie-receptacle-box" title="Vies actives"></div>
+          <span style="font-size: 0.65rem; font-weight: bold; text-align: center; line-height: 1.1;">Vies actives</span>
+        </div>
+
+        <!-- 3. Réceptacle Vies Perdues -->
+        <div class="chance-section">
+          <div id="receptacleViesPerdues" class="vie-receptacle-box" title="Vies perdues"></div>
+          <span style="font-size: 0.65rem; font-weight: bold; text-align: center; line-height: 1.1;">Vies perdues</span>
+        </div>
+
+        <!-- 4. Cartes Chance et Malchance -->
+        <div class="chance-section">
+          <div class="chance-deck-preview" onclick="tirerCarteChance()" title="Tirer une carte chance et malchance"></div>
+          <span style="font-size: 0.65rem; font-weight: bold; text-align: center; line-height: 1.1;">Carte chance et malchance</span>
+        </div>
+
+        <!-- 5. Carte Conservée -->
+        <div class="chance-section">
+          <div id="savedChanceSlot" class="saved-chance-slot" onclick="cliquerCarteConservee()" title="Aucune carte conservée"></div>
+          <span style="font-size: 0.65rem; font-weight: bold; text-align: center; line-height: 1.1;">Carte conservée</span>
         </div>
       </div>
 
-      <p id="aide" class="muted"></p>
-      <p id="reponseAffichee" class="muted"></p>
-      <p id="feedback"></p>
-      <button onclick="afficherAide()">Afficher l'aide</button>
-      <button onclick="afficherReponse()">Afficher la réponse</button>
-      <button onclick="lireQuestion()">Lire la question</button>
-      <br>
-      <button onclick="nouvelleCarte()">Piocher une autre carte</button>
-      <button class="secondary" onclick="aller('plateau')">Accéder au plateau</button>
-    </div>
-  </section>
-
-  <!-- PLATEAU -->
-  <section id="plateau" class="screen">
-    <div class="panel center">
-      <h2>Le plateau de jeu</h2>
-      <p>En fonction de tes réponses aux questions déplace les pions sur le plateau Joue Maths Gie.<br><i>Astuce : clique sur un pion pour l'afficher en grand !</i></p>
       <div id="board">
         <img id="boardImg" src="https://raw.githubusercontent.com/phcasarotto/JMG/main/plateau_definitif.png" alt="Plateau de jeu" class="board-img">
       </div>
+
+      <p style="font-size: 0.9rem; margin-top: 10px;">
+        Glisse et déplace ton pion sur le plateau en fonction des <span class="info-points" onclick="afficherInfoPoints()">points obtenus</span> à ta question.<br>
+        Si ton pion tombe sur une case chance, tire une carte chance, utilise-la ou conserve-la en haut à droite.<br>
+        <i>Astuce : clique sur le nom d'un des personnages pour afficher sa carte en grand.</i>
+      </p>
+
       <div id="pawns"></div>
       <br>
-      <button onclick="aller('de')">Retour au dé</button>
+      <button onclick="aller('de')">Prochaine question</button>
       <button class="secondary" onclick="finDePartie()">Fin de partie</button>
     </div>
   </section>
@@ -1239,21 +678,23 @@ const domaines = {
 const baseUrl = "https://raw.githubusercontent.com/phcasarotto/JMG/main/";
 
 const nomsPersonnages = {
-  1: "Euclide",
-  2: "Hipparque",
-  3: "Hypatie d'Alexandrie",
-  4: "Maria Gaetana Agnesi",
-  5: "Isaac Newton",
-  6: "Claude Ptolémée",
-  7: "Pythagore",
-  8: "Thalès",
-  9: "François Viète",
-  10: "Cédric Villani"
+  1: "Euclide", 2: "Hipparque", 3: "Hypatie d'Alexandrie", 4: "Maria Gaetana Agnesi",
+  5: "Isaac Newton", 6: "Claude Ptolémée", 7: "Pythagore", 8: "Thalès",
+  9: "François Viète", 10: "Cédric Villani"
 };
+
+const couleursPions = ["#e74c3c", "#3498db", "#2ecc71", "#f1c40f", "#9b59b6"];
+const badgesGithub = ["BADGE BLEU.png", "BADGE JAUNE.png", "BADGE ROUGE.png", "BADGE VERT.png", "BADGE VIOLET.png"];
+const viesGithub = ["vie1.png", "vie2.png", "vie3.png"];
 
 const etatsPersonnages = {}; 
 let carteEnCoursEnGrand = null;
 let audioActuel = null;
+let derniereCarteChanceTiree = "";
+let carteChanceConservee = "";
+let badgeIndexEnCours = null;
+const badgesGagnesEtat = [false, false, false, false, false];
+const viesEtat = [false, false, false];
 
 function initialiserPersonnages() {
   const grille = document.getElementById("grillePersos");
@@ -1266,7 +707,6 @@ function initialiserPersonnages() {
     const card = document.createElement("div");
     card.className = "perso-card";
     card.id = `card_perso_${i}`;
-    
     card.onclick = () => gererClicPersonnage(url, card, i);
     
     const img = document.createElement("img");
@@ -1287,7 +727,7 @@ function gererClicPersonnage(url, elementCard, numero) {
     elementCard.classList.add("selected");
   } 
   else if (etatActuel === 1) {
-    ouvrirModalPleinEcran(url, numero, true);
+    ouvrirModalPleinEcran(url, numero, true, 'perso');
   } 
   else if (etatActuel === 3) {
     etatsPersonnages[url].etat = 0;
@@ -1296,15 +736,193 @@ function gererClicPersonnage(url, elementCard, numero) {
   }
 }
 
-function ouvrirModalPleinEcran(url, numero, modeSelection = false) {
-  carteEnCoursEnGrand = { url, numero, modeSelection };
+function selectionnerCinqAleatoire() {
+  Object.keys(etatsPersonnages).forEach(url => {
+    etatsPersonnages[url].etat = 0;
+  });
+  for (let i = 1; i <= 10; i++) {
+    const c = document.getElementById(`card_perso_${i}`);
+    if (c) c.classList.remove("selected", "validated");
+  }
+
+  let indicesAleatoires = [];
+  while (indicesAleatoires.length < 5) {
+    let rand = Math.floor(Math.random() * 10) + 1;
+    if (!indicesAleatoires.includes(rand)) {
+      indicesAleatoires.push(rand);
+    }
+  }
+
+  indicesAleatoires.forEach(num => {
+    let urlCible = baseUrl + `perso_${num}.png`;
+    if (etatsPersonnages[urlCible]) {
+      etatsPersonnages[urlCible].etat = 3;
+      const cardElement = document.getElementById(`card_perso_${num}`);
+      if (cardElement) {
+        cardElement.classList.add("validated");
+      }
+    }
+  });
+
+  mettreAJourInterfaceSelection();
+}
+
+function tirerCarteChance() {
+  const randNum = Math.floor(Math.random() * 40) + 1;
+  derniereCarteChanceTiree = baseUrl + `chance_${randNum}.png`;
+  ouvrirModalPleinEcran(derniereCarteChanceTiree, null, false, 'chance_nouveau');
+}
+
+function cliquerCarteConservee() {
+  if (!carteChanceConservee) return;
+  ouvrirModalPleinEcran(carteChanceConservee, null, false, 'chance_conservee');
+}
+
+function conserverCarteChance() {
+  carteChanceConservee = derniereCarteChanceTiree;
+  mettreAJourSlotChanceConservee();
+  fermerModalPleinEcran();
+}
+
+function conserverEncoreChance() {
+  fermerModalPleinEcran();
+}
+
+function utiliserMaintenantChance() {
+  carteChanceConservee = "";
+  mettreAJourSlotChanceConservee();
+  fermerModalPleinEcran();
+  alert("Carte Chance utilisée ! Applique la consigne sur le plateau.");
+}
+
+function mettreAJourSlotChanceConservee() {
+  const slot = document.getElementById("savedChanceSlot");
+  if (carteChanceConservee) {
+    slot.style.backgroundImage = `url("${carteChanceConservee}")`;
+    slot.style.borderStyle = "solid";
+    slot.title = "Clique pour voir la carte conservée";
+  } else {
+    slot.style.backgroundImage = "none";
+    slot.style.borderStyle = "dashed";
+    slot.title = "Aucune carte conservée";
+  }
+}
+
+function cliquerBadge(index) {
+  if (badgesGagnesEtat[index]) return;
+  badgeIndexEnCours = index;
+  const badgeUrl = baseUrl + encodeURIComponent(badgesGithub[index]);
+  ouvrirModalPleinEcran(badgeUrl, null, false, 'badge');
+}
+
+function validerBadgeGagne(gagne) {
+  if (gagne && badgeIndexEnCours !== null) {
+    badgesGagnesEtat[badgeIndexEnCours] = true;
+  }
+  fermerModalPleinEcran();
+  actualiserAffichageBadges();
+}
+
+function actualiserAffichageBadges() {
+  for (let i = 0; i < 5; i++) {
+    const item = document.getElementById("badge-item-" + i);
+    if (!item) continue;
+    
+    if (badgesGagnesEtat[i]) {
+      item.style.display = "none";
+    } else {
+      item.style.backgroundImage = `url("${baseUrl + encodeURIComponent(badgesGithub[i])}")`;
+      item.style.display = "block";
+    }
+  }
+
+  const box = document.getElementById("badgesSquareBox");
+  box.querySelectorAll(".badge-in-box").forEach(el => el.remove());
+
+  const gagnes = badgesGagnesEtat.map((g, idx) => g ? idx : -1).filter(idx => idx !== -1);
+  if (gagnes.length > 0) {
+    gagnes.forEach(idx => {
+      const bImg = document.createElement("div");
+      bImg.className = "badge-in-box";
+      bImg.style.width = "20px";
+      bImg.style.height = "20px";
+      bImg.style.backgroundImage = `url("${baseUrl + encodeURIComponent(badgesGithub[idx])}")`;
+      bImg.style.backgroundSize = "contain";
+      bImg.style.backgroundRepeat = "no-repeat";
+      bImg.style.backgroundPosition = "center";
+      bImg.style.cursor = "pointer";
+      bImg.title = "Badge gagné (cliquer pour le remettre en bas)";
+      bImg.onclick = (e) => {
+        e.stopPropagation();
+        badgesGagnesEtat[idx] = false;
+        actualiserAffichageBadges();
+      };
+      box.appendChild(bImg);
+    });
+  }
+}
+
+function basculerVie(index) {
+  viesEtat[index] = !viesEtat[index];
+  actualiserAffichageVies();
+}
+
+function actualiserAffichageVies() {
+  const receptacleActifs = document.getElementById("receptacleViesActives");
+  const receptaclePerdus = document.getElementById("receptacleViesPerdues");
+  
+  receptacleActifs.innerHTML = "";
+  receptaclePerdus.innerHTML = "";
+
+  for (let i = 0; i < 3; i++) {
+    const vieDiv = document.createElement("div");
+    vieDiv.className = "vie-item";
+    vieDiv.style.backgroundImage = `url("${baseUrl + viesGithub[i]}")`;
+    vieDiv.onclick = () => basculerVie(i);
+
+    if (!viesEtat[i]) {
+      vieDiv.title = `Vie ${i+1} (cliquer pour perdre)`;
+      receptacleActifs.appendChild(vieDiv);
+    } else {
+      vieDiv.classList.add("perdue");
+      vieDiv.style.filter = "grayscale(100%) brightness(1.4)";
+      vieDiv.style.opacity = "0.5";
+      vieDiv.title = `Vie ${i+1} perdue (cliquer pour réactiver)`;
+      receptaclePerdus.appendChild(vieDiv);
+    }
+  }
+}
+
+function ouvrirModalPleinEcran(url, numero, modeSelection = false, type = 'perso') {
+  carteEnCoursEnGrand = { url, numero, modeSelection, type };
   document.getElementById("imgModalPleinEcran").src = url;
   
   const boutonValidationDiv = document.getElementById("modalBoutonsValidation");
-  if (modeSelection) {
-    boutonValidationDiv.style.display = "block";
-  } else {
-    boutonValidationDiv.style.display = "none";
+  const boutonChanceNouveauDiv = document.getElementById("modalBoutonsChanceNouveau");
+  const boutonChanceConserveeDiv = document.getElementById("modalBoutonsChanceConservee");
+  const boutonBadgeDiv = document.getElementById("modalBoutonsBadge");
+  const btnLire = document.getElementById("btnLirePerso");
+  const btnFermerBas = document.querySelector("#modalPleinEcran .secondary:last-of-type");
+
+  boutonValidationDiv.style.display = "none";
+  boutonChanceNouveauDiv.style.display = "none";
+  boutonChanceConserveeDiv.style.display = "none";
+  boutonBadgeDiv.style.display = "none";
+  if (btnLire) btnLire.style.display = "none";
+  if (btnFermerBas) btnFermerBas.style.display = "inline-block";
+
+  if (type === 'chance_nouveau') {
+    boutonChanceNouveauDiv.style.display = "block";
+    if (btnFermerBas) btnFermerBas.style.display = "none";
+  } else if (type === 'chance_conservee') {
+    boutonChanceConserveeDiv.style.display = "block";
+    if (btnFermerBas) btnFermerBas.style.display = "none";
+  } else if (type === 'badge') {
+    boutonBadgeDiv.style.display = "block";
+    if (btnFermerBas) btnFermerBas.style.display = "none";
+  } else if (type === 'perso') {
+    boutonValidationDiv.style.display = modeSelection ? "block" : "none";
+    if (btnLire) btnLire.style.display = "inline-block";
   }
 
   document.getElementById("modalPleinEcran").classList.add("active");
@@ -1312,8 +930,7 @@ function ouvrirModalPleinEcran(url, numero, modeSelection = false) {
 
 function troisiemeClicValider() {
   if (!carteEnCoursEnGrand || !carteEnCoursEnGrand.modeSelection) return;
-  const { url } = carteEnCoursEnGrand;
-  const numero = carteEnCoursEnGrand.numero;
+  const { url, numero } = carteEnCoursEnGrand;
 
   const nbvalides = Object.values(etatsPersonnages).filter(v => v.etat === 3).length;
   if (nbvalides >= 5) {
@@ -1339,65 +956,47 @@ function fermerSansValider() {
     const { url, numero } = carteEnCoursEnGrand;
     etatsPersonnages[url].etat = 0;
     const cardElement = document.getElementById(`card_perso_${numero}`);
-    if (cardElement) {
-      cardElement.classList.remove("selected", "validated");
-    }
+    if (cardElement) cardElement.classList.remove("selected", "validated");
   }
-
   fermerModalPleinEcran();
-  mettreAJourInterfaceSelection();
 }
 
 function fermerModalPleinEcran() {
-  if (audioActuel) {
-    audioActuel.pause();
-    audioActuel = null;
-  }
+  if (audioActuel) { audioActuel.pause(); audioActuel = null; }
   document.getElementById("modalPleinEcran").classList.remove("active");
   carteEnCoursEnGrand = null;
+  badgeIndexEnCours = null;
 }
 
 function fermerModalSurFond(e) {
-  if (e.target.id === "modalPleinEcran") {
-    fermerSansValider();
-  }
+  if (e.target.id === "modalPleinEcran") fermerSansValider();
 }
 
 function lirePersonnageActuel() {
-  if (!carteEnCoursEnGrand) return;
-  
-  if (audioActuel) {
-    audioActuel.pause();
-  }
+  if (!carteEnCoursEnGrand || !carteEnCoursEnGrand.type.startsWith('perso')) return;
+  if (audioActuel) audioActuel.pause();
 
   let nomFichierAudio;
   const num = carteEnCoursEnGrand.numero;
   
-  if (num === 9) {
-    nomFichierAudio = "Viete.mp3";
-  } else if (num === 10) {
-    nomFichierAudio = "Villani.mp3";
-  } else if (num === 6) {
-    nomFichierAudio = "Ptolemee.mp3";
-  } else if (num === 4) {
-    nomFichierAudio = "Maria.mp3";
-  } else if (num === 3) {
-    nomFichierAudio = "Hypathie.mp3";
-  } else {
-    nomFichierAudio = `perso${num}.mp3`;
-  }
+  // Association corrigée des fichiers audio pour chaque personnage
+  if (num === 10) nomFichierAudio = "Villani.mp3";      // Cédric Villani[cite: 3]
+  else if (num === 9) nomFichierAudio = "perso9.mp3";    // François Viète
+  else if (num === 8) nomFichierAudio = "Thales.mp3";    // Thalès
+  else if (num === 7) nomFichierAudio = "Pythagore.mp3"; // Pythagore
+  else if (num === 6) nomFichierAudio = "Ptolemee.mp3";  // Claude Ptolémée[cite: 3]
+  else if (num === 4) nomFichierAudio = "Maria.mp3";     // Maria Gaetana Agnesi
+  else if (num === 3) nomFichierAudio = "Hypathie.mp3";  // Hypatie d'Alexandrie
+  else nomFichierAudio = `perso${num}.mp3`;              // Par défaut (Euclide, Hipparque, Newton)
 
-  const mp3Url = baseUrl + nomFichierAudio;
-  audioActuel = new Audio(mp3Url);
+  audioActuel = new Audio(baseUrl + nomFichierAudio);
   audioActuel.play().catch(error => {
-    console.log("Fichier audio non trouvé ou erreur de lecture :", error);
-    alert(`Le fichier audio '${nomFichierAudio}' n'est pas encore disponible sur GitHub.`);
+    alert(`Le fichier audio '${nomFichierAudio}' n'est pas disponible.`);
   });
 }
 
 function mettreAJourInterfaceSelection() {
   const personnagesValides = Object.entries(etatsPersonnages).filter(([url, data]) => data.etat === 3);
-  
   document.getElementById("compteurSelection").textContent = personnagesValides.length;
   document.getElementById("validerPerso").disabled = personnagesValides.length !== 5;
 
@@ -1407,81 +1006,370 @@ function mettreAJourInterfaceSelection() {
   personnagesValides.forEach(([url, data], i) => {
     const couleur = couleursPions[i];
     
-    const choix = document.createElement("button");
-    choix.className = "pawn-choice";
-    choix.textContent = nomsPersonnages[data.numero] || `Personnage ${data.numero}`;
-    choix.style.borderBottom = "6px solid " + couleur;
-    boite.appendChild(choix);
+    const miniature = document.createElement("div");
+    miniature.className = "pawn-card-mini";
+    miniature.style.backgroundImage = `url("${url}")`;
+    miniature.style.borderBottom = "4px solid " + couleur;
+    miniature.title = nomsPersonnages[data.numero] || `Personnage ${data.numero}`;
+    miniature.onclick = () => {
+      ouvrirModalPleinEcran(url, data.numero, false, 'perso');
+    };
+    boite.appendChild(miniature);
 
     const pion = document.getElementById("pion" + i);
     if (pion) {
       pion.style.backgroundImage = `url("${url}")`;
-      pion.style.backgroundColor = "transparent";
       pion.style.display = "block";
       pion.dataset.url = url;
       pion.dataset.numero = data.numero;
+    }
+
+    const badgeItem = document.getElementById("badge-item-" + i);
+    if (badgeItem) {
+      badgeItem.style.display = "block";
     }
   });
 
   for (let i = personnagesValides.length; i < 5; i++) {
     const pion = document.getElementById("pion" + i);
-    if (pion) {
-      pion.style.display = "none";
+    if (pion) pion.style.display = "none";
+
+    const badgeItem = document.getElementById("badge-item-" + i);
+    if (badgeItem) {
+      badgeItem.style.display = "none";
     }
   }
+
+  actualiserAffichageBadges();
+  actualiserAffichageVies();
 }
 
-function genererBanqueCartes() {
+function afficherInfoPoints() {
+  alert("Règle des points : Avance ton pion de 3 cases en cas de bonne réponse, de 2 cases en cas de bonne réponse avec une aide. Recule ton pion d'une case en cas de mauvaise réponse et de 2 cases en cas de mauvaise réponse avec de l'aide");
+}
+
+/* Dictionnaire complet des solutions et aides pour tous les domaines et niveaux */
+const solutionsSpecifiques = {
+  // --- VALLÉE DES NOMBRES (VDN) - CM1 ---
+  "VDN_CM1_1": { h: "58 x 100 = ? 1 x 58 = 58, on rajoute les 2 zéros ça fait : 5800", a: "Réponse VDN CM1 - Carte 1" },
+  "VDN_CM1_2": { h: "N'oublie pas : 4 x 9 = 9x4", a: "Réponse VDN CM1 - Carte 2" },
+  "VDN_CM1_3": { h: "Souligne les classes et nomme-les. Attention aux règles d'orthographe !", a: "Réponse VDN CM1 - Carte 3" },
+  "VDN_CM1_4": { h: "Nombre qui précède : -1, nombre qui suit : +1, avant 0 : avant 10 c'est 9, après 9 c'est 10", a: "Réponse VDN CM1 - Carte 4" },
+  "VDN_CM1_5": { h: "Nombre qui précède : -1, nombre qui suit : +1, avant 0 : avant 10 c'est 9, après 9 c'est 10", a: "Réponse VDN CM1 - Carte 5" },
+  "VDN_CM1_6": { h: "Le nombre le plus long est le plus grand. Si même longueur tu compares classe à classe en commençant par la plus grande.", a: "Réponse VDN CM1 - Carte 6" },
+  "VDN_CM1_7": { h: "12 : 3 Là tu dois chercher 3 x quelque chose = 12", a: "Réponse VDN CM1 - Carte 7" },
+  "VDN_CM1_8": { h: "Le 5 multiplie les unités, puis les dizaines, puis les centaines. N'oublie pas les retenues.", a: "Réponse VDN CM1 - Carte 8" },
+  "VDN_CM1_9": { h: "Il faut chercher le complément à la dizaine puis à la centaine. Exemple : Complément à 100 de 33 à 33 + 7 = 40, 40 + 60 = 100. Réponse 60 + 7 = 67.", a: "Réponse VDN CM1 - Carte 9" },
+  "VDN_CM1_10": { h: "Repère le nombre le plus grand. Et fais attention à la valeur des nombres (unité, dizaine, centaine, unité de mille, ...)", a: "Réponse VDN CM1 - Carte 10" },
+  "VDN_CM1_11": { h: "Repère le nombre le plus grand. Et fais attention à la valeur des nombres (unité, dizaine, centaine, unité de mille, ...)", a: "Réponse VDN CM1 - Carte 11" },
+  "VDN_CM1_12": { h: "On aligne les unités ; on va de haut en bas ; on n'oublie pas les retenues", a: "Réponse VDN CM1 - Carte 12" },
+  "VDN_CM1_13": { h: "Tu peux décomposer en colonnes", a: "Réponse VDN CM1 - Carte 13" },
+  "VDN_CM1_14": { h: "Souligne les classes en commençant par celle des unités et écris leur nom dessous", a: "Réponse VDN CM1 - Carte 14" },
+  "VDN_CM1_15": { h: "«Tu fais le complément à 10 au niveau des unités. Puis le complément à 100 au niveau des dizaines. 33 + 7 = 40 ; 40 + 60 = 100 donc 33 + 67 = 100»", a: "Réponse VDN CM1 - Carte 15" },
+  "VDN_CM1_16": { h: "Tu dois ajouter 1.", a: "Réponse VDN CM1 - Carte 16" },
+  "VDN_CM1_17": { h: "Tu dois enlever 1.", a: "Réponse VDN CM1 - Carte 17" },
+  "VDN_CM1_18": { h: "Tu dois enlever 1.", a: "Réponse VDN CM1 - Carte 18" },
+  "VDN_CM1_19": { h: "Repère les classes et écris les points qui symbolise les chiffres : milliards (+9), millions (+6), mille (+3)", a: "Réponse VDN CM1 - Carte 19" },
+  "VDN_CM1_20": { h: "Repère les classes et écris les points qui symbolise les chiffres : milliards (+9), millions (+6), mille (+3)", a: "Réponse VDN CM1 - Carte 20" },
+
+  // --- VALLÉE DES NOMBRES (VDN) - CM2 ---
+  "VDN_CM2_1": { h: "Prendre le double d'un nombre revient à le multiplier par 2.", a: "Réponse VDN CM2 - Carte 1" },
+  "VDN_CM2_2": { h: "Repère la partie entière et la partie décimale. Sépare les classes en commençant par la classe des unités. Pour reconnaître les zéros inutiles, ce sont ceux auxquels tu peux rajouter une infinité de zéros sans modifier le nombre.", a: "Réponse VDN CM2 - Carte 2" },
+  "VDN_CM2_3": { h: "Trouve les résultats des opérations", a: "Réponse VDN CM2 - Carte 3" },
+  "VDN_CM2_4": { h: "Il faut additionner les chiffres qui composent le nombre et vérifier si la somme est dans la table de 3.", a: "Réponse VDN CM2 - Carte 4" },
+  "VDN_CM2_5": { h: "Un multiple de 2 est un nombre divisible par 2, c'est un nombre pair.", a: "Réponse VDN CM2 - Carte 5" },
+  "VDN_CM2_6": { h: "Pose ta division et n'oublie pas de mettre la virgule quand tu passes dans la partie décimale.", a: "Réponse VDN CM2 - Carte 6" },
+  "VDN_CM2_7": { h: "Pose ta division et n'oublie pas de mettre la virgule quand tu passes dans la partie décimale.", a: "Réponse VDN CM2 - Carte 7" },
+  "VDN_CM2_8": { h: "Compare d'abord les parties entières puis les parties décimales en mettant le même nombre de chiffres dans la partie décimale.", a: "Réponse VDN CM2 - Carte 8" },
+  "VDN_CM2_9": { h: "Centième : 2 chiffres après la virgule.", a: "Réponse VDN CM2 - Carte 9" },
+  "VDN_CM2_10": { h: "Compare d'abord les parties entières puis les parties décimales en mettant le même nombre de chiffres dans la partie décimale.", a: "Réponse VDN CM2 - Carte 10" },
+  "VDN_CM2_11": { h: "Un nombre premier est un nombre uniquement divisible par 1 et par lui-même.", a: "Réponse VDN CM2 - Carte 11" },
+  "VDN_CM2_12": { h: "Repère la partie entière et la partie décimale. Sépare les classes en commençant par la classe des unités. Pour reconnaître les zéros inutiles, ce sont ceux auxquels tu peux rajouter une infinité de zéros sans modifier le nombre.", a: "Réponse VDN CM2 - Carte 12" },
+
+  // --- VALLÉE DES NOMBRES (VDN) - 6E ---
+  "VDN_6E_1": { h: "Pour passer de l'écriture décimale à l'écriture fractionnaire, il faut regarder la partie décimale du nombre : Exemple : dans 36,507 il y a 507 millièmes. C'est 3 chiffres après la virgule, donc des millièmes. Quand on écrit la fraction, on RETIRE LA VIRGULE et ça nous donne 36507 au numérateur et 1000 au dénominateur. On a alors la fraction : 36507 / 1000", a: "Réponse VDN 6e - Carte 1" },
+  "VDN_6E_2": { h: "Ranger des nombres dans l'ordre croissant c'est les classer du plus petit au plus grand, dans l'ordre décroissant c'est les classer du plus grand au plus petit. Exemple : Je veux ranger les nombres 28,500-27,4-28,420-28,649 dans l'ordre décroissant : Je complète avec des 0 pour arriver aux millièmes sauf 27,4 car c'est la plus petite unité et 28,649 car il est déjà aux millièmes. 28,500 > 28,420", a: "Réponse VDN 6e - Carte 2" },
+  "VDN_6E_3": { h: "Ranger des nombres dans l'ordre croissant c'est les classer du plus petit au plus grand, dans l'ordre décroissant c'est les classer du plus grand au plus petit. Exemple : Je veux ranger les nombres 28,500-27,4-28,420-28,649 dans l'ordre décroissant : Je complète avec des 0 pour arriver aux millièmes sauf 27,4 car c'est la plus petite unité et 28,649 car il est déjà aux millièmes. 28,500 > 28,420", a: "Réponse VDN 6e - Carte 3" },
+  "VDN_6E_6": { h: "Comparer deux nombres, c'est dire lequel des deux nombres est plus grand, plus petit ou égal à l'autre. Exemple : 28,27 < 28,30 ; 28,27 > 28,20 ; 38,75 = 38,75", a: "Réponse VDN 6e - Carte 6" },
+  "VDN_6E_11": { h: "Pour trouver les fractions égales il est possible de multiplier ou de diviser le numérateur et le dénominateur par un même nombre pour les transformer.", a: "Réponse VDN 6e - Carte 11" },
+  "VDN_6E_12": { h: "Bien lire les graduations.", a: "Réponse VDN 6e - Carte 12" },
+  "VDN_6E_20": { h: "Plusieurs réponses possibles.", a: "Réponse VDN 6e - Carte 20" },
+
+  // --- MONTAGNE DES PROBLÈMES (MDP) - CM1 ---
+  "MDP_CM1_1": { h: "Lis correctement et fais un schéma.", a: "Réponse MDP CM1 - Carte 1" },
+  "MDP_CM1_2": { h: "Fais un schéma", a: "Réponse MDP CM1 - Carte 2" },
+  "MDP_CM1_3": { h: "« En deux fois » signifie « deux fois la moitié »", a: "Réponse MDP CM1 - Carte 3" },
+  "MDP_CM1_5": { h: "Fais une frise du temps et cherche le temps qu'il faut pour aller de 17 h 35 à 18 h 20.", a: "Réponse MDP CM1 - Carte 5" },
+  "MDP_CM1_6": { h: "Additionne les centimes, convertis-les en euros (1 € = 100 centimes) puis additionne les euros.", a: "Réponse MDP CM1 - Carte 6" },
+  "MDP_CM1_7": { h: "Fais une frise du temps et cherche le temps qu'il faut pour aller de 8 h à 21 h. Attention à la pause du midi.", a: "Réponse MDP CM1 - Carte 7" },
+  "MDP_CM1_9": { h: "Additionne les centimes, convertis-les en euros (1 € = 100 centimes) puis additionne les euros.", a: "Réponse MDP CM1 - Carte 9" },
+  "MDP_CM1_10": { h: "Fais un dessin. Additionne les centimes, convertis-les en euros (1 € = 100 centimes) puis additionne les euros.", a: "Réponse MDP CM1 - Carte 10" },
+  "MDP_CM1_11": { h: "Fais une frise du temps et cherche le temps qu'il faut pour aller de 13 h 50 à 15 h 35.", a: "Réponse MDP CM1 - Carte 11" },
+  "MDP_CM1_12": { h: "Fais un dessin et réfléchis : le chien doit peser plus ou moins de 56 kg ?", a: "Réponse MDP CM1 - Carte 12" },
+  "MDP_CM1_13": { h: "Fais une frise du temps et cherche le temps qu'il faut pour aller de 16 h 55 à 18 h 25.", a: "Réponse MDP CM1 - Carte 13" },
+  "MDP_CM1_14": { h: "Additionne les centimes, convertis-les en euros (1 € = 100 centimes) puis additionne les euros.", a: "Réponse MDP CM1 - Carte 14" },
+  "MDP_CM1_15": { h: "Fais une frise du temps et cherche le temps qu'il faut pour aller de 22 h 30 à 1 h 30.", a: "Réponse MDP CM1 - Carte 15" },
+  "MDP_CM1_17": { h: "Additionne les centimes, convertis-les en euros (1 € = 100 centimes) puis additionne les euros.", a: "Réponse MDP CM1 - Carte 17" },
+  "MDP_CM1_18": { h: "Additionne les centimes, convertis-les en euros (1 € = 100 centimes) puis additionne les euros.", a: "Réponse MDP CM1 - Carte 18" },
+  "MDP_CM1_19": { h: "Additionne les centimes, convertis-les en euros (1 € = 100 centimes) puis additionne les euros.", a: "Réponse MDP CM1 - Carte 19" },
+  "MDP_CM1_20": { h: "Fais une frise du temps et cherche le temps qu'il faut pour aller de 21 h 10 à 22 h 30.", a: "Réponse MDP CM1 - Carte 20" },
+
+  // --- MONTAGNE DES PROBLÈMES (MDP) - CM2 ---
+  "MDP_CM2_1": { h: "Utilise un tableau pour convertir.", a: "Réponse MDP CM2 - Carte 1" },
+  "MDP_CM2_2": { h: "Utilise un tableau pour convertir.", a: "Réponse MDP CM2 - Carte 2" },
+  "MDP_CM2_3": { h: "Calcule le périmètre et le prix.", a: "Réponse MDP CM2 - Carte 3" },
+  "MDP_CM2_4": { h: "Fais un schéma.", a: "Réponse MDP CM2 - Carte 4" },
+  "MDP_CM2_5": { h: "Une personne qui entre : addition ; Une personne qui sort : soustraction", a: "Réponse MDP CM2 - Carte 5" },
+  "MDP_CM2_6": { h: "Attention aux unités.", a: "Réponse MDP CM2 - Carte 6" },
+  "MDP_CM2_7": { h: "Additionne les centimes, convertis-les en euros (1 € = 100 centimes) puis additionne les euros.", a: "Réponse MDP CM2 - Carte 7" },
+  "MDP_CM2_8": { h: "Fais une frise du temps et cherche le temps qu'il faut pour aller de 20 h 55 à 22 h 45.", a: "Réponse MDP CM2 - Carte 8" },
+  "MDP_CM2_10": { h: "Fais une frise du temps et attention aux données inutiles.", a: "Réponse MDP CM2 - Carte 10" },
+  "MDP_CM2_11": { h: "Il faut d'abord calculer ce qu'il dépense, avant de conclure pour le reste.", a: "Réponse MDP CM2 - Carte 11" },
+  "MDP_CM2_12": { h: "Additionne les centimes, convertis-les en euros (1 € = 100 centimes) puis additionne les euros.", a: "Réponse MDP CM2 - Carte 12" },
+  "MDP_CM2_13": { h: "Fais un dessin.", a: "Réponse MDP CM2 - Carte 13" },
+  "MDP_CM2_19": { h: "Le périmètre est 2 x L + 2 x l", a: "Réponse MDP CM2 - Carte 19" },
+
+  // --- MONTAGNE DES PROBLÈMES (MDP) - 6E ---
+  "MDP_6E_1": { h: "25% = un quart.", a: "Réponse MDP 6e - Carte 1" },
+  "MDP_6E_2": { h: "Il ne faut pas additionner les pourcentages.", a: "Réponse MDP 6e - Carte 2" },
+  "MDP_6E_4": { h: "Attention aux unités.", a: "Réponse MDP 6e - Carte 4" },
+  "MDP_6E_5": { h: "Il faut utiliser les carreaux.", a: "Réponse MDP 6e - Carte 5" },
+  "MDP_6E_6": { h: "Le coefficient de proportionnalité est un nombre qui permet de passer du nombre de la première ligne à celui de la 2e ligne en multipliant.", a: "Réponse MDP 6e - Carte 6" },
+  "MDP_6E_7": { h: "Aire du cercle = π x R².", a: "Réponse MDP 6e - Carte 7" },
+  "MDP_6E_8": { h: "Convertis ces masses dans la même unité.", a: "Réponse MDP 6e - Carte 8" },
+  "MDP_6E_9": { h: "Convertis ces masses dans la même unité.", a: "Réponse MDP 6e - Carte 9" },
+  "MDP_6E_10": { h: "Utilise un tableau pour convertir.", a: "Réponse MDP 6e - Carte 10" },
+  "MDP_6E_12": { h: "C'est un tableau de proportionnalité.", a: "Réponse MDP 6e - Carte 12" },
+  "MDP_6E_15": { h: "Exemple de tableau :\nLV2 | 5eA | 5eB | TOTAL\nItalien\nAllemand\nEspagnol\nTotal", a: "Réponse MDP 6e - Carte 15" },
+  "MDP_6E_17": { h: "1 h = 60 minutes = 3600 secondes.", a: "Réponse MDP 6e - Carte 17" },
+
+  // --- MONTAGNE DES PROBLÈMES (MDP) - 6E ---
+  "MDP_6E_1": { h: "Mets en place ton calcul pas à pas en identifiant l'expression littérale ou numérique adaptée.", a: "Réponse MDP 6e - Carte 1" },
+  "MDP_6E_2": { h: "Pour un problème de fractions ou de pourcentages, représente la quantité totale par 1 ou par 100%.", a: "Réponse MDP 6e - Carte 2" },
+  "MDP_6E_3": { h: "Utilise un tableau de proportionnalité et cherche le coefficient de proportionnalité.", a: "Réponse MDP 6e - Carte 3" },
+  "MDP_6E_4": { h: "Attention aux unités d'aire (cm², m²) et de volume (cm³, dm³, litres) lors des conversions.", a: "Réponse MDP 6e - Carte 4" },
+  "MDP_6E_5": { h: "Décompose le problème complexe en sous-problèmes plus simples.", a: "Réponse MDP 6e - Carte 5" },
+  "MDP_6E_6": { h: "Pour les vitesses, rappelle-toi la formule : Distance = Vitesse x Temps.", a: "Réponse MDP 6e - Carte 6" },
+  "MDP_6E_7": { h: "Identifie les hypothèses de départ et la conclusion attendue.", a: "Réponse MDP 6e - Carte 7" },
+  "MDP_6E_8": { h: "Vérifie l'homogénéité des unités dans toutes tes formules.", a: "Réponse MDP 6e - Carte 8" },
+  "MDP_6E_9": { h: "Rédige proprement chaque étape de calcul en expliquant ta démarche.", a: "Réponse MDP 6e - Carte 9" },
+  "MDP_6E_10": { h: "Vérifie ton résultat critique en calculant un ordre de grandeur.", a: "Réponse MDP 6e - Carte 10" },
+  "MDP_6E_11": { h: "Mets en place ton calcul pas à pas.", a: "Réponse MDP 6e - Carte 11" },
+  "MDP_6E_12": { h: "Repère les informations chiffrées cachées dans le texte.", a: "Réponse MDP 6e - Carte 12" },
+  "MDP_6E_13": { h: "Traduis l'énoncé en une suite d'opérations logiques.", a: "Réponse MDP 6e - Carte 13" },
+  "MDP_6E_14": { h: "Sois rigoureux dans l'écriture des unités à chaque ligne de calcul.", a: "Réponse MDP 6e - Carte 14" },
+  "MDP_6E_15": { h: "Pense à utiliser les propriétés géométriques si le problème inclut des figures.", a: "Réponse MDP 6e - Carte 15" },
+  "MDP_6E_16": { h: "Vérifie si le résultat doit être arrondi (valeur approchée) ou exact.", a: "Réponse MDP 6e - Carte 16" },
+  "MDP_6E_17": { h: "Isole la question centrale pour ne pas te perdre dans les détails.", a: "Réponse MDP 6e - Carte 17" },
+  "MDP_6E_18": { h: "Organise tes données sous forme de schéma ou de tableau.", a: "Réponse MDP 6e - Carte 18" },
+  "MDP_6E_19": { h: "Rédige une phrase réponse complète et bien formulée.", a: "Réponse MDP 6e - Carte 19" },
+  "MDP_6E_20": { h: "Relis l'ensemble de ton raisonnement pour éliminer toute étourderie.", a: "Réponse MDP 6e - Carte 20" },
+
+  // --- PLAINE 2D (P2D) - CM1 ---
+  "P2D_CM1_1": { h: "Dessine-les.", a: "Réponse P2D CM1 - Carte 1" },
+  "P2D_CM1_2": { h: "Si on te dit polygone ?", a: "Réponse P2D CM1 - Carte 2" },
+  "P2D_CM1_3": { h: "Que sont A et B ? Que représentent les parenthèses ?", a: "Réponse P2D CM1 - Carte 3" },
+  "P2D_CM1_4": { h: "Trace le segment [AB] puis prends ton compas. Un triangle équilatéral a 3 côtés égaux.", a: "Réponse P2D CM1 - Carte 4" },
+  "P2D_CM1_5": { h: "Triangle rectangle : angle droit. Attention à l'emplacement de l'angle droit.", a: "Réponse P2D CM1 - Carte 5" },
+  "P2D_CM1_6": { h: "Fais un schéma.", a: "Réponse P2D CM1 - Carte 6" },
+  "P2D_CM1_7": { h: "Fais un schéma.", a: "Réponse P2D CM1 - Carte 7" },
+  "P2D_CM1_8": { h: "Fais un schéma.", a: "Réponse P2D CM1 - Carte 8" },
+  "P2D_CM1_9": { h: "Fais un schéma.", a: "Réponse P2D CM1 - Carte 9" },
+  "P2D_CM1_10": { h: "Un trapèze est un quadrilatère qui a 2 côtés opposés parallèles.", a: "Réponse P2D CM1 - Carte 10" },
+  "P2D_CM1_11": { h: "Fais un schéma.", a: "Réponse P2D CM1 - Carte 11" },
+  "P2D_CM1_12": { h: "Fais un schéma.", a: "Réponse P2D CM1 - Carte 12" },
+  "P2D_CM1_13": { h: "Fais un schéma.", a: "Réponse P2D CM1 - Carte 13" },
+  "P2D_CM1_14": { h: "Fais un schéma.", a: "Réponse P2D CM1 - Carte 14" },
+  "P2D_CM1_18": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "Réponse P2D CM1 - Carte 18" },
+  "P2D_CM1_19": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "Réponse P2D CM1 - Carte 19" },
+  "P2D_CM1_20": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "Réponse P2D CM1 - Carte 20" },
+
+  // --- PLAINE 2D (P2D) - CM2 ---
+  "P2D_CM2_1": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "Réponse P2D CM2 - Carte 1" },
+  "P2D_CM2_2": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "Réponse P2D CM2 - Carte 2" },
+  "P2D_CM2_3": { h: "L'aire d'un rectangle est donnée par la formule : ... x ...", a: "Réponse P2D CM2 - Carte 3" },
+  "P2D_CM2_5": { h: "Un rectangle a 4 côtés égaux parallèles 2 à 2 et 4 angles droits.", a: "Réponse P2D CM2 - Carte 5" },
+  "P2D_CM2_6": { h: "Un polygone est une figure fermée à plusieurs côtés.", a: "Réponse P2D CM2 - Carte 6" },
+  "P2D_CM2_7": { h: "Compare les maisons 2 par 2 et regarde bien les formes.", a: "Réponse P2D CM2 - Carte 7" },
+  "P2D_CM2_8": { h: "Qu'est-ce que le rayon d'un cercle ? le diamètre ? Le rayon est ............du diamètre.", a: "Réponse P2D CM2 - Carte 8" },
+  "P2D_CM2_9": { h: "Des figures symétriques sont des figures semblables mais inversées comme dans un miroir.", a: "Réponse P2D CM2 - Carte 9" },
+  "P2D_CM2_10": { h: "Fais un schéma.", a: "Réponse P2D CM2 - Carte 10" },
+  "P2D_CM2_11": { h: "Fais un schéma.", a: "Réponse P2D CM2 - Carte 11" },
+  "P2D_CM2_12": { h: "Un parallélogramme a des côtés égaux et parallèles 2 à 2.", a: "Réponse P2D CM2 - Carte 12" },
+  "P2D_CM2_13": { h: "Fais un schéma.", a: "Réponse P2D CM2 - Carte 13" },
+  "P2D_CM2_14": { h: "Trace une diagonale de la longueur de ton choix et trace deux triangles isocèles.", a: "Réponse P2D CM2 - Carte 14" },
+  "P2D_CM2_15": { h: "Fais un schéma.", a: "Réponse P2D CM2 - Carte 15" },
+
+  // --- PLAINE 2D (P2D) - 6E ---
+  "P2D_6E_1": { h: "L'aire d'un carré est donnée par la formule : ... x ...", a: "Réponse P2D 6e - Carte 1" },
+  "P2D_6E_2": { h: "L'aire d'un rectangle est donnée par la formule : ... x ...", a: "Réponse P2D 6e - Carte 2" },
+  "P2D_6E_3": { h: "La médiatrice d'un segment est la droite ... à ce segment passant par son ...", a: "Réponse P2D 6e - Carte 3" },
+  "P2D_6E_5": { h: "L'aire d'un disque est donnée par la formule : ... x ...²", a: "Réponse P2D 6e - Carte 5" },
+  "P2D_6E_6": { h: "Quelle est la différence entre [...], (...), (...) ?", a: "Réponse P2D 6e - Carte 6" },
+  "P2D_6E_7": { h: "Le périmètre d'un cercle est donné par la formule : ... x π x ...", a: "Réponse P2D 6e - Carte 7" },
+  "P2D_6E_8": { h: "Quelle est la différence entre [...], (...), (...) ?", a: "Réponse P2D 6e - Carte 8" },
+  "P2D_6E_9": { h: "Le périmètre d’une figure est la longueur du contour de cette figure.", a: "Réponse P2D 6e - Carte 9" },
+  "P2D_6E_11": { h: "Deux droites perpendiculaires sont deux droites sécantes qui forment 4 angles droits.", a: "Réponse P2D 6e - Carte 11" },
+  "P2D_6E_12": { h: "Utilise éventuellement les carreaux.", a: "Réponse P2D 6e - Carte 12" },
+  "P2D_6E_17": { h: "La mesure d’un angle obtus est supérieure à 90°, celle d’un angle aigu est inférieur à 90° l’angle est droit pour 90°.", a: "Réponse P2D 6e - Carte 17" },
+  "P2D_6E_19": { h: "Construire la perpendiculaire à la droite (d) passant par A.", a: "Réponse P2D 6e - Carte 19" },
+
+  // --- ESPACE 3D - CM1 ---
+  "E3D_CM1_1": { h: "Tu peux compter le nombre de cubes dans une rangée et tu peux compter le nombre de rangées.", a: "5 x 10 = 50 cubes" },
+  "E3D_CM1_2": { h: "Compte étage par étage...", a: "Solution E3D CM1 - Carte 2" },
+  "E3D_CM1_3": { h: "Compte étage par étage...", a: "Solution E3D CM1 - Carte 3" },
+  "E3D_CM1_4": { h: "Compte étage par étage...", a: "Solution E3D CM1 - Carte 4" },
+  "E3D_CM1_5": { h: "On peut taper sur une face.", a: "Solution E3D CM1 - Carte 5" },
+  "E3D_CM1_7": { h: "Sommet ça pique, arrête ça coupe, face ça claque.", a: "Solution E3D CM1 - Carte 7" },
+  "E3D_CM1_9": { h: "Sommet ça pique, arrête ça coupe, face ça claque.", a: "Solution E3D CM1 - Carte 9" },
+  "E3D_CM1_11": { h: "Sommet ça pique, arrête ça coupe, face ça claque.", a: "Solution E3D CM1 - Carte 11" },
+  "E3D_CM1_12": { h: "Observe les arêtes.", a: "Solution E3D CM1 - Carte 12" },
+  "E3D_CM1_13": { h: "Sommet ça pique, arrête ça coupe, face ça claque.", a: "Solution E3D CM1 - Carte 13" },
+  "E3D_CM1_15": { h: "Sommet ça pique, arrête ça coupe, face ça claque.", a: "Solution E3D CM1 - Carte 15" },
+  "E3D_CM1_16": { h: "Sommet ça pique, arrête ça coupe, face ça claque.", a: "Solution E3D CM1 - Carte 16" },
+  "E3D_CM1_17": { h: "Observe les arêtes.", a: "Solution E3D CM1 - Carte 17" },
+  "E3D_CM1_18": { h: "Sommet ça pique, arrête ça coupe, face ça claque.", a: "Solution E3D CM1 - Carte 18" },
+  "E3D_CM1_19": { h: "Sommet ça pique, arrête ça coupe, face ça claque.", a: "Solution E3D CM1 - Carte 19" },
+  "E3D_CM1_20": { h: "Sommet ça pique, arrête ça coupe, face ça claque.", a: "Solution E3D CM1 - Carte 20" },
+
+  // --- ESPACE 3D - CM2 ---
+  "E3D_CM2_1": { h: "Représente-toi le cube et dis-toi : faces : ça claque, sommets : ça pique, arêtes : ça coupe.", a: "Réponse E3D CM2 - Carte 1" },
+  "E3D_CM2_2": { h: "Un cube est constitué de carrés.", a: "Réponse E3D CM2 - Carte 2" },
+  "E3D_CM2_3": { h: "Une pyramide à base carrée est constituée de carré(s) et de triangle(s).", a: "Réponse E3D CM2 - Carte 3" },
+  "E3D_CM2_4": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Réponse E3D CM2 - Carte 4" },
+  "E3D_CM2_5": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Réponse E3D CM2 - Carte 5" },
+  "E3D_CM2_6": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Réponse E3D CM2 - Carte 6" },
+  "E3D_CM2_7": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Réponse E3D CM2 - Carte 7" },
+  "E3D_CM2_8": { h: "On peut taper sur une face.", a: "Réponse E3D CM2 - Carte 8" },
+  "E3D_CM2_13": { h: "Observe les arêtes.", a: "Réponse E3D CM2 - Carte 13" },
+  "E3D_CM2_14": { h: "Imagine plier et fermer ce patron : qu'obtiens-tu ?", a: "Réponse E3D CM2 - Carte 14" },
+  "E3D_CM2_15": { h: "Imagine plier et fermer ce patron : qu'obtiens-tu ?", a: "Réponse E3D CM2 - Carte 15" },
+  "E3D_CM2_16": { h: "Compte étage par étage...", a: "Réponse E3D CM2 - Carte 16" },
+  "E3D_CM2_18": { h: "Imagine plier et fermer ce patron : qu'obtiens-tu ?", a: "Réponse E3D CM2 - Carte 18" },
+  "E3D_CM2_19": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Réponse E3D CM2 - Carte 19" },
+  "E3D_CM2_20": { h: "Observe les arêtes.", a: "Réponse E3D CM2 - Carte 20" },
+
+  // --- ESPACE 3D - 6E ---
+  "E3D_6E_1": { h: "Imagine plier et fermer ce patron : qu'obtiens-tu ?", a: "Réponse E3D 6e - Carte 1" },
+  "E3D_6E_2": { h: "Imagine plier et fermer ce patron : qu'obtiens-tu ?", a: "Réponse E3D 6e - Carte 2" },
+  "E3D_6E_3": { h: "Volume d'un parallélépipède : Lxlxh", a: "Réponse E3D 6e - Carte 3" },
+  "E3D_6E_4": { h: "Volume d'un cube : cxcxc", a: "Réponse E3D 6e - Carte 4" },
+  "E3D_6E_7": { h: "Aide-toi des carreaux. Attention aux pointillés !", a: "Réponse E3D 6e - Carte 7" },
+  "E3D_6E_8": { h: "Aide-toi des carreaux. Attention aux pointillés !", a: "Réponse E3D 6e - Carte 8" },
+  "E3D_6E_9": { h: "Décompose cet objet en deux parties.", a: "Réponse E3D 6e - Carte 9" },
+  "E3D_6E_11": { h: "Volume d'un parallélépipède : Lxlxh. Attention aux unités de mesure.", a: "Réponse E3D 6e - Carte 11" },
+  "E3D_6E_12": { h: "Réfléchis à la définition d'un polyèdre.", a: "Réponse E3D 6e - Carte 12" },
+  "E3D_6E_15": { h: "Commence par convertir les nombres dans une même unité de mesure.", a: "Réponse E3D 6e - Carte 15" },
+  "E3D_6E_16": { h: "Attention aux unités de mesure !", a: "Réponse E3D 6e - Carte 16" },
+  "E3D_6E_18": { h: "Calcule d'abord le volume total d'eau de la piscine. Volume d'un parallélépipède : Lxlxh", a: "Réponse E3D 6e - Carte 18" },
+  "E3D_6E_19": { h: "1L = 1dm3", a: "Réponse E3D 6e - Carte 19" },
+  "E3D_6E_20": { h: "1L = 1dm3", a: "Réponse E3D 6e - Carte 20" },
+
+  // --- ENGLISH MATHS - CM1 ---
+  "EM_CM1_1": { h: "dix = ten", a: "Réponse EM CM1 - Carte 1" },
+  "EM_CM1_2": { h: "how many = combien ; there are = il y a", a: "Réponse EM CM1 - Carte 2" },
+  "EM_CM1_3": { h: "how many = combien ; there are = il y a ; pen = stylo", a: "Réponse EM CM1 - Carte 3" },
+  "EM_CM1_4": { h: "marbles = billes ; how many = combien", a: "Réponse EM CM1 - Carte 4" },
+  "EM_CM1_5": { h: "how many = combien ; cow = vache", a: "Réponse EM CM1 - Carte 5" },
+  "EM_CM1_6": { h: "how many = combien ; bird = oiseau ; goldfish = poisson rouge", a: "Réponse EM CM1 - Carte 6" },
+  "EM_CM1_7": { h: "how many = combien ; cow = vache ; bird = oiseau ; goldfish = poisson rouge", a: "Réponse EM CM1 - Carte 7" },
+  "EM_CM1_8": { h: "how many = combien ; brown = marron ; dog = chien ; under = sous", a: "Réponse EM CM1 - Carte 8" },
+  "EM_CM1_9": { h: "times = fois (X)", a: "Réponse EM CM1 - Carte 9" },
+  "EM_CM1_10": { h: "plus = +", a: "Réponse EM CM1 - Carte 10" },
+  "EM_CM1_11": { h: "minus = moins (-)", a: "Réponse EM CM1 - Carte 11" },
+  "EM_CM1_12": { h: "times = fois (X)", a: "Réponse EM CM1 - Carte 12" },
+  "EM_CM1_13": { h: "plus = +", a: "Réponse EM CM1 - Carte 13" },
+  "EM_CM1_14": { h: "minus = moins (-)", a: "Réponse EM CM1 - Carte 14" },
+  "EM_CM1_15": { h: "times = fois (X)", a: "Réponse EM CM1 - Carte 15" },
+  "EM_CM1_16": { h: "plus = +", a: "Réponse EM CM1 - Carte 16" },
+  "EM_CM1_17": { h: "minus = moins (-)", a: "Réponse EM CM1 - Carte 17" },
+  "EM_CM1_18": { h: "plus = +", a: "Réponse EM CM1 - Carte 18" },
+  "EM_CM1_19": { h: "times = fois (X)", a: "Réponse EM CM1 - Carte 19" },
+  "EM_CM1_20": { h: "times = fois (X)", a: "Réponse EM CM1 - Carte 20" },
+
+  // --- ENGLISH MATHS - CM2 ---
+  "EM_CM2_1": { h: "13 = thirteen ; 15 = fifteen", a: "Réponse EM CM2 - Carte 1" },
+  "EM_CM2_2": { h: "how many = combien ; have got = avoir", a: "Réponse EM CM2 - Carte 2" },
+  "EM_CM2_3": { h: "how many = combien ; there are = il y a ; fish bowl = bocal", a: "Réponse EM CM2 - Carte 3" },
+  "EM_CM2_4": { h: "kid = enfant ; how many = combien ; have got = avoir ; son = fils ; daughter = fille", a: "Réponse EM CM2 - Carte 4" },
+  "EM_CM2_5": { h: "how many = combien ; there are = il y a ; people = personnes ; kid = enfant", a: "Réponse EM CM2 - Carte 5" },
+  "EM_CM2_6": { h: "how many = combien ; there are = il y a ; box = boîte", a: "Réponse EM CM2 - Carte 6" },
+  "EM_CM2_7": { h: "how many = combien ; there are = il y a ; in front of = devant", a: "Réponse EM CM2 - Carte 7" },
+  "EM_CM2_8": { h: "how many = combien ; there are = il y a ; fish = poisson", a: "Réponse EM CM2 - Carte 8" },
+  "EM_CM2_9": { h: "how many = combien ; have got = avoir ; pen = stylo", a: "Réponse EM CM2 - Carte 9" },
+  "EM_CM2_10": { h: "how many = combien ; have got = avoir ; pet = animal de compagnie", a: "Réponse EM CM2 - Carte 10" },
+  "EM_CM2_11": { h: "cook = cuisiner ; how many = combien ; there are = il y a ; cake = gâteau", a: "Réponse EM CM2 - Carte 11" },
+  "EM_CM2_12": { h: "times = fois (X)", a: "Réponse EM CM2 - Carte 12" },
+  "EM_CM2_13": { h: "minus = moins (-)", a: "Réponse EM CM2 - Carte 13" },
+  "EM_CM2_14": { h: "times = fois (X)", a: "Réponse EM CM2 - Carte 14" },
+  "EM_CM2_15": { h: "times = fois (X)", a: "Réponse EM CM2 - Carte 15" },
+  "EM_CM2_16": { h: "plus = +", a: "Réponse EM CM2 - Carte 16" },
+  "EM_CM2_17": { h: "times = fois (X)", a: "Réponse EM CM2 - Carte 17" },
+  "EM_CM2_18": { h: "plus = +", a: "Réponse EM CM2 - Carte 18" },
+  "EM_CM2_19": { h: "times = fois (X)", a: "Réponse EM CM2 - Carte 19" },
+  "EM_CM2_20": { h: "times = fois (X)", a: "Réponse EM CM2 - Carte 20" },
+
+  // --- ENGLISH MATHS - 6E ---
+  "EM_6E_1": { h: "put = mettre ; following = suivant ; ascending = croissant", a: "Réponse EM 6e - Carte 1" },
+  "EM_6E_2": { h: "consigne en français : mets les nombres décimaux suivants dans l'ordre croissant.", a: "Réponse EM 6e - Carte 2" },
+  "EM_6E_3": { h: "Add = plus (additionner)", a: "Réponse EM 6e - Carte 3" },
+  "EM_6E_4": { h: "what = quelle ; Hundredths = Centièmes ; Digit = Chiffre ; Number = Nombre", a: "Réponse EM 6e - Carte 4" },
+  "EM_6E_5": { h: "value = valeur", a: "Réponse EM 6e - Carte 5" },
+  "EM_6E_6": { h: "multiply = multiplier", a: "Réponse EM 6e - Carte 6" },
+  "EM_6E_7": { h: "times = fois", a: "Réponse EM 6e - Carte 7" },
+  "EM_6E_8": { h: "half = demi", a: "Réponse EM 6e - Carte 8" },
+  "EM_6E_9": { h: "quarter = quart ; to = moins", a: "Réponse EM 6e - Carte 9" },
+  "EM_6E_10": { h: "isosceles = isocèle ; equilateral = équilatéral ; scalene = quelconque.", a: "Réponse EM 6e - Carte 10" },
+  "EM_6E_11": { h: "isosceles = isocèle ; equilateral = équilatéral ; scalene = quelconque.", a: "Réponse EM 6e - Carte 11" },
+  "EM_6E_12": { h: "line = droite ; ray = demi-droite ; line segment = segment", a: "Réponse EM 6e - Carte 12" },
+  "EM_6E_13": { h: "line = ligne ; how many = combien", a: "Réponse EM 6e - Carte 13" },
+  "EM_6E_14": { h: "line = ligne ; how many = combien", a: "Réponse EM 6e - Carte 14" },
+  "EM_6E_15": { h: "losange = rhombus ; carré = square ; parallélogramme = parallelogram", a: "Réponse EM 6e - Carte 15" },
+  "EM_6E_16": { h: "add = additionner ; times = heures", a: "Réponse EM 6e - Carte 16" },
+  "EM_6E_17": { h: "following = suivant ; descending = décroissant", a: "Réponse EM 6e - Carte 17" },
+  "EM_6E_18": { h: "convert = convertir", a: "Réponse EM 6e - Carte 18" },
+  "EM_6E_19": { h: "shape = figure", a: "Réponse EM 6e - Carte 19" },
+  "EM_6E_20": { h: "calculate = calculer ; perimeter = périmètre", a: "Réponse EM 6e - Carte 20" }
+};
+
+/* Génération automatique de la banque de cartes basée sur vos dossiers */
+function genererBanqueCartesDossiers() {
   const banque = { VDN: {}, MDP: {}, P2D: {}, E3D: {}, EM: {} };
-  const niveaux = ["CM1", "CM2", "6E"];
+  
+  ["CM1", "CM2", "6E"].forEach(n => {
+    let suffixeNiveauDossier = (n === "6E") ? "6" : n; 
+    let suffixeNiveauFichier = (n === "6E") ? "6" : n.toLowerCase(); 
 
-  niveaux.forEach(n => {
-    banque.VDN[n] = Array.from({length: 20}, (_, i) => ({
-      id: `VDN_${n}_${i+1}`,
-      q: `Quel est le résultat de ${ (i+1)*5 } + ${ (i+1)*3 } ?`,
-      a: `${ (i+1)*8 }`,
-      h: "Effectue l'addition étape par étape."
-    }));
-    banque.MDP[n] = Array.from({length: 20}, (_, i) => ({
-      id: `MDP_${n}_${i+1}`,
-      q: `Un marchand a ${ (i+1)*10 } pommes. Il en vend ${ (i+1)*2 }. Combien lui en reste-t-il ?`,
-      a: `${ (i+1)*8 } pommes.`,
-      h: "Soustrais la quantité vendue du total."
-    }));
-    banque.P2D[n] = Array.from({length: 20}, (_, i) => ({
-      id: `P2D_${n}_${i+1}`,
-      q: `Quel est le périmètre d'un carré de ${ i+2 } cm de côté ?`,
-      a: `${ (i+2)*4 } cm.`,
-      h: "Multiplie la longueur d'un côté par 4."
-    }));
-    banque.E3D[n] = Array.from({length: 20}, (_, i) => ({
-      id: `E3D_${n}_${i+1}`,
-      q: `Combien de faces possède un prisme à base à ${ i+3 } côtés ?`,
-      a: `${ i+5 } faces.`,
-      h: "Ajoute les 2 bases au nombre de faces latérales."
-    }));
-    banque.EM[n] = Array.from({length: 20}, (_, i) => ({
-      id: `EM_${n}_${i+1}`,
-      q: `What is ${ i+1 } plus ${ i+2 }?`,
-      a: `${ (i+1) + (i+2) }`,
-      h: "Add the two numbers in English."
-    }));
+    Object.keys(banque).forEach(dom => {
+      let nomDossier = `${dom}${suffixeNiveauDossier}Q`; 
+      let prefixeFichier = `${dom.toLowerCase()}${suffixeNiveauFichier}q_`; 
+
+      banque[dom][n] = Array.from({length: 20}, (_, i) => {
+        let numId = i + 1;
+        let idUnique = `${dom}_${n}_${numId}`;
+        let cheminComplet = `${nomDossier}/${prefixeFichier}${numId}.png`;
+        
+        let infoSpecifique = solutionsSpecifiques[idUnique];
+
+        return {
+          id: idUnique,
+          imgUrl: baseUrl + cheminComplet,
+          a: infoSpecifique ? infoSpecifique.a : `Réponse de la carte ${numId}`,
+          h: infoSpecifique ? infoSpecifique.h : "Aide non disponible pour cette carte image."
+        };
+      });
+    });
   });
-
+  
   return banque;
 }
 
-const banqueCartes = genererBanqueCartes();
-let domaineActuel = "";
-let niveauActuel = "";
-let carteActuelle = null;
-let cartesDisponibles = [];
-let cartesUtilisees = [];
+const banqueCartes = genererBanqueCartesDossiers();
+let domaineActuel = "", niveauActuel = "", carteActuelle = null, cartesDisponibles = [], cartesUtilisees = [];
 
 function aller(id) {
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
-
   if (id === 'de') {
     const die = document.getElementById("die");
     die.textContent = "?";
@@ -1493,6 +1381,10 @@ function aller(id) {
 
 function finDePartie() {
   initialiserPersonnages();
+  carteChanceConservee = "";
+  badgesGagnesEtat.fill(false);
+  viesEtat.fill(false);
+  mettreAJourSlotChanceConservee();
   mettreAJourInterfaceSelection();
   aller('accueil');
 }
@@ -1502,7 +1394,6 @@ const facesDe = ["VDN", "MDP", "P2D", "E3D", "EM"];
 function lancerDe() {
   const die = document.getElementById("die");
   const bouton = document.getElementById("continuerDe");
-  
   bouton.disabled = true;
   die.classList.add("rolling");
   
@@ -1510,12 +1401,10 @@ function lancerDe() {
     const idx = Math.floor(Math.random() * facesDe.length);
     const face = facesDe[idx];
     const infoDomaine = domaines[face];
-    
     die.classList.remove("rolling");
     die.textContent = infoDomaine.nom;
     die.style.backgroundColor = infoDomaine.couleur;
     die.style.color = infoDomaine.textCouleur;
-    
     domaineActuel = face;
     bouton.disabled = false;
   }, 450);
@@ -1524,15 +1413,9 @@ function lancerDe() {
 function choisirNiveau(niveau) {
   niveauActuel = niveau;
   cartesUtilisees = [];
-  
-  if (banqueCartes[domaineActuel] && banqueCartes[domaineActuel][niveau]) {
-    cartesDisponibles = [...banqueCartes[domaineActuel][niveau]];
-  } else {
-    cartesDisponibles = [];
-  }
-  
+  cartesDisponibles = banqueCartes[domaineActuel]?.[niveau] || [];
   if (!cartesDisponibles.length) {
-    document.getElementById("niveauInfo").textContent = "Aucune carte disponible pour ce niveau.";
+    document.getElementById("niveauInfo").textContent = "Aucune carte disponible.";
     return;
   }
   afficherPaquet();
@@ -1542,39 +1425,27 @@ function choisirNiveau(niveau) {
 function afficherPaquet() {
   const dom = domaines[domaineActuel];
   document.getElementById("titrePaquet").textContent = dom ? dom.nom : domaineActuel;
-  
   const dosCard = document.getElementById("cardBackStyle");
   const deckStack = document.getElementById("deckStackStyle");
   const pattern = document.getElementById("backPattern");
   
-  const nomFichier = `dos_${niveauActuel.toLowerCase()}_${domaineActuel.toLowerCase()}.png`;
-  const urlImage = baseUrl + nomFichier;
-
-  const bgValue = `url("${urlImage}")`;
-  
-  dosCard.style.backgroundImage = bgValue;
-  deckStack.style.backgroundImage = bgValue;
+  const urlImage = baseUrl + `dos_${niveauActuel.toLowerCase()}_${domaineActuel.toLowerCase()}.png`;
+  dosCard.style.backgroundImage = `url("${urlImage}")`;
+  deckStack.style.backgroundImage = `url("${urlImage}")`;
   if (pattern) pattern.style.display = "none";
-
   tirerCarte();
 }
 
 function tirerCarte() {
   if (!cartesDisponibles.length) return;
-  
   let restantes = cartesDisponibles.filter(c => !cartesUtilisees.includes(c.id));
-  if (!restantes.length) {
-    cartesUtilisees = [];
-    restantes = [...cartesDisponibles];
-  }
+  if (!restantes.length) { cartesUtilisees = []; restantes = [...cartesDisponibles]; }
   
-  const index = Math.floor(Math.random() * restantes.length);
-  carteActuelle = restantes[index];
+  carteActuelle = restantes[Math.floor(Math.random() * restantes.length)];
   cartesUtilisees.push(carteActuelle.id);
   
   document.getElementById("cardCodeLabel").textContent = carteActuelle.id;
-  document.getElementById("question").textContent = carteActuelle.q;
-  
+  document.getElementById("questionImg").src = carteActuelle.imgUrl;
   document.getElementById("carte").setAttribute("data-state", "back");
   document.getElementById("aide").textContent = "";
   document.getElementById("reponseAffichee").textContent = "";
@@ -1582,44 +1453,21 @@ function tirerCarte() {
 
 function pivoterCarte() {
   const cardElement = document.getElementById("carte");
-  const state = cardElement.getAttribute("data-state");
-
-  if (state === "back") {
-    cardElement.setAttribute("data-state", "question");
-  } else {
-    cardElement.setAttribute("data-state", "back");
-  }
+  cardElement.setAttribute("data-state", cardElement.getAttribute("data-state") === "back" ? "question" : "back");
 }
 
-function afficherAide() {
-  if (carteActuelle) document.getElementById("aide").textContent = "Aide : " + (carteActuelle.h || "Réfléchis à la méthode.");
-}
-
-function afficherReponse() {
-  if (carteActuelle) document.getElementById("reponseAffichee").textContent = "Réponse : " + carteActuelle.a;
-}
-
+function afficherAide() { if (carteActuelle) document.getElementById("aide").textContent = "Aide : " + carteActuelle.h; }
+function afficherReponse() { if (carteActuelle) document.getElementById("reponseAffichee").textContent = "Réponse : " + carteActuelle.a; }
 function nouvelleCarte() { tirerCarte(); }
 
-function parler(texte, lang) {
-  if (!("speechSynthesis" in window)) return;
-  speechSynthesis.cancel();
-  const msg = new SpeechSynthesisUtterance(texte);
-  msg.lang = lang || "fr-FR";
-  speechSynthesis.speak(msg);
+function lireQuestion() { 
+  alert("La lecture audio n'est pas disponible pour les cartes au format image."); 
 }
 
-function lireQuestion() { if (carteActuelle) parler(carteActuelle.q, domaineActuel === "EM" ? "en-GB" : "fr-FR"); }
-
 let boardEl;
-const couleursPions = ["#e74c3c", "#3498db", "#2ecc71", "#f1c40f", "#9b59b6"];
-
 const positionsDepart = [
-  { left: "74%", top: "68%" },
-  { left: "78%", top: "72%" },
-  { left: "70%", top: "72%" },
-  { left: "74%", top: "75%" },
-  { left: "71%", top: "65%" }
+  { left: "74%", top: "68%" }, { left: "78%", top: "72%" },
+  { left: "70%", top: "72%" }, { left: "74%", top: "75%" }, { left: "71%", top: "65%" }
 ];
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -1641,38 +1489,27 @@ function initialiserPionsPlateau() {
   }
 }
 
-function rendreDeplacable(pion) {
-  let actif = false, aBouge = false, decX = 0, decY = 0;
+function rendreDeplacable(element) {
+  let actif = false, decX = 0, decY = 0;
   
-  pion.addEventListener("pointerdown", e => {
+  element.addEventListener("pointerdown", e => {
     actif = true;
-    aBouge = false;
-    pion.setPointerCapture(e.pointerId);
-    const r = pion.getBoundingClientRect();
+    element.setPointerCapture(e.pointerId);
+    const r = element.getBoundingClientRect();
     decX = e.clientX - r.left - r.width / 2;
     decY = e.clientY - r.top - r.height / 2;
   });
 
-  pion.addEventListener("pointermove", e => {
+  element.addEventListener("pointermove", e => {
     if (!actif) return;
-    aBouge = true;
     const r = boardEl.getBoundingClientRect();
-    pion.style.left = ((e.clientX - r.left - decX) / r.width) * 100 + "%";
-    pion.style.top = ((e.clientY - r.top - decY) / r.width) * 100 + "%";
+    element.style.left = Math.max(0, Math.min(100, ((e.clientX - r.left - decX) / r.width) * 100)) + "%";
+    element.style.top = Math.max(0, Math.min(100, ((e.clientY - r.top - decY) / r.height) * 100)) + "%";
+    element.style.transform = "none";
   });
 
-  pion.addEventListener("pointerup", e => {
-    if (actif && !aBouge) {
-      const url = pion.dataset.url;
-      const numero = parseInt(pion.dataset.numero, 10);
-      if (url && numero) {
-        ouvrirModalPleinEcran(url, numero, false);
-      }
-    }
-    actif = false;
-  });
-
-  pion.addEventListener("pointercancel", () => { actif = false; });
+  element.addEventListener("pointerup", () => { actif = false; });
+  element.addEventListener("pointercancel", () => { actif = false; });
 }
 </script>
 </body>
