@@ -484,7 +484,6 @@ footer { text-align: center; padding: 15px; color: #796958; font-size: 0.9rem; }
   <!-- ACCUEIL -->
   <section id="accueil" class="screen active">
     <div class="panel center">
-      <!-- Insertion de la bannière sur la page d'accueil -->
       <img src="https://raw.githubusercontent.com/phcasarotto/JMG/main/BANNIERE.png" alt="Bannière Joue Maths Gie" class="accueil-banniere">
       
       <h2>Bienvenue dans le jeu !</h2>
@@ -593,7 +592,7 @@ footer { text-align: center; padding: 15px; color: #796958; font-size: 0.9rem; }
       <div>
         <button onclick="afficherAide()">Afficher l'aide</button>
         <button onclick="afficherReponse()">Afficher la réponse</button>
-        <button onclick="lireQuestion()">🔊 Lire</button>
+        <button id="btnLireQuestion" onclick="lireQuestion()">🔊 Lire</button>
       </div>
       <div style="margin-top: 10px;">
         <button onclick="nouvelleCarte()">Autre carte</button>
@@ -979,15 +978,14 @@ function lirePersonnageActuel() {
   let nomFichierAudio;
   const num = carteEnCoursEnGrand.numero;
   
-  // Association corrigée des fichiers audio pour chaque personnage
-  if (num === 10) nomFichierAudio = "Villani.mp3";      // Cédric Villani[cite: 3]
-  else if (num === 9) nomFichierAudio = "perso9.mp3";    // François Viète
-  else if (num === 8) nomFichierAudio = "Thales.mp3";    // Thalès
-  else if (num === 7) nomFichierAudio = "Pythagore.mp3"; // Pythagore
-  else if (num === 6) nomFichierAudio = "Ptolemee.mp3";  // Claude Ptolémée[cite: 3]
-  else if (num === 4) nomFichierAudio = "Maria.mp3";     // Maria Gaetana Agnesi
-  else if (num === 3) nomFichierAudio = "Hypathie.mp3";  // Hypatie d'Alexandrie
-  else nomFichierAudio = `perso${num}.mp3`;              // Par défaut (Euclide, Hipparque, Newton)
+  if (num === 10) nomFichierAudio = "Villani.mp3";
+  else if (num === 9) nomFichierAudio = "perso9.mp3";
+  else if (num === 8) nomFichierAudio = "Thales.mp3";
+  else if (num === 7) nomFichierAudio = "Pythagore.mp3";
+  else if (num === 6) nomFichierAudio = "Ptolemee.mp3";
+  else if (num === 4) nomFichierAudio = "Maria.mp3";
+  else if (num === 3) nomFichierAudio = "Hypathie.mp3";
+  else nomFichierAudio = `perso${num}.mp3`;
 
   audioActuel = new Audio(baseUrl + nomFichierAudio);
   audioActuel.play().catch(error => {
@@ -1050,286 +1048,327 @@ function afficherInfoPoints() {
 
 /* Dictionnaire complet des solutions et aides pour tous les domaines et niveaux */
 const solutionsSpecifiques = {
-  // --- VALLÉE DES NOMBRES (VDN) - CM1 ---
-  "VDN_CM1_1": { h: "58 x 100 = ? 1 x 58 = 58, on rajoute les 2 zéros ça fait : 5800", a: "Réponse VDN CM1 - Carte 1" },
-  "VDN_CM1_2": { h: "N'oublie pas : 4 x 9 = 9x4", a: "Réponse VDN CM1 - Carte 2" },
-  "VDN_CM1_3": { h: "Souligne les classes et nomme-les. Attention aux règles d'orthographe !", a: "Réponse VDN CM1 - Carte 3" },
-  "VDN_CM1_4": { h: "Nombre qui précède : -1, nombre qui suit : +1, avant 0 : avant 10 c'est 9, après 9 c'est 10", a: "Réponse VDN CM1 - Carte 4" },
-  "VDN_CM1_5": { h: "Nombre qui précède : -1, nombre qui suit : +1, avant 0 : avant 10 c'est 9, après 9 c'est 10", a: "Réponse VDN CM1 - Carte 5" },
-  "VDN_CM1_6": { h: "Le nombre le plus long est le plus grand. Si même longueur tu compares classe à classe en commençant par la plus grande.", a: "Réponse VDN CM1 - Carte 6" },
-  "VDN_CM1_7": { h: "12 : 3 Là tu dois chercher 3 x quelque chose = 12", a: "Réponse VDN CM1 - Carte 7" },
-  "VDN_CM1_8": { h: "Le 5 multiplie les unités, puis les dizaines, puis les centaines. N'oublie pas les retenues.", a: "Réponse VDN CM1 - Carte 8" },
-  "VDN_CM1_9": { h: "Il faut chercher le complément à la dizaine puis à la centaine. Exemple : Complément à 100 de 33 à 33 + 7 = 40, 40 + 60 = 100. Réponse 60 + 7 = 67.", a: "Réponse VDN CM1 - Carte 9" },
-  "VDN_CM1_10": { h: "Repère le nombre le plus grand. Et fais attention à la valeur des nombres (unité, dizaine, centaine, unité de mille, ...)", a: "Réponse VDN CM1 - Carte 10" },
-  "VDN_CM1_11": { h: "Repère le nombre le plus grand. Et fais attention à la valeur des nombres (unité, dizaine, centaine, unité de mille, ...)", a: "Réponse VDN CM1 - Carte 11" },
-  "VDN_CM1_12": { h: "On aligne les unités ; on va de haut en bas ; on n'oublie pas les retenues", a: "Réponse VDN CM1 - Carte 12" },
-  "VDN_CM1_13": { h: "Tu peux décomposer en colonnes", a: "Réponse VDN CM1 - Carte 13" },
-  "VDN_CM1_14": { h: "Souligne les classes en commençant par celle des unités et écris leur nom dessous", a: "Réponse VDN CM1 - Carte 14" },
-  "VDN_CM1_15": { h: "«Tu fais le complément à 10 au niveau des unités. Puis le complément à 100 au niveau des dizaines. 33 + 7 = 40 ; 40 + 60 = 100 donc 33 + 67 = 100»", a: "Réponse VDN CM1 - Carte 15" },
-  "VDN_CM1_16": { h: "Tu dois ajouter 1.", a: "Réponse VDN CM1 - Carte 16" },
-  "VDN_CM1_17": { h: "Tu dois enlever 1.", a: "Réponse VDN CM1 - Carte 17" },
-  "VDN_CM1_18": { h: "Tu dois enlever 1.", a: "Réponse VDN CM1 - Carte 18" },
-  "VDN_CM1_19": { h: "Repère les classes et écris les points qui symbolise les chiffres : milliards (+9), millions (+6), mille (+3)", a: "Réponse VDN CM1 - Carte 19" },
-  "VDN_CM1_20": { h: "Repère les classes et écris les points qui symbolise les chiffres : milliards (+9), millions (+6), mille (+3)", a: "Réponse VDN CM1 - Carte 20" },
-
-  // --- VALLÉE DES NOMBRES (VDN) - CM2 ---
-  "VDN_CM2_1": { h: "Prendre le double d'un nombre revient à le multiplier par 2.", a: "Réponse VDN CM2 - Carte 1" },
-  "VDN_CM2_2": { h: "Repère la partie entière et la partie décimale. Sépare les classes en commençant par la classe des unités. Pour reconnaître les zéros inutiles, ce sont ceux auxquels tu peux rajouter une infinité de zéros sans modifier le nombre.", a: "Réponse VDN CM2 - Carte 2" },
-  "VDN_CM2_3": { h: "Trouve les résultats des opérations", a: "Réponse VDN CM2 - Carte 3" },
-  "VDN_CM2_4": { h: "Il faut additionner les chiffres qui composent le nombre et vérifier si la somme est dans la table de 3.", a: "Réponse VDN CM2 - Carte 4" },
-  "VDN_CM2_5": { h: "Un multiple de 2 est un nombre divisible par 2, c'est un nombre pair.", a: "Réponse VDN CM2 - Carte 5" },
-  "VDN_CM2_6": { h: "Pose ta division et n'oublie pas de mettre la virgule quand tu passes dans la partie décimale.", a: "Réponse VDN CM2 - Carte 6" },
-  "VDN_CM2_7": { h: "Pose ta division et n'oublie pas de mettre la virgule quand tu passes dans la partie décimale.", a: "Réponse VDN CM2 - Carte 7" },
-  "VDN_CM2_8": { h: "Compare d'abord les parties entières puis les parties décimales en mettant le même nombre de chiffres dans la partie décimale.", a: "Réponse VDN CM2 - Carte 8" },
-  "VDN_CM2_9": { h: "Centième : 2 chiffres après la virgule.", a: "Réponse VDN CM2 - Carte 9" },
-  "VDN_CM2_10": { h: "Compare d'abord les parties entières puis les parties décimales en mettant le même nombre de chiffres dans la partie décimale.", a: "Réponse VDN CM2 - Carte 10" },
-  "VDN_CM2_11": { h: "Un nombre premier est un nombre uniquement divisible par 1 et par lui-même.", a: "Réponse VDN CM2 - Carte 11" },
-  "VDN_CM2_12": { h: "Repère la partie entière et la partie décimale. Sépare les classes en commençant par la classe des unités. Pour reconnaître les zéros inutiles, ce sont ceux auxquels tu peux rajouter une infinité de zéros sans modifier le nombre.", a: "Réponse VDN CM2 - Carte 12" },
-
-  // --- VALLÉE DES NOMBRES (VDN) - 6E ---
-  "VDN_6E_1": { h: "Pour passer de l'écriture décimale à l'écriture fractionnaire, il faut regarder la partie décimale du nombre : Exemple : dans 36,507 il y a 507 millièmes. C'est 3 chiffres après la virgule, donc des millièmes. Quand on écrit la fraction, on RETIRE LA VIRGULE et ça nous donne 36507 au numérateur et 1000 au dénominateur. On a alors la fraction : 36507 / 1000", a: "Réponse VDN 6e - Carte 1" },
-  "VDN_6E_2": { h: "Ranger des nombres dans l'ordre croissant c'est les classer du plus petit au plus grand, dans l'ordre décroissant c'est les classer du plus grand au plus petit. Exemple : Je veux ranger les nombres 28,500-27,4-28,420-28,649 dans l'ordre décroissant : Je complète avec des 0 pour arriver aux millièmes sauf 27,4 car c'est la plus petite unité et 28,649 car il est déjà aux millièmes. 28,500 > 28,420", a: "Réponse VDN 6e - Carte 2" },
-  "VDN_6E_3": { h: "Ranger des nombres dans l'ordre croissant c'est les classer du plus petit au plus grand, dans l'ordre décroissant c'est les classer du plus grand au plus petit. Exemple : Je veux ranger les nombres 28,500-27,4-28,420-28,649 dans l'ordre décroissant : Je complète avec des 0 pour arriver aux millièmes sauf 27,4 car c'est la plus petite unité et 28,649 car il est déjà aux millièmes. 28,500 > 28,420", a: "Réponse VDN 6e - Carte 3" },
-  "VDN_6E_6": { h: "Comparer deux nombres, c'est dire lequel des deux nombres est plus grand, plus petit ou égal à l'autre. Exemple : 28,27 < 28,30 ; 28,27 > 28,20 ; 38,75 = 38,75", a: "Réponse VDN 6e - Carte 6" },
-  "VDN_6E_11": { h: "Pour trouver les fractions égales il est possible de multiplier ou de diviser le numérateur et le dénominateur par un même nombre pour les transformer.", a: "Réponse VDN 6e - Carte 11" },
-  "VDN_6E_12": { h: "Bien lire les graduations.", a: "Réponse VDN 6e - Carte 12" },
-  "VDN_6E_20": { h: "Plusieurs réponses possibles.", a: "Réponse VDN 6e - Carte 20" },
-
-  // --- MONTAGNE DES PROBLÈMES (MDP) - CM1 ---
-  "MDP_CM1_1": { h: "Lis correctement et fais un schéma.", a: "Réponse MDP CM1 - Carte 1" },
-  "MDP_CM1_2": { h: "Fais un schéma", a: "Réponse MDP CM1 - Carte 2" },
-  "MDP_CM1_3": { h: "« En deux fois » signifie « deux fois la moitié »", a: "Réponse MDP CM1 - Carte 3" },
-  "MDP_CM1_5": { h: "Fais une frise du temps et cherche le temps qu'il faut pour aller de 17 h 35 à 18 h 20.", a: "Réponse MDP CM1 - Carte 5" },
-  "MDP_CM1_6": { h: "Additionne les centimes, convertis-les en euros (1 € = 100 centimes) puis additionne les euros.", a: "Réponse MDP CM1 - Carte 6" },
-  "MDP_CM1_7": { h: "Fais une frise du temps et cherche le temps qu'il faut pour aller de 8 h à 21 h. Attention à la pause du midi.", a: "Réponse MDP CM1 - Carte 7" },
-  "MDP_CM1_9": { h: "Additionne les centimes, convertis-les en euros (1 € = 100 centimes) puis additionne les euros.", a: "Réponse MDP CM1 - Carte 9" },
-  "MDP_CM1_10": { h: "Fais un dessin. Additionne les centimes, convertis-les en euros (1 € = 100 centimes) puis additionne les euros.", a: "Réponse MDP CM1 - Carte 10" },
-  "MDP_CM1_11": { h: "Fais une frise du temps et cherche le temps qu'il faut pour aller de 13 h 50 à 15 h 35.", a: "Réponse MDP CM1 - Carte 11" },
-  "MDP_CM1_12": { h: "Fais un dessin et réfléchis : le chien doit peser plus ou moins de 56 kg ?", a: "Réponse MDP CM1 - Carte 12" },
-  "MDP_CM1_13": { h: "Fais une frise du temps et cherche le temps qu'il faut pour aller de 16 h 55 à 18 h 25.", a: "Réponse MDP CM1 - Carte 13" },
-  "MDP_CM1_14": { h: "Additionne les centimes, convertis-les en euros (1 € = 100 centimes) puis additionne les euros.", a: "Réponse MDP CM1 - Carte 14" },
-  "MDP_CM1_15": { h: "Fais une frise du temps et cherche le temps qu'il faut pour aller de 22 h 30 à 1 h 30.", a: "Réponse MDP CM1 - Carte 15" },
-  "MDP_CM1_17": { h: "Additionne les centimes, convertis-les en euros (1 € = 100 centimes) puis additionne les euros.", a: "Réponse MDP CM1 - Carte 17" },
-  "MDP_CM1_18": { h: "Additionne les centimes, convertis-les en euros (1 € = 100 centimes) puis additionne les euros.", a: "Réponse MDP CM1 - Carte 18" },
-  "MDP_CM1_19": { h: "Additionne les centimes, convertis-les en euros (1 € = 100 centimes) puis additionne les euros.", a: "Réponse MDP CM1 - Carte 19" },
-  "MDP_CM1_20": { h: "Fais une frise du temps et cherche le temps qu'il faut pour aller de 21 h 10 à 22 h 30.", a: "Réponse MDP CM1 - Carte 20" },
-
-  // --- MONTAGNE DES PROBLÈMES (MDP) - CM2 ---
-  "MDP_CM2_1": { h: "Utilise un tableau pour convertir.", a: "Réponse MDP CM2 - Carte 1" },
-  "MDP_CM2_2": { h: "Utilise un tableau pour convertir.", a: "Réponse MDP CM2 - Carte 2" },
-  "MDP_CM2_3": { h: "Calcule le périmètre et le prix.", a: "Réponse MDP CM2 - Carte 3" },
-  "MDP_CM2_4": { h: "Fais un schéma.", a: "Réponse MDP CM2 - Carte 4" },
-  "MDP_CM2_5": { h: "Une personne qui entre : addition ; Une personne qui sort : soustraction", a: "Réponse MDP CM2 - Carte 5" },
-  "MDP_CM2_6": { h: "Attention aux unités.", a: "Réponse MDP CM2 - Carte 6" },
-  "MDP_CM2_7": { h: "Additionne les centimes, convertis-les en euros (1 € = 100 centimes) puis additionne les euros.", a: "Réponse MDP CM2 - Carte 7" },
-  "MDP_CM2_8": { h: "Fais une frise du temps et cherche le temps qu'il faut pour aller de 20 h 55 à 22 h 45.", a: "Réponse MDP CM2 - Carte 8" },
-  "MDP_CM2_10": { h: "Fais une frise du temps et attention aux données inutiles.", a: "Réponse MDP CM2 - Carte 10" },
-  "MDP_CM2_11": { h: "Il faut d'abord calculer ce qu'il dépense, avant de conclure pour le reste.", a: "Réponse MDP CM2 - Carte 11" },
-  "MDP_CM2_12": { h: "Additionne les centimes, convertis-les en euros (1 € = 100 centimes) puis additionne les euros.", a: "Réponse MDP CM2 - Carte 12" },
-  "MDP_CM2_13": { h: "Fais un dessin.", a: "Réponse MDP CM2 - Carte 13" },
-  "MDP_CM2_19": { h: "Le périmètre est 2 x L + 2 x l", a: "Réponse MDP CM2 - Carte 19" },
-
-  // --- MONTAGNE DES PROBLÈMES (MDP) - 6E ---
-  "MDP_6E_1": { h: "25% = un quart.", a: "Réponse MDP 6e - Carte 1" },
-  "MDP_6E_2": { h: "Il ne faut pas additionner les pourcentages.", a: "Réponse MDP 6e - Carte 2" },
-  "MDP_6E_4": { h: "Attention aux unités.", a: "Réponse MDP 6e - Carte 4" },
-  "MDP_6E_5": { h: "Il faut utiliser les carreaux.", a: "Réponse MDP 6e - Carte 5" },
-  "MDP_6E_6": { h: "Le coefficient de proportionnalité est un nombre qui permet de passer du nombre de la première ligne à celui de la 2e ligne en multipliant.", a: "Réponse MDP 6e - Carte 6" },
-  "MDP_6E_7": { h: "Aire du cercle = π x R².", a: "Réponse MDP 6e - Carte 7" },
-  "MDP_6E_8": { h: "Convertis ces masses dans la même unité.", a: "Réponse MDP 6e - Carte 8" },
-  "MDP_6E_9": { h: "Convertis ces masses dans la même unité.", a: "Réponse MDP 6e - Carte 9" },
-  "MDP_6E_10": { h: "Utilise un tableau pour convertir.", a: "Réponse MDP 6e - Carte 10" },
-  "MDP_6E_12": { h: "C'est un tableau de proportionnalité.", a: "Réponse MDP 6e - Carte 12" },
-  "MDP_6E_15": { h: "Exemple de tableau :\nLV2 | 5eA | 5eB | TOTAL\nItalien\nAllemand\nEspagnol\nTotal", a: "Réponse MDP 6e - Carte 15" },
-  "MDP_6E_17": { h: "1 h = 60 minutes = 3600 secondes.", a: "Réponse MDP 6e - Carte 17" },
-
-  // --- MONTAGNE DES PROBLÈMES (MDP) - 6E ---
-  "MDP_6E_1": { h: "Mets en place ton calcul pas à pas en identifiant l'expression littérale ou numérique adaptée.", a: "Réponse MDP 6e - Carte 1" },
-  "MDP_6E_2": { h: "Pour un problème de fractions ou de pourcentages, représente la quantité totale par 1 ou par 100%.", a: "Réponse MDP 6e - Carte 2" },
-  "MDP_6E_3": { h: "Utilise un tableau de proportionnalité et cherche le coefficient de proportionnalité.", a: "Réponse MDP 6e - Carte 3" },
-  "MDP_6E_4": { h: "Attention aux unités d'aire (cm², m²) et de volume (cm³, dm³, litres) lors des conversions.", a: "Réponse MDP 6e - Carte 4" },
-  "MDP_6E_5": { h: "Décompose le problème complexe en sous-problèmes plus simples.", a: "Réponse MDP 6e - Carte 5" },
-  "MDP_6E_6": { h: "Pour les vitesses, rappelle-toi la formule : Distance = Vitesse x Temps.", a: "Réponse MDP 6e - Carte 6" },
-  "MDP_6E_7": { h: "Identifie les hypothèses de départ et la conclusion attendue.", a: "Réponse MDP 6e - Carte 7" },
-  "MDP_6E_8": { h: "Vérifie l'homogénéité des unités dans toutes tes formules.", a: "Réponse MDP 6e - Carte 8" },
-  "MDP_6E_9": { h: "Rédige proprement chaque étape de calcul en expliquant ta démarche.", a: "Réponse MDP 6e - Carte 9" },
-  "MDP_6E_10": { h: "Vérifie ton résultat critique en calculant un ordre de grandeur.", a: "Réponse MDP 6e - Carte 10" },
-  "MDP_6E_11": { h: "Mets en place ton calcul pas à pas.", a: "Réponse MDP 6e - Carte 11" },
-  "MDP_6E_12": { h: "Repère les informations chiffrées cachées dans le texte.", a: "Réponse MDP 6e - Carte 12" },
-  "MDP_6E_13": { h: "Traduis l'énoncé en une suite d'opérations logiques.", a: "Réponse MDP 6e - Carte 13" },
-  "MDP_6E_14": { h: "Sois rigoureux dans l'écriture des unités à chaque ligne de calcul.", a: "Réponse MDP 6e - Carte 14" },
-  "MDP_6E_15": { h: "Pense à utiliser les propriétés géométriques si le problème inclut des figures.", a: "Réponse MDP 6e - Carte 15" },
-  "MDP_6E_16": { h: "Vérifie si le résultat doit être arrondi (valeur approchée) ou exact.", a: "Réponse MDP 6e - Carte 16" },
-  "MDP_6E_17": { h: "Isole la question centrale pour ne pas te perdre dans les détails.", a: "Réponse MDP 6e - Carte 17" },
-  "MDP_6E_18": { h: "Organise tes données sous forme de schéma ou de tableau.", a: "Réponse MDP 6e - Carte 18" },
-  "MDP_6E_19": { h: "Rédige une phrase réponse complète et bien formulée.", a: "Réponse MDP 6e - Carte 19" },
-  "MDP_6E_20": { h: "Relis l'ensemble de ton raisonnement pour éliminer toute étourderie.", a: "Réponse MDP 6e - Carte 20" },
-
   // --- PLAINE 2D (P2D) - CM1 ---
-  "P2D_CM1_1": { h: "Dessine-les.", a: "Réponse P2D CM1 - Carte 1" },
-  "P2D_CM1_2": { h: "Si on te dit polygone ?", a: "Réponse P2D CM1 - Carte 2" },
-  "P2D_CM1_3": { h: "Que sont A et B ? Que représentent les parenthèses ?", a: "Réponse P2D CM1 - Carte 3" },
-  "P2D_CM1_4": { h: "Trace le segment [AB] puis prends ton compas. Un triangle équilatéral a 3 côtés égaux.", a: "Réponse P2D CM1 - Carte 4" },
-  "P2D_CM1_5": { h: "Triangle rectangle : angle droit. Attention à l'emplacement de l'angle droit.", a: "Réponse P2D CM1 - Carte 5" },
-  "P2D_CM1_6": { h: "Fais un schéma.", a: "Réponse P2D CM1 - Carte 6" },
-  "P2D_CM1_7": { h: "Fais un schéma.", a: "Réponse P2D CM1 - Carte 7" },
-  "P2D_CM1_8": { h: "Fais un schéma.", a: "Réponse P2D CM1 - Carte 8" },
-  "P2D_CM1_9": { h: "Fais un schéma.", a: "Réponse P2D CM1 - Carte 9" },
-  "P2D_CM1_10": { h: "Un trapèze est un quadrilatère qui a 2 côtés opposés parallèles.", a: "Réponse P2D CM1 - Carte 10" },
-  "P2D_CM1_11": { h: "Fais un schéma.", a: "Réponse P2D CM1 - Carte 11" },
-  "P2D_CM1_12": { h: "Fais un schéma.", a: "Réponse P2D CM1 - Carte 12" },
-  "P2D_CM1_13": { h: "Fais un schéma.", a: "Réponse P2D CM1 - Carte 13" },
-  "P2D_CM1_14": { h: "Fais un schéma.", a: "Réponse P2D CM1 - Carte 14" },
-  "P2D_CM1_18": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "Réponse P2D CM1 - Carte 18" },
-  "P2D_CM1_19": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "Réponse P2D CM1 - Carte 19" },
-  "P2D_CM1_20": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "Réponse P2D CM1 - Carte 20" },
+  "P2D_CM1_1": { h: "Dessine-les.", a: "Tracer les figures géométriques demandées en respectant les consignes de dimensions." },
+  "P2D_CM1_2": { h: "Si on te dit polygone ?", a: "C'est un polygone car la figure est fermée et ses côtés sont des segments." },
+  "P2D_CM1_3": { h: "Que sont A et B ? Que représentent les parenthèses ?", a: "Ce sont des sommets ou des points remarquables de la figure." },
+  "P2D_CM1_4": { h: "Trace le segment [AB] puis prends ton compas. Un triangle équilatéral a 3 côtés égaux.", a: "Tracer un triangle équilatéral dont les 3 côtés ont la même longueur que [AB]." },
+  "P2D_CM1_5": { h: "Triangle rectangle : angle droit. Attention à l'emplacement de l'angle droit.", a: "Tracer un triangle avec un angle droit à l'endroit indiqué." },
+  "P2D_CM1_6": { h: "Fais un schéma.", a: "Tracer la figure à main levée pour visualiser les propriétés." },
+  "P2D_CM1_7": { h: "Fais un schéma.", a: "Utiliser l'équerre et la règle graduée." },
+  "P2D_CM1_8": { h: "Fais un schéma.", a: "Vérifier la longueur des côtés opposés pour un rectangle." },
+  "P2D_CM1_9": { h: "Fais un schéma.", a: "Tracer les diagonales si nécessaire." },
+  "P2D_CM1_10": { h: "Un trapèze est un quadrilatère qui a 2 côtés opposés parallèles.", a: "Tracer un quadrilatère avec une paire de côtés parallèles." },
+  "P2D_CM1_11": { h: "Fais un schéma.", a: "Respecter l'alignement des points." },
+  "P2D_CM1_12": { h: "Fais un schéma.", a: "Reporter les longueurs au compas." },
+  "P2D_CM1_13": { h: "Fais un schéma.", a: "Tracer les hauteurs si demandées." },
+  "P2D_CM1_14": { h: "Fais un schéma.", a: "Identifier la nature de la figure géométrique." },
+"P2D_CM1_15": { h: "Observe les angles de la figure.", a: "La figure c : elle n’a pas d’angle droit." },
+  "P2D_CM1_16": { h: "Observe le nombre de côtés.", a: "Un quadrilatère." },
+  "P2D_CM1_17": { h: "Observe la figure.", a: "Un cercle." },
+  "P2D_CM1_18": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "Calculer la somme des longueurs des côtés de la figure." },
+  "P2D_CM1_19": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "Additionner toutes les longueurs du contour." },
+  "P2D_CM1_20": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "Mesurer et additionner les côtés du contour." },
 
   // --- PLAINE 2D (P2D) - CM2 ---
-  "P2D_CM2_1": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "Réponse P2D CM2 - Carte 1" },
-  "P2D_CM2_2": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "Réponse P2D CM2 - Carte 2" },
-  "P2D_CM2_3": { h: "L'aire d'un rectangle est donnée par la formule : ... x ...", a: "Réponse P2D CM2 - Carte 3" },
-  "P2D_CM2_5": { h: "Un rectangle a 4 côtés égaux parallèles 2 à 2 et 4 angles droits.", a: "Réponse P2D CM2 - Carte 5" },
-  "P2D_CM2_6": { h: "Un polygone est une figure fermée à plusieurs côtés.", a: "Réponse P2D CM2 - Carte 6" },
-  "P2D_CM2_7": { h: "Compare les maisons 2 par 2 et regarde bien les formes.", a: "Réponse P2D CM2 - Carte 7" },
-  "P2D_CM2_8": { h: "Qu'est-ce que le rayon d'un cercle ? le diamètre ? Le rayon est ............du diamètre.", a: "Réponse P2D CM2 - Carte 8" },
-  "P2D_CM2_9": { h: "Des figures symétriques sont des figures semblables mais inversées comme dans un miroir.", a: "Réponse P2D CM2 - Carte 9" },
-  "P2D_CM2_10": { h: "Fais un schéma.", a: "Réponse P2D CM2 - Carte 10" },
-  "P2D_CM2_11": { h: "Fais un schéma.", a: "Réponse P2D CM2 - Carte 11" },
-  "P2D_CM2_12": { h: "Un parallélogramme a des côtés égaux et parallèles 2 à 2.", a: "Réponse P2D CM2 - Carte 12" },
-  "P2D_CM2_13": { h: "Fais un schéma.", a: "Réponse P2D CM2 - Carte 13" },
-  "P2D_CM2_14": { h: "Trace une diagonale de la longueur de ton choix et trace deux triangles isocèles.", a: "Réponse P2D CM2 - Carte 14" },
-  "P2D_CM2_15": { h: "Fais un schéma.", a: "Réponse P2D CM2 - Carte 15" },
+  "P2D_CM2_1": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "Périmètre du carré = côté x 4." },
+  "P2D_CM2_2": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "Périmètre du rectangle = (longueur + largeur) x 2." },
+  "P2D_CM2_3": { h: "L'aire d'un rectangle est donnée par la formule : ... x ...", a: "Aire = longueur x largeur." },
+  "P2D_CM2_5": { h: "Un rectangle a 4 cotés égaux parallèles à 2 et 4 angles droits.", a: "Propriétés du rectangle et du carré (attention aux pièges de l'énoncé)." },
+  "P2D_CM2_6": { h: "Un polygone est une figure fermée à plusieurs côtés.", a: "Reconnaître ou tracer un polygone selon ses caractéristiques." },
+  "P2D_CM2_7": { h: "Compare les maisons 2 par 2 et regarde bien les formes.", a: "Identifier les similitudes et différences géométriques." },
+  "P2D_CM2_8": { h: "Qu'est-ce que le rayon d'un cercle ? le diamètre ? Le rayon est ............du diamètre.", a: "Le rayon est la moitié du diamètre." },
+  "P2D_CM2_9": { h: "Des figures symétriques sont des figures semblables mais inversées comme dans un miroir.", a: "Tracer ou identifier la figure symétrique par rapport à l'axe." },
+  "P2D_CM2_10": { h: "Fais un schéma.", a: "Tracer avec précision les instruments de géométrie." },
+  "P2D_CM2_11": { h: "Fais un schéma.", a: "Reporter les mesures exactes." },
+  "P2D_CM2_12": { h: "Un parallélogramme a des côtés égaux et parallèles 2 à 2.", a: "Tracer ou valider les propriétés du parallélogramme." },
+  "P2D_CM2_13": { h: "Fais un schéma.", a: "Utiliser le compas pour reporter les distances." },
+  "P2D_CM2_14": { h: "Trace une diagonale de la longueur de ton choix et trace deux triangles isocèles.", a: "Construction géométrique guidée avec un segment de base." },
+  "P2D_CM2_15": { h: "Fais un schéma.", a: "Tracer la figure en suivant les indications pas à pas." },
+"P2D_CM2_4": { h: "Vérifie les propriétés de symétrie.", a: "Faux, le triangle rectangle ne possède pas d’axe de symétrie." },
+  "P2D_CM2_16": { h: "Utilise le périmètre pour trouver les dimensions.", a: "50 ÷ 2 = 25 ; 25 - 15 = 10 cm. La largeur mesure 10 cm." },
+  "P2D_CM2_17": { h: "Rappelle la formule du périmètre d'un cercle.", a: "P = 2 x $\pi$ x R." },
+  "P2D_CM2_18": { h: "Fais un schéma pas à pas.", a: "On a besoin d'une règle et d'un compas." },
+  "P2D_CM2_19": { h: "Utilise les instruments de géométrie adaptés.", a: "On a besoin d'une règle et d'une équerre." },
+  "P2D_CM2_20": { h: "Fais un schéma pas à pas.", a: "On a besoin d'une règle et d'un compas." },
 
   // --- PLAINE 2D (P2D) - 6E ---
-  "P2D_6E_1": { h: "L'aire d'un carré est donnée par la formule : ... x ...", a: "Réponse P2D 6e - Carte 1" },
-  "P2D_6E_2": { h: "L'aire d'un rectangle est donnée par la formule : ... x ...", a: "Réponse P2D 6e - Carte 2" },
-  "P2D_6E_3": { h: "La médiatrice d'un segment est la droite ... à ce segment passant par son ...", a: "Réponse P2D 6e - Carte 3" },
-  "P2D_6E_5": { h: "L'aire d'un disque est donnée par la formule : ... x ...²", a: "Réponse P2D 6e - Carte 5" },
-  "P2D_6E_6": { h: "Quelle est la différence entre [...], (...), (...) ?", a: "Réponse P2D 6e - Carte 6" },
-  "P2D_6E_7": { h: "Le périmètre d'un cercle est donné par la formule : ... x π x ...", a: "Réponse P2D 6e - Carte 7" },
-  "P2D_6E_8": { h: "Quelle est la différence entre [...], (...), (...) ?", a: "Réponse P2D 6e - Carte 8" },
-  "P2D_6E_9": { h: "Le périmètre d’une figure est la longueur du contour de cette figure.", a: "Réponse P2D 6e - Carte 9" },
-  "P2D_6E_11": { h: "Deux droites perpendiculaires sont deux droites sécantes qui forment 4 angles droits.", a: "Réponse P2D 6e - Carte 11" },
-  "P2D_6E_12": { h: "Utilise éventuellement les carreaux.", a: "Réponse P2D 6e - Carte 12" },
-  "P2D_6E_17": { h: "La mesure d’un angle obtus est supérieure à 90°, celle d’un angle aigu est inférieur à 90° l’angle est droit pour 90°.", a: "Réponse P2D 6e - Carte 17" },
-  "P2D_6E_19": { h: "Construire la perpendiculaire à la droite (d) passant par A.", a: "Réponse P2D 6e - Carte 19" },
+  "P2D_6E_1": { h: "L'aire d'un carré est donnée par la formule : ... x ...", a: "côté x côté." },
+  "P2D_6E_2": { h: "L'aire d'un rectangle est donnée par la formule : ... x ...", a: "longueur x largeur." },
+  "P2D_6E_3": { h: "La médiatrice d'un segment est la droite ... à ce segment passant par son ...", a: "perpendiculaire, milieu." },
+  "P2D_6E_5": { h: "L'aire d'un disque est donnée par la formule : ... x ...²", a: "pi x rayon x rayon (ou $\pi \times r^2$)." },
+  "P2D_6E_6": { h: "Quelle est la différence entre [...], (...), [...] ?", a: "Distinguer segment [...], droite (...) et demi-droite [...)." },
+  "P2D_6E_7": { h: "Le périmètre d'un cercle est donné par la formule : ... x $\pi$ x ...", a: "diamètre x $\pi$ (ou $2 \times \pi \times r$)." },
+  "P2D_6E_8": { h: "Quelle est la différence entre [...], (...), [...] ?", a: "Règles d'écriture et de notation en géométrie (crochets vs parenthèses)." },
+  "P2D_6E_9": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "Calculer la longueur totale du contour de la figure composite." },
+  "P2D_6E_11": { h: "Deux droites perpendiculaires sont deux droites sécantes qui forment 4 angles droits.", a: "Caractériser et identifier des droites perpendiculaires." },
+  "P2D_6E_12": { h: "Utilise éventuellement les carreaux.", a: "Se repérer sur un quadrillage pour tracer ou mesurer." },
+  "P2D_6E_17": { h: "La mesure d'un angle obtus est supérieure à 90°, celle d'un angle aigu est inférieur à 90° l'angle est droit pour 90°.", a: "Classer l'angle selon sa mesure (aigu, obtus, droit)." },
+  "P2D_6E_19": { h: "Construire la perpendiculaire à la droite (d) passant par A.", a: "Utiliser l'équerre et la règle pour tracer la perpendiculaire." },
 
-  // --- ESPACE 3D - CM1 ---
-  "E3D_CM1_1": { h: "Tu peux compter le nombre de cubes dans une rangée et tu peux compter le nombre de rangées.", a: "5 x 10 = 50 cubes" },
-  "E3D_CM1_2": { h: "Compte étage par étage...", a: "Solution E3D CM1 - Carte 2" },
-  "E3D_CM1_3": { h: "Compte étage par étage...", a: "Solution E3D CM1 - Carte 3" },
-  "E3D_CM1_4": { h: "Compte étage par étage...", a: "Solution E3D CM1 - Carte 4" },
-  "E3D_CM1_5": { h: "On peut taper sur une face.", a: "Solution E3D CM1 - Carte 5" },
-  "E3D_CM1_7": { h: "Sommet ça pique, arrête ça coupe, face ça claque.", a: "Solution E3D CM1 - Carte 7" },
-  "E3D_CM1_9": { h: "Sommet ça pique, arrête ça coupe, face ça claque.", a: "Solution E3D CM1 - Carte 9" },
-  "E3D_CM1_11": { h: "Sommet ça pique, arrête ça coupe, face ça claque.", a: "Solution E3D CM1 - Carte 11" },
-  "E3D_CM1_12": { h: "Observe les arêtes.", a: "Solution E3D CM1 - Carte 12" },
-  "E3D_CM1_13": { h: "Sommet ça pique, arrête ça coupe, face ça claque.", a: "Solution E3D CM1 - Carte 13" },
-  "E3D_CM1_15": { h: "Sommet ça pique, arrête ça coupe, face ça claque.", a: "Solution E3D CM1 - Carte 15" },
-  "E3D_CM1_16": { h: "Sommet ça pique, arrête ça coupe, face ça claque.", a: "Solution E3D CM1 - Carte 16" },
-  "E3D_CM1_17": { h: "Observe les arêtes.", a: "Solution E3D CM1 - Carte 17" },
-  "E3D_CM1_18": { h: "Sommet ça pique, arrête ça coupe, face ça claque.", a: "Solution E3D CM1 - Carte 18" },
-  "E3D_CM1_19": { h: "Sommet ça pique, arrête ça coupe, face ça claque.", a: "Solution E3D CM1 - Carte 19" },
-  "E3D_CM1_20": { h: "Sommet ça pique, arrête ça coupe, face ça claque.", a: "Solution E3D CM1 - Carte 20" },
+  // --- ESPACE 3D (E3D) - CM1 ---
+  "E3D_CM1_1": { h: "Tu peux compter le nombre de cubes dans une rangée et tu peux compter le nombre de rangées.", a: "Il y a 50 cubes : il y a 5 cubes dans une rangée, il y a 10 rangées, 5 x 10 = 50." },
+  "E3D_CM1_2": { h: "Compte étage par étage...", a: "3 x 3 + 2 x 2 + 1 = 14 cubes." },
+  "E3D_CM1_3": { h: "Compte étage par étage...", a: "4 x 4 + 3 x 3 + 2 x 2 + 1 = 30 cubes." },
+  "E3D_CM1_4": { h: "Compte étage par étage...", a: "10 x 10 x 10 = 1 000 cubes" },
+  "E3D_CM1_5": { h: "On peut taper sur une face.", a: "Un cube possède 6 faces." },
+  "E3D_CM1_6": { h: "Identifie le solide.", a: "Un cylindre." },
+  "E3D_CM1_7": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "4 + 4 = 8" },
+  "E3D_CM1_8": { h: "Observe les faces.", a: "C'est un solide dont toutes les faces sont des polygones." },
+  "E3D_CM1_9": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Une sphère ne possède pas d'arête." },
+  "E3D_CM1_10": { h: "Observe la base.", a: "Une pyramide à base triangulaire." },
+  "E3D_CM1_11": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Un parallélépipède possède 6 faces." },
+  "E3D_CM1_12": { h: "Observe les arêtes et les sommets.", a: "La pyramide est le seul polyèdre parmi la liste." },
+  "E3D_CM1_13": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Un parallélépipède possède 8 sommets." },
+  "E3D_CM1_14": { h: "Observe les faces du cube.", a: "Un cube possède 6 faces de nature carrée." },
+  "E3D_CM1_15": { h: "Observe la surface de la sphère.", a: "La sphère possède une seule face." },
+  "E3D_CM1_16": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Un cône possède une arête." },
+  "E3D_CM1_17": { h: "Définition d'un polyèdre.", a: "Le cône, ce n'est pas un polyèdre." },
+  "E3D_CM1_18": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Un cône possède 2 faces." },
+  "E3D_CM1_19": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "6 faces latérales + 2 bases donc il possède 8 faces." },
+  "E3D_CM1_20": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Un cylindre ne possède pas de sommet." },
 
-  // --- ESPACE 3D - CM2 ---
-  "E3D_CM2_1": { h: "Représente-toi le cube et dis-toi : faces : ça claque, sommets : ça pique, arêtes : ça coupe.", a: "Réponse E3D CM2 - Carte 1" },
-  "E3D_CM2_2": { h: "Un cube est constitué de carrés.", a: "Réponse E3D CM2 - Carte 2" },
-  "E3D_CM2_3": { h: "Une pyramide à base carrée est constituée de carré(s) et de triangle(s).", a: "Réponse E3D CM2 - Carte 3" },
-  "E3D_CM2_4": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Réponse E3D CM2 - Carte 4" },
-  "E3D_CM2_5": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Réponse E3D CM2 - Carte 5" },
-  "E3D_CM2_6": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Réponse E3D CM2 - Carte 6" },
-  "E3D_CM2_7": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Réponse E3D CM2 - Carte 7" },
-  "E3D_CM2_8": { h: "On peut taper sur une face.", a: "Réponse E3D CM2 - Carte 8" },
-  "E3D_CM2_13": { h: "Observe les arêtes.", a: "Réponse E3D CM2 - Carte 13" },
-  "E3D_CM2_14": { h: "Imagine plier et fermer ce patron : qu'obtiens-tu ?", a: "Réponse E3D CM2 - Carte 14" },
-  "E3D_CM2_15": { h: "Imagine plier et fermer ce patron : qu'obtiens-tu ?", a: "Réponse E3D CM2 - Carte 15" },
-  "E3D_CM2_16": { h: "Compte étage par étage...", a: "Réponse E3D CM2 - Carte 16" },
-  "E3D_CM2_18": { h: "Imagine plier et fermer ce patron : qu'obtiens-tu ?", a: "Réponse E3D CM2 - Carte 18" },
-  "E3D_CM2_19": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Réponse E3D CM2 - Carte 19" },
-  "E3D_CM2_20": { h: "Observe les arêtes.", a: "Réponse E3D CM2 - Carte 20" },
+  // --- ESPACE 3D (E3D) - CM2 ---
+  "E3D_CM2_1": { h: "Représente-toi le cube et dis-toi : faces : ça claque, sommets : ça pique, arêtes : ça coupe.", a: "Un cube possède 6 faces, 8 sommets, 12 arêtes." },
+  "E3D_CM2_2": { h: "Un cube est constitué de carrés.", a: "Un de ces 11 patrons." },
+  "E3D_CM2_3": { h: "Une pyramide à base carrée est constituée de carré(s) et de triangle(s).", a: "Exemple de patron." },
+  "E3D_CM2_4": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "5 sommets, 5 faces, 8 arêtes." },
+  "E3D_CM2_5": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "8 faces, 12 sommets, 18 arêtes." },
+  "E3D_CM2_6": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "5 faces, 9 arêtes, 6 sommets." },
+  "E3D_CM2_7": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "1 face, 0 sommet, 0 arête." },
+  "E3D_CM2_8": { h: "On peut taper sur une face.", a: "6 faces." },
+  "E3D_CM2_9": { h: "Nom du solide.", a: "Une sphère." },
+  "E3D_CM2_10": { h: "Nom du solide.", a: "Un cylindre." },
+  "E3D_CM2_11": { h: "Nom du solide.", a: "Un parallélépipède." },
+  "E3D_CM2_12": { h: "Nom du solide.", a: "Un cône." },
+  "E3D_CM2_13": { h: "Observe les arêtes.", a: "Le cylindre, ce n'est pas un polyèdre." },
+  "E3D_CM2_14": { h: "Imagine plier et fermer ce patron : qu'obtiens-tu ?", a: "C'est le patron d'un prisme." },
+  "E3D_CM2_15": { h: "Imagine plier et fermer ce patron : qu'obtiens-tu ?", a: "C'est le patron d'une pyramide à base carrée." },
+  "E3D_CM2_16": { h: "Compte étage par étage...", a: "7 x 7 + 5 x 5 + 3 x 3 + 1 = 84." },
+  "E3D_CM2_17": { h: "Définition des faces.", a: "C'est un solide dont toutes les faces sont des polygones." },
+  "E3D_CM2_18": { h: "Imagine plier et fermer ce patron : qu'obtiens-tu ?", a: "C'est le patron d'un cône." },
+  "E3D_CM2_19": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "7 faces, 15 arêtes, 10 sommets." },
+  "E3D_CM2_20": { h: "Observe les propriétés.", a: "Le prisme, c'est le seul polyèdre." },
 
-  // --- ESPACE 3D - 6E ---
-  "E3D_6E_1": { h: "Imagine plier et fermer ce patron : qu'obtiens-tu ?", a: "Réponse E3D 6e - Carte 1" },
-  "E3D_6E_2": { h: "Imagine plier et fermer ce patron : qu'obtiens-tu ?", a: "Réponse E3D 6e - Carte 2" },
-  "E3D_6E_3": { h: "Volume d'un parallélépipède : Lxlxh", a: "Réponse E3D 6e - Carte 3" },
-  "E3D_6E_4": { h: "Volume d'un cube : cxcxc", a: "Réponse E3D 6e - Carte 4" },
-  "E3D_6E_7": { h: "Aide-toi des carreaux. Attention aux pointillés !", a: "Réponse E3D 6e - Carte 7" },
-  "E3D_6E_8": { h: "Aide-toi des carreaux. Attention aux pointillés !", a: "Réponse E3D 6e - Carte 8" },
-  "E3D_6E_9": { h: "Décompose cet objet en deux parties.", a: "Réponse E3D 6e - Carte 9" },
-  "E3D_6E_11": { h: "Volume d'un parallélépipède : Lxlxh. Attention aux unités de mesure.", a: "Réponse E3D 6e - Carte 11" },
-  "E3D_6E_12": { h: "Réfléchis à la définition d'un polyèdre.", a: "Réponse E3D 6e - Carte 12" },
-  "E3D_6E_15": { h: "Commence par convertir les nombres dans une même unité de mesure.", a: "Réponse E3D 6e - Carte 15" },
-  "E3D_6E_16": { h: "Attention aux unités de mesure !", a: "Réponse E3D 6e - Carte 16" },
-  "E3D_6E_18": { h: "Calcule d'abord le volume total d'eau de la piscine. Volume d'un parallélépipède : Lxlxh", a: "Réponse E3D 6e - Carte 18" },
-  "E3D_6E_19": { h: "1L = 1dm3", a: "Réponse E3D 6e - Carte 19" },
-  "E3D_6E_20": { h: "1L = 1dm3", a: "Réponse E3D 6e - Carte 20" },
+  // --- ESPACE 3D (E3D) - 6E ---
+  "E3D_6E_1": { h: "Imagine plier et fermer ce patron : qu'obtiens-tu ?", a: "Faux, la figure représente le patron d'un pavé droit." },
+  "E3D_6E_2": { h: "Imagine plier et fermer ce patron : qu'obtiens-tu ?", a: "Vrai, la figure représente le patron d'un cylindre." },
+  "E3D_6E_3": { h: "Volume d'un parallélépipède : L x l x h", a: "Le volume d'un pavé droit de 4 centimètres de hauteur, de 5 centimètres de largeur et de 6 centimètres de longueur est égal à 4 x 5 x 6 = 120 cm³." },
+  "E3D_6E_4": { h: "Volume d'un cube : c x c x c", a: "Le volume du cube de 6 centimètres de côté est égal à 6 x 6 x 6 = 216 cm³." },
+  "E3D_6E_5": { h: "Aide-toi des carreaux.", a: "Patron géométrique de pavé droit." },
+  "E3D_6E_6": { h: "Reconnaissance des solides en couleur.", a: "La sphère en rouge, le cône en marron et le prisme en violet." },
+  "E3D_6E_7": { h: "Aide-toi des carreaux. Attention aux pointillés !", a: "Représentation en perspective cavalière (prisme)." },
+  "E3D_6E_8": { h: "Aide-toi des carreaux. Attention aux pointillés !", a: "Représentation en perspective cavalière (pyramide)." },
+  "E3D_6E_9": { h: "Décompose cet objet en deux parties.", a: "Un cylindre pour la partie basse et un cône de sommet O." },
+  "E3D_6E_10": { h: "Formule de conversion de volume.", a: "Conversion d'unités de volume (cm³ en dm³)." },
+  "E3D_6E_11": { h: "Volume d'un parallélépipède : L x l x h.", a: "Calcul de volume avec conversion d'unités." },
+  "E3D_6E_12": { h: "Réfléchis à la définition d'un polyèdre.", a: "Identifier les solides dont toutes les faces sont planes." },
+  "E3D_6E_13": { h: "Observe les unités.", a: "Conversion en litres et millilitres." },
+  "E3D_6E_14": { h: "Calcule l'aire de la base.", a: "Calcul de l'aire de la base du prisme ou du cylindre." },
+  "E3D_6E_15": { h: "Commence par convertir les nombres dans une même unité de mesure.", a: "Conversion de volume en capacité (1 L = 1 dm³)." },
+  "E3D_6E_16": { h: "Attention aux unités de mesure !", a: "Calcul de volume de béton." },
+  "E3D_6E_17": { h: "Formule du volume d'une pyramide ou d'un cône.", a: "Calcul du volume avec la formule un tiers de l'aire de la base par la hauteur." },
+  "E3D_6E_18": { h: "Calcule d'abord le volume total d'eau de la piscine.", a: "Calcul du volume total de la piscine." },
+  "E3D_6E_19": { h: "1 L = 1 dm³", a: "Conversion en litres." },
+  "E3D_6E_20": { h: "1 L = 1 dm³", a: "Calcul final du volume en litres." },
+
+  // --- MONTAGNE DES PROBLÈMES (MDP) - CM1 ---
+  "MDP_CM1_1": { h: "Lis correctement et fais un schéma.", a: "72 x 2 = 144. Comme il en perd, il faut faire une soustraction : 144 - 84 = 60. Il reste 60 œufs en tout." },
+  "MDP_CM1_2": { h: "Fais un schéma de chaque élément acheté.", a: "Carottes : 2 x 2 = 4, sardines : 2 x 3 = 6, gâteaux : 8 x 2 = 16, pastèques : 8 x 2,90 = 23,20 €. 4 + 6 + 16 + 23,20 = 49,20. Elle dépense 49 € 20." },
+  "MDP_CM1_3": { h: "« En deux fois » signifie « deux fois la moitié »", a: "La moitié de 6600 : c'est la moitié de 6000 (6000 : 2 = 3000) et la moitié de 600 (600 : 2 = 300). Il va payer 3300 € (3000 + 300)." },
+  "MDP_CM1_4": { h: "Calcule les menus puis les boissons et additionne le tout.", a: "5 menus à 22 € = 5 x 22 = 110 et 5 boissons à 3 € = 5 x 3 = 15 soit au total 110 + 15 = 125 €." },
+  "MDP_CM1_5": { h: "Fais une frise du temps et cherche le temps qu'il faut pour aller de 17 h 35 à 18 h 20.", a: "18 h 55 - 17 h 35 = 1 h 20." },
+  "MDP_CM1_6": { h: "Additionne les centimes et les euros.", a: "4 € 20 + 3 € 20 + 5 € 90 + 50 € = 63 € 30." },
+  "MDP_CM1_7": { h: "Fais une frise du temps et cherche le temps qu'il faut pour aller de 8 h à 21 h.", a: "21 h - 8 h = 13 h, 13 h - 1 h 30 = 11 h 30." },
+  "MDP_CM1_8": { h: "Additionne les distances de chaque étape.", a: "16 + 14 + 15 = 45 km." },
+  "MDP_CM1_9": { h: "Additionne les différents montants.", a: "6 € 50 + 6 € 50 + 12 € 80 + 20 € 70 = 46 € 50." },
+  "MDP_CM1_10": { h: "Additionne les prix en euros et en centimes.", a: "3 € 40 + 3 € 40 + 90 c + 90 c + 90 c + 90 c + 90 c = 11 € 30." },
+  "MDP_CM1_11": { h: "Fais une frise du temps de 13 h 50 à 15 h 35.", a: "15 h 35 - 13 h 50 = 1 h 45." },
+  "MDP_CM1_12": { h: "Fais un calcul de différence.", a: "56 - 52 = 4 kg." },
+  "MDP_CM1_13": { h: "Calcule la durée entre les deux horaires.", a: "18 h 25 - 16 h 55 = 1 h 30." },
+  "MDP_CM1_14": { h: "Additionne les montants.", a: "1 € 10 + 1 € 20 = 2 € 30." },
+  "MDP_CM1_15": { h: "Calcule l'écart horaire.", a: "1 h 30 - 22 h 30 = 3 h." },
+  "MDP_CM1_16": { h: "Soustrayez puis divisez par deux.", a: "6600 - 2000 = 4600, 4600 : 2 (la moitié de 4600) = 2300 €." },
+  "MDP_CM1_17": { h: "Convertis et additionne.", a: "2 € 50 + 90 centimes = 3 € 40." },
+  "MDP_CM1_18": { h: "Additionne la monnaie.", a: "11 € 80 + 90 centimes = 12 € 70." },
+  "MDP_CM1_19": { h: "Calcule la différence avec la monnaie.", a: "8 € 50 + 90 centimes = 9 € 40, 10 € - 9 € 40 = 60 centimes." },
+  "MDP_CM1_20": { h: "Durée écoulée.", a: "22 h 30 - 21 h 10 = 1 h 20." },
+
+  // --- MONTAGNE DES PROBLÈMES (MDP) - CM2 ---
+  "MDP_CM2_1": { h: "Utilise un tableau de conversion.", a: "2453,8 dam = 2453800 cm." },
+  "MDP_CM2_2": { h: "Conversion d'unité d'aire.", a: "8,46 hm²." },
+  "MDP_CM2_3": { h: "Calcule le périmètre puis le coût total.", a: "Je calcule le périmètre : 4 x 12 = 48. Je calcule le prix : 8 x 48 = 384. Le grillage coûte 384 €." },
+  "MDP_CM2_4": { h: "Multiplie chaque quantité par son prix unitaire.", a: "eau : 1 x 2,13 = 2,13 ; pâtes : 10 x 3 = 30 € ; fromages : 3 x 6 = 18. Total : 2,13 + 30 + 18 = 50,13. Elle paiera 50 € 13." },
+  "MDP_CM2_5": { h: "Gère les entrées et sorties du magasin.", a: "23 + 3 = 26 ; 26 - 15 - 3 = 9. 9 personnes sont dans le magasin." },
+  "MDP_CM2_6": { h: "Mets tout dans la même unité avant d'additionner.", a: "1200 m + 17 km + 300 m : on va tout mettre dans la même unité. 1200 m + 17000 m + 300 m = 18500 m = 18,5 km." },
+  "MDP_CM2_7": { h: "Additionne les montants.", a: "100 € + 55 € 70 = 155 € 70." },
+  "MDP_CM2_8": { h: "Durée écoulée.", a: "22 h 45 - 20 h 55 = 1 h 50." },
+  "MDP_CM2_9": { h: "Soustraction de masses.", a: "48 - 20 = 28 kg." },
+  "MDP_CM2_10": { h: "Différence horaire.", a: "17 h 15 - 14 h 45 = 2 h 30." },
+  "MDP_CM2_11": { h: "Calcul de réductions successives.", a: "45 € 40 - 10 € 10 = 35 € 30 ; 35 € 30 - 14 € 20 = 21 € 10." },
+  "MDP_CM2_12": { h: "Conversion centimes / euros.", a: "4 € 30 + 90 c = 5 € 20." },
+  "MDP_CM2_13": { h: "Multiplications et additions des différents articles.", a: "2,24 x 8 = 17,92 ; 6 x 1,10 = 6,60 ; 17,92 + 6,60 + 1,60 + 14,80 + 12,46 = 53 € 38." },
+  "MDP_CM2_14": { h: "Calcule la fraction restante.", a: "(2/3) x 96 = 192/3 = 64. 96 - 64 = 32. Il en reste 1/3 soit 32 billes." },
+  "MDP_CM2_15": { h: "Règle de proportionnalité.", a: "4 kg coûtent 16 € ; 1 kg coûtent 4 € ; (16 : 4). 5 kg de fraises coûtent 20 € (5 x 4)." },
+  "MDP_CM2_16": { h: "Addition de dates.", a: "1494 + 53 = 1547. Il est mort en 1547." },
+  "MDP_CM2_17": { h: "Fraction d'une quantité.", a: "(1/4) x 420 = 105 € ; 420 - 105 = 315 ; Il lui reste 315 € à verser." },
+  "MDP_CM2_18": { h: "Calcul de durée.", a: "8 h 08 - 7 h 54 = 14 min." },
+  "MDP_CM2_19": { h: "Moyenne / calcul sur les longueurs.", a: "30 + 30 = 60 ; 160 - 60 = 100 ; 100 : 2 = 50 ; sa longueur est de 50 m." },
+  "MDP_CM2_20": { h: "Nombre de jours entre les dates.", a: "Du 18 matin au 31 au soir : 14 jours, jusqu'au 8 au soir : 8 jours, soit un total de 22 jours." },
+
+  // --- MONTAGNE DES PROBLÈMES (MDP) - 6E ---
+  "MDP_6E_1": { h: "Pourcentages et durées.", a: "55 min - 15 min = 40 min ; 25% x 40 min = 10 min ; 40 min - 10 min = 30 min." },
+  "MDP_6E_2": { h: "Réductions successives.", a: "20% x 150 € = 30 € ; 150 € - 30 € = 120 €. 10% x 120 € = 12 € ; 120 € - 12 € = 108 €. Son nouveau prix est de 108 €." },
+  "MDP_6E_3": { h: "Problème avec des fractions de pommes.", a: "60 x (1/20) = 3 ; 60 - 3 = 57 ; 57 x (1/3) = 19 ; 57 - 19 = 38. Il reste 38 pommes." },
+  "MDP_6E_4": { h: "Calcul de volumes et capacités.", a: "108 x 0,40 L = 43,2 L ; 540 x 0,75 L = 405 L ; 150 x 2 L = 300 L. 43,2 + 405 + 300 = 748,2 L." },
+  "MDP_6E_5": { h: "Échelle et dimensions.", a: "Les dimensions en carreaux de l'avion n°2 sont toutes le double de celles de l'avion n°1." },
+  "MDP_6E_6": { h: "Coefficient de proportionnalité.", a: "Le coefficient de proportionnalité du tableau est 5,4 : 45 = 0,12." },
+  "MDP_6E_7": { h: "Aire de figures géométriques.", a: "Aire du carré = 1 cm², aire d'un disque environ 3,14 x 0,15² = 0,07 cm² arrondi au centième ; 1 - 2 x 0,07 = 0,86 cm²." },
+  "MDP_6E_8": { h: "Classement de masses.", a: "6,30 g < 166,13 g < 18 kg." },
+  "MDP_6E_9": { h: "Addition de grands nombres.", a: "500 + 765 000 + 897 = 766 397 g." },
+  "MDP_6E_10": { h: "Conversions d'unités de masse.", a: "1760 kg = 1 760 000 g, 8 307 g = 830 700 cg, 943 q = 94 300 kg." },
+  "MDP_6E_11": { h: "Lecture et calcul de tableau statistique.", a: "Le tableau statistique complété donne pour Mars (532), Avril (376), Mai (1028), Juin (1936)." },
+  "MDP_6E_12": { h: "Tableau de proportionnalité de cuisine.", a: "Quantités de sucre proportionnelles pour 1, 2, 4 et 6 personnes (1/2 cuillère, 1 cuillère, 2 cuillères, 3 cuillères)." },
+  "MDP_6E_13": { h: "Proportionnalité et ingrédients de biscuits.", a: "Non, car 5 x 3 = 15 et 6 x 3 = 18, il faut 6 œufs et non 5 pour faire 18 cookies." },
+  "MDP_6E_14": { h: "Effectifs d'élèves pratiquant un sport.", a: "135 élèves pratiquent un sport collectif (38 + 52 + 45)." },
+  "MDP_6E_15": { h: "Tableau à double entrée complété.", a: "Italien (5eA: 8, 5eB: 5, Total: 13), Allemand (Total: 9), Espagnol (Total: 27), Total général (49)." },
+  "MDP_6E_16": { h: "Pourcentage d'élèves externes.", a: "24% de 575 ; (24 x 575) / 100 = 138 élèves externes." },
+  "MDP_6E_17": { h: "Conversion de secondes en heures/minutes.", a: "15792 s = 4 h 23 min 12 s." },
+  "MDP_6E_18": { h: "Vitesse, distance et temps.", a: "14 x 80 : 60 = 18,7 km arrondi au dixième." },
+  "MDP_6E_19": { h: "Calcul d'intervalles horaires.", a: "21 h 25 - 7 h 45 = 13 h 40." },
+  "MDP_6E_20": { h: "Ordre de grandeur.", a: "Un ordre de grandeur de 23,5% de 119,45 € est par exemple 25% de 120 € soit 30 €." },
+
+  // --- VALLÉE DES NOMBRES (VDN) - CM1 ---
+  "VDN_CM1_1": { h: "Multiplie par 100 en ajoutant des zéros.", a: "58 x 100 = 5 800." },
+  "VDN_CM1_2": { h: "Utilise la commutativité de la multiplication.", a: "4 x 9 = 36." },
+  "VDN_CM1_3": { h: "Écris le nombre en chiffres en respectant les classes.", a: "54 302." },
+  "VDN_CM1_4": { h: "Le prédécesseur est le nombre juste avant (-1).", a: "Le nombre précédant 4 000 est 3 999." },
+  "VDN_CM1_5": { h: "Le successeur est le nombre juste après (+1).", a: "Le nombre suivant 7 999 est 8 000." },
+  "VDN_CM1_6": { h: "Compare les chiffres de gauche à droite.", a: "8 450 est supérieur à 8 054." },
+  "VDN_CM1_7": { h: "Cherche dans la table de 3.", a: "12 : 3 = 4." },
+  "VDN_CM1_8": { h: "Pose la multiplication par un nombre à un chiffre.", a: "324 x 5 = 1 620." },
+  "VDN_CM1_9": { h: "Trouve le complément à la centaine supérieure.", a: "Le complément de 870 pour aller à 1 000 est 130." },
+  "VDN_CM1_10": { h: "Observe le chiffre des dizaines.", a: "Le plus grand nombre parmi la liste est 9 820." },
+  "VDN_CM1_11": { h: "Compare les centaines.", a: "6 420 est plus petit que 6 450." },
+  "VDN_CM1_12": { h: "Aligne les unités pour l'addition posée.", a: "4 321 + 1 546 = 5 867." },
+  "VDN_CM1_13": { h: "Retire les unités puis les dizaines.", a: "8 756 - 3 421 = 5 335." },
+  "VDN_CM1_14": { h: "Identifie la classe des milliers.", a: "Dans 452 300, la classe des milliers est 452." },
+  "VDN_CM1_15": { h: "Calcule l'écart pour aller à 100.", a: "100 - 64 = 36." },
+  "VDN_CM1_16": { h: "Ajoute 1 à la position demandée.", a: "Ajouter 1 000 à 4 521 donne 5 521." },
+  "VDN_CM1_17": { h: "Retire 1 de la position demandée.", a: "Retirer 100 à 3 450 donne 3 350." },
+  "VDN_CM1_18": { h: "Divise par 2 pour trouver la moitié.", a: "La moitié de 88 est 44." },
+  "VDN_CM1_19": { h: "Décompose en milliers, centaines, dizaines et unités.", a: "5 432 = 5 000 + 400 + 30 + 2." },
+  "VDN_CM1_20": { h: "Écris le nombre en lettres sans oublier les traits d'union.", a: "Deux mille trois cent quarante-cinq." },
+
+  // --- VALLÉE DES NOMBRES (VDN) - CM2 ---
+  "VDN_CM2_1": { h: "Prendre le double, c'est multiplier par 2.", a: "Le double de 450 est 900." },
+  "VDN_CM2_2": { h: "Sépare la partie entière et la partie décimale.", a: "Dans 45,82, la partie entière est 45 et la partie décimale est 0,82." },
+  "VDN_CM2_3": { h: "Respecte les priorités des opérations de base.", a: "125 + 50 x 2 = 225." },
+  "VDN_CM2_4": { h: "Un nombre est divisible par 3 si la somme de ses chiffres est un multiple de 3.", a: "5421 est divisible par 3 (5+4+2+1 = 12)." },
+  "VDN_CM2_5": { h: "Un nombre pair se termine par 0, 2, 4, 6 ou 8.", a: "C'est un nombre pair / multiple de 2." },
+  "VDN_CM2_6": { h: "Pose la division euclidienne.", a: "145 divisé par 4 donne un quotient de 36 et un reste de 1." },
+  "VDN_CM2_7": { h: "Pose la division avec les décimaux.", a: "75 : 2 = 37,5." },
+  "VDN_CM2_8": { h: "Compare d'abord les parties entières.", a: "12,4 est plus grand que 12,04." },
+  "VDN_CM2_9": { h: "Le centième correspond au deuxième chiffre après la virgule.", a: "Le chiffre des centièmes de 14,583 est 8." },
+  "VDN_CM2_10": { h: "Complète avec des zéros si nécessaire pour comparer la partie décimale.", a: "7,3 est égal à 7,30." },
+  "VDN_CM2_11": { h: "Un nombre premier n'a que deux diviseurs : 1 et lui-même.", a: "17 est un nombre premier." },
+  "VDN_CM2_12": { h: "Retire les zéros inutiles à la fin de la partie décimale.", a: "4,500 s'écrit plus simplement 4,5." },
+  "VDN_CM2_13": { h: "Décale la virgule vers la droite de 1, 2 ou 3 rangs.", a: "12,34 x 100 = 1 234." },
+  "VDN_CM2_14": { h: "Décale la virgule vers la gauche.", a: "450 : 10 = 45." },
+  "VDN_CM2_15": { h: "Exprime la fraction décimale en nombre à virgule.", a: "45 / 10 = 4,5." },
+  "VDN_CM2_16": { h: "Transforme le nombre décimal en fraction.", a: "3,75 = 375 / 100." },
+  "VDN_CM2_17": { h: "Aligne bien les virgules pour l'addition.", a: "12,5 + 3,75 = 16,25." },
+  "VDN_CM2_18": { h: "Aligne les virgules et complète par des zéros si besoin.", a: "50 - 12,5 = 37,5." },
+  "VDN_CM2_19": { h: "Estime un résultat proche pour vérifier.", a: "L'ordre de grandeur de 49,8 + 20,3 est environ 70." },
+  "VDN_CM2_20": { h: "Traduis l'énoncé en calcul simple.", a: "Le tiers de 96 est 32." },
+
+  // --- VALLÉE DES NOMBRES (VDN) - 6E ---
+  "VDN_6E_1": { h: "Convertis l'écriture fractionnaire en décimale si besoin.", a: "3 / 4 = 0,75." },
+  "VDN_6E_2": { h: "Range du plus petit au plus grand.", a: "Ordre croissant : 2,02 < 2,2 < 2,22 < 20,02 < 22,002." },
+  "VDN_6E_3": { h: "Range du plus grand au plus petit.", a: "Ordre décroissant : 99,009 > 90,09 > 9,99 > 9,9 > 9,09." },
+  "VDN_6E_4": { h: "Respecte l'ordre des opérations (parenthèses, multiplications, additions).", a: "Calcul prioritaire des multiplications et des parenthèses." },
+  "VDN_6E_5": { h: "Calcule mentalement en regroupant les termes astucieusement.", a: "Résultat : 100." },
+  "VDN_6E_6": { h: "Compare les fractions en réduisant au même dénominateur.", a: "1/2 est supérieur à 1/3." },
+  "VDN_6E_7": { h: "Multiplie les deux nombres avec les règles de décimaux.", a: "132" },
+  "VDN_6E_8": { h: "Règles sur les nombres relatifs (positifs et négatifs).", a: "-5 + (+8) = +3." },
+  "VDN_6E_9": { h: "Compare la distance à zéro pour les négatifs.", a: "-12 est inférieur à -3." },
+  "VDN_6E_10": { h: "Repère l'abscisse sur la droite graduée.", a: "Abscisse du point : 2,5." },
+  "VDN_6E_11": { h: "Multiplie le numérateur et le dénominateur par le même nombre.", a: "2/3 est égal à 4/6." },
+  "VDN_6E_12": { h: "Calcule la valeur de chaque pas de graduation.", a: "La graduation correspond à des dixièmes." },
+  "VDN_6E_13": { h: "Donne l'écriture décimale du nombre.", a: "1,25" },
+  "VDN_6E_14": { h: "Trouve le coefficient multiplicateur.", a: "Coefficient de proportionnalité appliqué." },
+  "VDN_6E_15": { h: "Applique le pourcentage à la quantité.", a: "20% de 150 = 30." },
+  "VDN_6E_16": { h: "Divise le numérateur par le dénominateur.", a: "15 : 4 = 3,75." },
+  "VDN_6E_17": { h: "Convertis tout dans la même unité avant de comparer.", a: "3,5 kg > 5,49 dag > 12 g > 132 cg." },
+  "VDN_6E_18": { h: "Convertis en grammes.", a: "80 000 g." },
+  "VDN_6E_19": { h: "Additionne les longueurs de la figure.", a: "12,8 cm." },
+  "VDN_6E_20": { h: "Calcule le périmètre du cercle (pi x diamètre).", a: "31,4 cm." },
 
   // --- ENGLISH MATHS - CM1 ---
-  "EM_CM1_1": { h: "dix = ten", a: "Réponse EM CM1 - Carte 1" },
-  "EM_CM1_2": { h: "how many = combien ; there are = il y a", a: "Réponse EM CM1 - Carte 2" },
-  "EM_CM1_3": { h: "how many = combien ; there are = il y a ; pen = stylo", a: "Réponse EM CM1 - Carte 3" },
-  "EM_CM1_4": { h: "marbles = billes ; how many = combien", a: "Réponse EM CM1 - Carte 4" },
-  "EM_CM1_5": { h: "how many = combien ; cow = vache", a: "Réponse EM CM1 - Carte 5" },
-  "EM_CM1_6": { h: "how many = combien ; bird = oiseau ; goldfish = poisson rouge", a: "Réponse EM CM1 - Carte 6" },
-  "EM_CM1_7": { h: "how many = combien ; cow = vache ; bird = oiseau ; goldfish = poisson rouge", a: "Réponse EM CM1 - Carte 7" },
-  "EM_CM1_8": { h: "how many = combien ; brown = marron ; dog = chien ; under = sous", a: "Réponse EM CM1 - Carte 8" },
-  "EM_CM1_9": { h: "times = fois (X)", a: "Réponse EM CM1 - Carte 9" },
-  "EM_CM1_10": { h: "plus = +", a: "Réponse EM CM1 - Carte 10" },
-  "EM_CM1_11": { h: "minus = moins (-)", a: "Réponse EM CM1 - Carte 11" },
-  "EM_CM1_12": { h: "times = fois (X)", a: "Réponse EM CM1 - Carte 12" },
-  "EM_CM1_13": { h: "plus = +", a: "Réponse EM CM1 - Carte 13" },
-  "EM_CM1_14": { h: "minus = moins (-)", a: "Réponse EM CM1 - Carte 14" },
-  "EM_CM1_15": { h: "times = fois (X)", a: "Réponse EM CM1 - Carte 15" },
-  "EM_CM1_16": { h: "plus = +", a: "Réponse EM CM1 - Carte 16" },
-  "EM_CM1_17": { h: "minus = moins (-)", a: "Réponse EM CM1 - Carte 17" },
-  "EM_CM1_18": { h: "plus = +", a: "Réponse EM CM1 - Carte 18" },
-  "EM_CM1_19": { h: "times = fois (X)", a: "Réponse EM CM1 - Carte 19" },
-  "EM_CM1_20": { h: "times = fois (X)", a: "Réponse EM CM1 - Carte 20" },
+  "EM_CM1_1": { h: "dix = ten", a: "one, two, three, four, five, six, seven, eight, nine, ten." },
+  "EM_CM1_2": { h: "how many = combien ; there are = il y a", a: "4 + 3 = 7 ; 10 - 7 = 3 ; there are three dogs." },
+  "EM_CM1_3": { h: "how many = combien ; there are = il y a ; pen = stylo", a: "11 - 5 = 6 ; He has got six big red pens." },
+  "EM_CM1_4": { h: "marbles = billes ; how many = combien", a: "5 + 3 + 6 = 14 ; there are fourteen marbles." },
+  "EM_CM1_5": { h: "how many = combien ; cow = vache", a: "10 + 2 = 12 ; there are twelve animals." },
+  "EM_CM1_6": { h: "how many = combien ; bird = oiseau ; goldfish = poisson rouge", a: "5 + 2 = 7 ; 11 - 7 = 4 ; He has got four goldfish." },
+  "EM_CM1_7": { h: "how many = combien ; cow = vache ; bird = oiseau ; goldfish = poisson rouge", a: "5 + 7 + 8 = 20 ; He has got twenty animals." },
+  "EM_CM1_8": { h: "how many = combien ; brown = marron ; dog = chien ; under = sous", a: "5 - 2 = 3 ; there are three brown dogs." },
+  "EM_CM1_9": { h: "times = fois(X)", a: "6 x 8 = 48 : forty-eight." },
+  "EM_CM1_10": { h: "plus = +", a: "21 + 50 = 71 ; seventy-one." },
+  "EM_CM1_11": { h: "minus = moins(-)", a: "63 - 6 = 57 ; fifty-seven." },
+  "EM_CM1_12": { h: "times = fois(X)", a: "9 x 10 = 90 ; ninety." },
+  "EM_CM1_13": { h: "plus = +", a: "300 + 200 = 500 ; five hundred." },
+  "EM_CM1_14": { h: "minus = moins(-)", a: "84 - 20 = 64 ; sixty-four." },
+  "EM_CM1_15": { h: "times = fois(X)", a: "7 x 8 = 56 ; fifty-six." },
+  "EM_CM1_16": { h: "plus = +", a: "92 + 10 = 102 ; one hundred and two." },
+  "EM_CM1_17": { h: "minus = moins(-)", a: "75 - 9 = 66 ; sixty-six." },
+  "EM_CM1_18": { h: "plus = +", a: "30 + 80 = 110 ; one hundred and ten." },
+  "EM_CM1_19": { h: "times = fois(X)", a: "37 x 2 = 74" },
+  "EM_CM1_20": { h: "times = fois(X)", a: "46 x 2 = 92 ; ninety-two." },
 
   // --- ENGLISH MATHS - CM2 ---
-  "EM_CM2_1": { h: "13 = thirteen ; 15 = fifteen", a: "Réponse EM CM2 - Carte 1" },
-  "EM_CM2_2": { h: "how many = combien ; have got = avoir", a: "Réponse EM CM2 - Carte 2" },
-  "EM_CM2_3": { h: "how many = combien ; there are = il y a ; fish bowl = bocal", a: "Réponse EM CM2 - Carte 3" },
-  "EM_CM2_4": { h: "kid = enfant ; how many = combien ; have got = avoir ; son = fils ; daughter = fille", a: "Réponse EM CM2 - Carte 4" },
-  "EM_CM2_5": { h: "how many = combien ; there are = il y a ; people = personnes ; kid = enfant", a: "Réponse EM CM2 - Carte 5" },
-  "EM_CM2_6": { h: "how many = combien ; there are = il y a ; box = boîte", a: "Réponse EM CM2 - Carte 6" },
-  "EM_CM2_7": { h: "how many = combien ; there are = il y a ; in front of = devant", a: "Réponse EM CM2 - Carte 7" },
-  "EM_CM2_8": { h: "how many = combien ; there are = il y a ; fish = poisson", a: "Réponse EM CM2 - Carte 8" },
-  "EM_CM2_9": { h: "how many = combien ; have got = avoir ; pen = stylo", a: "Réponse EM CM2 - Carte 9" },
-  "EM_CM2_10": { h: "how many = combien ; have got = avoir ; pet = animal de compagnie", a: "Réponse EM CM2 - Carte 10" },
-  "EM_CM2_11": { h: "cook = cuisiner ; how many = combien ; there are = il y a ; cake = gâteau", a: "Réponse EM CM2 - Carte 11" },
-  "EM_CM2_12": { h: "times = fois (X)", a: "Réponse EM CM2 - Carte 12" },
-  "EM_CM2_13": { h: "minus = moins (-)", a: "Réponse EM CM2 - Carte 13" },
-  "EM_CM2_14": { h: "times = fois (X)", a: "Réponse EM CM2 - Carte 14" },
-  "EM_CM2_15": { h: "times = fois (X)", a: "Réponse EM CM2 - Carte 15" },
-  "EM_CM2_16": { h: "plus = +", a: "Réponse EM CM2 - Carte 16" },
-  "EM_CM2_17": { h: "times = fois (X)", a: "Réponse EM CM2 - Carte 17" },
-  "EM_CM2_18": { h: "plus = +", a: "Réponse EM CM2 - Carte 18" },
-  "EM_CM2_19": { h: "times = fois (X)", a: "Réponse EM CM2 - Carte 19" },
-  "EM_CM2_20": { h: "times = fois (X)", a: "Réponse EM CM2 - Carte 20" },
+  "EM_CM2_1": { h: "13 = thirteen ; 15 = fifteen", a: "One, two, three, four, five, six, seven, eight, nine, ten, eleven, twelve, thirteen, fourteen, fifteen, sixteen, seventeen, eighteen, nineteen, twenty." },
+  "EM_CM2_2": { h: "how many = combien ; have got = avoir", a: "4 + 6 + 8 + 1 = 19 ; she has got nineteen animals." },
+  "EM_CM2_3": { h: "how many = combien ; there are = il y a ; fish bowl = bocal", a: "6 - 2 = 4 ; there are four white fish." },
+  "EM_CM2_4": { h: "kid = enfant ; how many = combien ; have got = avoir ; son = fils ; daughter = fille", a: "5 + 2 = 7 ; she has got seven kids." },
+  "EM_CM2_5": { h: "how many = combien ; there are = il y a ; people = personnes ; kid = enfant", a: "4 + 5 + 6 = 15 ; there are fifteen people." },
+  "EM_CM2_6": { h: "how many = combien ; there are = il y a ; box = boîte", a: "10 - 4 = 6 ; there are six red balls." },
+  "EM_CM2_7": { h: "how many = combien ; there are = il y a ; in front of = devant", a: "9 + 4 = 13 ; there are thirteen cats." },
+  "EM_CM2_8": { h: "how many = combien ; there are = il y a ; fish = poisson", a: "2 + 3 + 4 = 9 ; 14 - 9 = 5 ; there are five grey fish." },
+  "EM_CM2_9": { h: "how many = combien ; have got = avoir ; pen = stylo", a: "4 pens, I have got four pens." },
+  "EM_CM2_10": { h: "how many = combien ; have got = avoir ; pet = animal de compagnie", a: "5 + 3 = 8 ; he has got eight pets." },
+  "EM_CM2_11": { h: "cook = cuisiner ; how many = combien ; there are = il y a ; cake = gâteau", a: "2 + 5 = 7 ; there are seven cakes." },
+  "EM_CM2_12": { h: "times = fois(X)", a: "13 x 10 = 130 ; one hundred and thirty." },
+  "EM_CM2_13": { h: "minus = moins(-)", a: "32 - 7 = 25 ; twenty-five." },
+  "EM_CM2_14": { h: "times = fois(X)", a: "9 x 7 = 63 ; sixty-three." },
+  "EM_CM2_15": { h: "times = fois(X)", a: "100 x 10 = 1000 ; one thousand." },
+  "EM_CM2_16": { h: "plus = +", a: "80 + 45 = 125 ; one hundred and twenty-five." },
+  "EM_CM2_17": { h: "times = fois(X)", a: "46 x 4 = 184 ; one hundred and eighty-four." },
+  "EM_CM2_18": { h: "plus = +", a: "53 + 39 = 92 ; ninety-two." },
+  "EM_CM2_19": { h: "times = fois(X)", a: "64 x 20 = 1280 ; one thousand two hundred and eighty." },
+  "EM_CM2_20": { h: "times = fois(X)", a: "50 x 20 = 1000 ; one thousand." },
 
   // --- ENGLISH MATHS - 6E ---
-  "EM_6E_1": { h: "put = mettre ; following = suivant ; ascending = croissant", a: "Réponse EM 6e - Carte 1" },
-  "EM_6E_2": { h: "consigne en français : mets les nombres décimaux suivants dans l'ordre croissant.", a: "Réponse EM 6e - Carte 2" },
-  "EM_6E_3": { h: "Add = plus (additionner)", a: "Réponse EM 6e - Carte 3" },
-  "EM_6E_4": { h: "what = quelle ; Hundredths = Centièmes ; Digit = Chiffre ; Number = Nombre", a: "Réponse EM 6e - Carte 4" },
-  "EM_6E_5": { h: "value = valeur", a: "Réponse EM 6e - Carte 5" },
-  "EM_6E_6": { h: "multiply = multiplier", a: "Réponse EM 6e - Carte 6" },
-  "EM_6E_7": { h: "times = fois", a: "Réponse EM 6e - Carte 7" },
-  "EM_6E_8": { h: "half = demi", a: "Réponse EM 6e - Carte 8" },
-  "EM_6E_9": { h: "quarter = quart ; to = moins", a: "Réponse EM 6e - Carte 9" },
-  "EM_6E_10": { h: "isosceles = isocèle ; equilateral = équilatéral ; scalene = quelconque.", a: "Réponse EM 6e - Carte 10" },
-  "EM_6E_11": { h: "isosceles = isocèle ; equilateral = équilatéral ; scalene = quelconque.", a: "Réponse EM 6e - Carte 11" },
-  "EM_6E_12": { h: "line = droite ; ray = demi-droite ; line segment = segment", a: "Réponse EM 6e - Carte 12" },
-  "EM_6E_13": { h: "line = ligne ; how many = combien", a: "Réponse EM 6e - Carte 13" },
-  "EM_6E_14": { h: "line = ligne ; how many = combien", a: "Réponse EM 6e - Carte 14" },
-  "EM_6E_15": { h: "losange = rhombus ; carré = square ; parallélogramme = parallelogram", a: "Réponse EM 6e - Carte 15" },
-  "EM_6E_16": { h: "add = additionner ; times = heures", a: "Réponse EM 6e - Carte 16" },
-  "EM_6E_17": { h: "following = suivant ; descending = décroissant", a: "Réponse EM 6e - Carte 17" },
-  "EM_6E_18": { h: "convert = convertir", a: "Réponse EM 6e - Carte 18" },
-  "EM_6E_19": { h: "shape = figure", a: "Réponse EM 6e - Carte 19" },
-  "EM_6E_20": { h: "calculate = calculer ; perimeter = périmètre", a: "Réponse EM 6e - Carte 20" }
+  "EM_6E_1": { h: "put = mettre ; following = suivant ; ascending = croissant", a: "2.02 ; 2.2 ; 2.22 ; 20.02 ; 22.002." },
+  "EM_6E_2": { h: "consigne en français : mets les nombres décimaux suivants dans l'ordre croissant.", a: "9.09 < 9.9 < 9.99 < 90.09 < 99.009" },
+  "EM_6E_3": { h: "Add = plus(additionner)", a: "39.25" },
+  "EM_6E_4": { h: "what = quelle ; Hundredths = Centièmes ; Digit = Chiffre ; Number = Nombre", a: "It is 424" },
+  "EM_6E_5": { h: "value = valeur", a: "4" },
+  "EM_6E_6": { h: "multiply = multiplier", a: "15" },
+  "EM_6E_7": { h: "times = fois", a: "132" },
+  "EM_6E_8": { h: "half = demi", a: "half past three" },
+  "EM_6E_9": { h: "quarter = quart ; to = moins", a: "quarter to five" },
+  "EM_6E_10": { h: "isosceles = isosocèle ; equilateral = équilatéral ; scalene = quelconque.", a: "equilateral" },
+  "EM_6E_11": { h: "isosceles = isosocèle ; equilateral = équilatéral ; scalene = quelconque.", a: "isosceles" },
+  "EM_6E_12": { h: "line=droite ; ray = demi-droite ; line segment = segment", a: "line segment" },
+  "EM_6E_13": { h: "line = ligne ; how many = combien", a: "1" },
+  "EM_6E_14": { h: "line = ligne ; how many = combien", a: "2" },
+  "EM_6E_15": { h: "losange = rhombus ; carré = square ; parallélogramme = parallelogram", a: "rhombus" },
+  "EM_6E_16": { h: "add = additionner ; times = heures", a: "5:15" },
+  "EM_6E_17": { h: "following = suivant ; descending = décroissant", a: "3.5 kg > 5.49 dag > 12 g > 132 cg" },
+  "EM_6E_18": { h: "convert = convertir", a: "80000 g" },
+  "EM_6E_19": { h: "shape = figure", a: "12.8 cm" },
+  "EM_6E_20": { h: "calculate = calculer ; perimeter = périmètre", a: "31.4 cm" }
 };
 
 /* Génération automatique de la banque de cartes basée sur vos dossiers */
@@ -1461,7 +1500,38 @@ function afficherReponse() { if (carteActuelle) document.getElementById("reponse
 function nouvelleCarte() { tirerCarte(); }
 
 function lireQuestion() { 
-  alert("La lecture audio n'est pas disponible pour les cartes au format image."); 
+  if (!carteActuelle) return;
+  if (audioActuel) { audioActuel.pause(); audioActuel = null; }
+
+  let parts = carteActuelle.id.split("_"); 
+  let dom = parts[0]; 
+  let niv = parts[1]; 
+  let numStr = parts[2]; 
+
+  let dossier = "";
+  let fichier = "";
+
+  if (niv === "CM1") {
+    dossier = `${dom}CM1MP3`;
+    fichier = `${dom.toLowerCase()}cm1q_${numStr}.mp3`;
+  } else if (niv === "CM2") {
+    dossier = `${dom}CM2MP3`;
+    fichier = `${dom.toLowerCase()}cm2q_${numStr}.mp3`;
+  } else if (niv === "6E") {
+    dossier = `${dom}6MP3`;
+    fichier = `${dom.toLowerCase()}6q_${numStr}.mp3`;
+  }
+
+  if (dossier && fichier) {
+    let cheminAudio = `${dossier}/${fichier}`;
+    audioActuel = new Audio(baseUrl + cheminAudio);
+    audioActuel.play().catch(() => {
+      alert(`Le fichier audio '${cheminAudio}' n'est pas disponible.`);
+    });
+    return;
+  }
+
+  alert("La lecture audio n'est pas disponible pour cette carte.");
 }
 
 let boardEl;
