@@ -3,6 +3,1942 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Joue-Maths-Gie</title>
+
+<style>
+:root {
+  --fond: #f5f1e8;
+  --papier: #fffdf8;
+  --brun: #5b4636;
+  --orange: #e9a23b;
+  --vert: #6b9b75;
+  --bleu: #75a9c8;
+  --rose: #d88787;
+  --violet: #9b8ac4;
+}
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+  font-family: Arial, sans-serif;
+  background: var(--fond);
+  color: var(--brun);
+}
+
+header {
+  padding: 15px;
+  text-align: center;
+  background: var(--brun);
+  color: white;
+}
+h1 { margin: 0; font-size: clamp(1.3rem, 4vw, 2.2rem); }
+
+main {
+  width: 100%;
+  max-width: 1100px;
+  margin: auto;
+  padding: 10px;
+}
+
+.screen { display: none; }
+.screen.active { display: block; }
+
+.panel {
+  background: var(--papier);
+  border: 3px solid var(--brun);
+  border-radius: 20px;
+  padding: 16px;
+  margin: 12px auto;
+  width: 100%;
+  max-width: 850px;
+  box-shadow: 0 5px 0 #d6c7b5;
+}
+
+button, select {
+  font: inherit;
+  padding: 10px 16px;
+  border: 2px solid var(--brun);
+  border-radius: 12px;
+  background: var(--orange);
+  color: #332519;
+  cursor: pointer;
+  margin: 5px;
+  font-weight: bold;
+  touch-action: manipulation;
+}
+button:hover { filter: brightness(.95); transform: translateY(-1px); }
+button.secondary { background: #eee4d5; }
+button:disabled { opacity: .45; cursor: not-allowed; }
+
+.center { text-align: center; }
+.big { font-size: clamp(1.1rem, 2.5vw, 1.3rem); }
+.muted { color: #796958; }
+.choices { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.button-row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px; margin: 10px 0; }
+
+/* STYLE DE LA BANNIÈRE D'ACCUEIL */
+.accueil-banniere {
+  width: 100%;
+  max-width: 850px;
+  height: auto;
+  border-radius: 16px;
+  border: 3px solid var(--brun);
+  margin-bottom: 15px;
+  box-shadow: 0 5px 0 #d6c7b5;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* GRILLE DES PERSONNAGES */
+.perso-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin: 15px 0;
+}
+
+@media (max-width: 768px) {
+  .perso-grid {
+    grid-template-columns: repeat(5, minmax(50px, 1fr));
+    gap: 6px;
+  }
+  .panel {
+    padding: 12px;
+    border-width: 2px;
+  }
+}
+
+.perso-card {
+  background: white;
+  border: 3px solid var(--brun);
+  border-radius: 12px;
+  padding: 4px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 3px 0 #d6c7b5;
+  position: relative;
+}
+.perso-card:hover {
+  transform: translateY(-2px);
+}
+.perso-card.selected {
+  border-color: var(--orange);
+  background: #fdf6ec;
+  box-shadow: 0 0 0 2px var(--orange), 0 3px 0 #d6c7b5;
+}
+.perso-card.validated {
+  border-color: var(--vert);
+  background: #eaf2ec;
+  box-shadow: 0 0 0 3px var(--vert), 0 3px 0 #d6c7b5;
+}
+.perso-card.validated::after {
+  content: "✔";
+  position: absolute;
+  top: 3px; right: 3px;
+  background: var(--vert); color: white;
+  border-radius: 50%; width: 18px; height: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; font-weight: bold;
+}
+.perso-img {
+  width: 100%;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  pointer-events: none;
+}
+
+/* --- DESIGN DU PETIT LIVRE DES RÈGLES --- */
+#modalRegles {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 1200;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+}
+#modalRegles.active {
+  display: flex;
+}
+
+.livre-container {
+  background: #fdfaf3;
+  border: 4px solid var(--brun);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 750px;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+  overflow: hidden;
+}
+
+.livre-header {
+  background: var(--brun);
+  color: white;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.livre-body {
+  flex: 1;
+  overflow: auto;
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ffffff;
+  position: relative;
+}
+
+.livre-page-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: block;
+  transition: transform 0.1s ease;
+  transform-origin: center center;
+  cursor: grab;
+}
+.livre-page-img:active {
+  cursor: grabbing;
+}
+
+.livre-footer {
+  padding: 12px 20px;
+  background: #f0e6d2;
+  border-top: 2px solid var(--brun);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* MODALE PLEIN ÉCRAN */
+#modalPleinEcran {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+}
+#modalPleinEcran.active {
+  display: flex;
+}
+.modal-content {
+  background: var(--papier);
+  border: 4px solid var(--brun);
+  border-radius: 20px;
+  padding: 15px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-img {
+  width: 100%;
+  max-height: 50vh;
+  object-fit: contain;
+  border-radius: 10px;
+  border: 2px solid var(--brun);
+  margin-bottom: 10px;
+}
+
+#die {
+  width: min(100%, 200px); 
+  height: 110px;
+  margin: 20px auto;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; background: white;
+  border: 4px solid var(--brun); border-radius: 18px;
+  font-size: 1.1rem; font-weight: bold; padding: 10px;
+  box-shadow: 0 6px 0 #c7b6a3;
+  transition: transform .4s, background-color 0.3s, color 0.3s;
+}
+#die.rolling { transform: rotate(720deg) scale(1.1); }
+
+/* CONTENEUR ET CARTES DE QUESTION */
+.deck-container {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  height: 420px;
+  margin: 20px auto;
+}
+
+.deck-stack {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background-color: var(--brun);
+  border: 4px solid var(--brun);
+  background-size: cover;
+  background-position: center;
+  box-shadow: 4px 4px 0px rgba(0,0,0,0.15);
+  transform: translate(-4px, 4px);
+}
+
+.card {
+  position: absolute;
+  inset: 0; width: 100%; height: 100%;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0; width: 100%; height: 100%;
+  padding: 12px;
+  border: 4px solid var(--brun);
+  border-radius: 20px;
+  background-color: white;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: space-between;
+  text-align: center;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.card-back-face {
+  transform: rotateY(0deg);
+  background-color: var(--brun);
+  background-size: cover;
+  background-position: center;
+  color: white;
+}
+
+.card-question-face {
+  transform: rotateY(180deg);
+  background: #ffffff;
+  justify-content: center;
+}
+
+.card[data-state="back"] .card-inner { transform: rotateY(0deg); }
+.card[data-state="question"] .card-inner { transform: rotateY(180deg); }
+
+.card-back-pattern {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  border-radius: 12px; padding: 10px;
+}
+
+.card-back-title {
+  font-size: 1.4rem; font-weight: bold; margin-top: 10px;
+  text-transform: uppercase; letter-spacing: 1px;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
+}
+
+.card-question-img {
+  width: 100%;
+  height: 100%;
+  max-height: 380px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin: auto;
+}
+
+.card-label { font-size: .8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--brun); font-weight: bold; }
+
+/* PLATEAU FLUIDE ET BLOCS CHANCE / BADGES / VIES / CARTE CONSERVÉE */
+.plateau-top-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto 6px auto;
+  gap: 2px;
+}
+
+.chance-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  text-align: center;
+}
+
+.chance-deck-preview {
+  width: 100%;
+  max-width: 44px;
+  height: 65px;
+  background-image: url("https://raw.githubusercontent.com/phcasarotto/JMG/main/chance.png");
+  background-size: cover;
+  background-position: center;
+  border: 2px solid var(--brun);
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 0 #d6c7b5;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.chance-deck-preview:hover {
+  transform: translateY(-2px);
+}
+
+.saved-chance-slot {
+  width: 100%;
+  max-width: 44px;
+  height: 65px;
+  border: 2px dashed var(--brun);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fdf6ec;
+  cursor: pointer;
+  box-shadow: 0 2px 0 #d6c7b5;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.saved-chance-slot:hover {
+  transform: translateY(-2px);
+}
+
+.badge-receptacle-box {
+  width: 100%;
+  max-width: 44px;
+  height: 65px;
+  background: #fdf6ec;
+  border: 2px solid var(--brun);
+  border-radius: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  box-shadow: 0 2px 0 #d6c7b5;
+  padding: 1px;
+  flex-shrink: 0;
+}
+
+.badge-item {
+  width: 14px;
+  height: 14px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.badge-item:hover {
+  transform: scale(1.1);
+}
+
+.vie-receptacle-box {
+  width: 100%;
+  max-width: 44px;
+  height: 65px;
+  background: #fdf6ec;
+  border: 2px solid var(--brun);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  box-shadow: 0 2px 0 #d6c7b5;
+  padding: 1px;
+  flex-shrink: 0;
+}
+
+.vie-item {
+  width: 15px;
+  height: 15px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.vie-item:hover {
+  transform: scale(1.1);
+}
+
+#board {
+  position: relative; 
+  width: 100%; 
+  max-width: 500px;
+  aspect-ratio: 1;
+  border: 4px solid var(--brun); 
+  border-radius: 16px;
+  background: #ffffff; 
+  overflow: hidden; 
+  box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+  margin: 0 auto;
+}
+.board-img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+.pawn {
+  position: absolute; 
+  width: 25px; 
+  height: 25px;
+  border-radius: 50% !important; 
+  border: 2px solid white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.4); 
+  cursor: grab;
+  touch-action: none; 
+  z-index: 10;
+  background-size: cover !important; 
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-color: white;
+}
+.pawn:active { transform: scale(1.15); cursor: grabbing; }
+
+#pawns { 
+  display: flex; 
+  flex-direction: row;
+  flex-wrap: wrap; 
+  justify-content: center; 
+  align-items: center;
+  gap: 10px; 
+  margin: 15px auto 5px auto; 
+  max-width: 500px;
+  padding-bottom: 5px;
+}
+
+.pawn-card-mini { 
+  width: 50px;
+  height: 75px;
+  border-radius: 8px; 
+  border: 3px solid var(--brun); 
+  background-size: cover;
+  background-position: center;
+  cursor: pointer; 
+  box-shadow: 0 3px 0 #d6c7b5;
+  transition: transform 0.1s, filter 0.1s;
+  flex-shrink: 0;
+}
+.pawn-card-mini:hover {
+  filter: brightness(0.95);
+  transform: translateY(-2px);
+}
+
+.info-points {
+  color: var(--orange);
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.voir-dessins-link {
+  color: var(--orange);
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-left: 8px;
+}
+.voir-dessins-link:hover {
+  filter: brightness(0.9);
+}
+
+#feedback { font-weight: bold; min-height: 1.5em; }
+
+.mentions-legales-accueil {
+  text-align: center;
+  padding: 15px 10px;
+  color: #796958;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  background: #ece5d8;
+  border: 2px solid var(--brun);
+  border-radius: 12px;
+  margin-top: 20px;
+}
+.mentions-legales-accueil p {
+  margin: 5px 0;
+}
+.mentions-legales-accueil a {
+  color: var(--orange);
+  font-weight: bold;
+  text-decoration: underline;
+}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>Joue-Maths-Gie</h1>
+</header>
+
+<main>
+  <!-- ACCUEIL -->
+  <section id="accueil" class="screen active">
+    <div class="panel center">
+      <img src="https://raw.githubusercontent.com/phcasarotto/JMG/main/BANNIERE.png" alt="Bannière Joue-Maths-Gie" class="accueil-banniere">
+      
+      <h2>Bienvenue dans le jeu !</h2>
+      <p class="big">Joue avec les maths, réponds aux questions et avance sur le plateau.</p>
+      <div class="button-row">
+        <button onclick="aller('personnages')">Commencer la partie</button>
+        <button class="secondary" onclick="ouvrirRegles()">Règle du jeu</button>
+      </div>
+
+      <footer class="mentions-legales-accueil">
+          <p><strong>Joue-Maths-Gie®</strong></p>
+          <p>© 2026 Joue-Maths-Gie – Tous droits réservés.</p>
+          <p>Le nom « Joue-Maths-Gie » et les éléments associés font l'objet d'un dépôt de marque auprès de l'INPI, sous le numéro <strong>FR 4694515</strong>.</p>
+          <p>Sauf mention contraire, le code source, les textes, éléments graphiques, interfaces et contenus originaux de ce projet sont protégés par le droit d'auteur.</p>
+          <p>La consultation de ce projet sur GitHub ne constitue pas une autorisation de reproduction, modification, redistribution ou exploitation de tout ou partie de son contenu.</p>
+          <p>Toute réutilisation nécessitant une autorisation doit faire l'objet d'un accord préalable de l'auteur ou des titulaires des droits concernés.</p>
+          <p>
+              <a href="https://data.inpi.fr/" target="_blank" rel="noopener noreferrer">
+                  Vérifier la marque sur Data INPI
+              </a>
+          </p>
+      </footer>
+    </div>
+  </section>
+
+  <!-- MODALE LIVRE DES RÈGLES -->
+  <div id="modalRegles" onclick="fermerReglesSurFond(event)">
+    <div class="livre-container">
+      <div class="livre-header">
+        <span>📖 Petit Livre des Règles</span>
+        <span>Page <span id="numPageCourante">1</span> / 4</span>
+      </div>
+      
+      <div class="livre-body" id="corpsLivreRegles">
+        <img id="imgReglePage" src="" alt="Page des règles du jeu" class="livre-page-img">
+      </div>
+      
+      <div class="livre-footer">
+        <div style="display: flex; gap: 5px; align-items: center;">
+          <button onclick="zoomerRegles(0.2)" class="secondary" title="Zoomer">+</button>
+          <button onclick="zoomerRegles(-0.2)" class="secondary" title="Dézoomer">-</button>
+          <button onclick="reinitialiserZoomRegles()" class="secondary" title="Réinitialiser le zoom">1:1</button>
+        </div>
+        <div>
+          <button id="btnPagePrecedente" onclick="changerPageRegles(-1)" class="secondary">◀ Page précédente</button>
+          <button onclick="fermerRegles()" class="secondary">Fermer</button>
+          <button id="btnPageSuivante" onclick="changerPageRegles(1)">Page suivante ▶</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHOIX DES PERSONNAGES -->
+  <section id="personnages" class="screen">
+    <div class="panel center">
+      <h2>Choisis 5 personnages</h2>
+      <p>Sélectionne tes avatars pour la partie parmi les 10 personnages disponibles. (<span id="compteurSelection">0</span>/5 validés)</p>
+      
+      <div class="button-row">
+        <button class="secondary" onclick="selectionnerCinqAleatoire()">Sélectionner pour moi 5 personnages</button>
+        <button id="validerPerso" onclick="aller('de')" disabled>Jouer avec ces personnages</button>
+      </div>
+      
+      <div class="perso-grid" id="grillePersos"></div>
+    </div>
+  </section>
+
+  <!-- MODALE PLEIN ÉCRAN -->
+  <div id="modalPleinEcran" onclick="fermerModalSurFond(event)">
+    <div class="modal-content">
+      <img id="imgModalPleinEcran" class="modal-img" src="" alt="Carte en grand">
+      <div id="modalBoutonsValidation">
+        <button onclick="troisiemeClicValider()">Valider cette carte</button>
+      </div>
+      <div id="modalBoutonsChanceNouveau" style="display:none;">
+        <button onclick="utiliserMaintenantChance()">Utiliser maintenant</button>
+        <button onclick="conserverCarteChance()">Conserver</button>
+      </div>
+      <div id="modalBoutonsChanceConservee" style="display:none;">
+        <button onclick="utiliserMaintenantChance()">Utiliser maintenant</button>
+        <button onclick="conserverEncoreChance()">Conserver encore</button>
+      </div>
+      <div id="modalBoutonsBadge" style="display:none;">
+        <p style="font-weight: bold; margin-bottom: 8px;">Badge gagné ?</p>
+        <button onclick="validerBadgeGagne(true)">Oui</button>
+        <button class="secondary" onclick="validerBadgeGagne(false)">Non</button>
+      </div>
+      <button id="btnLirePerso" onclick="lirePersonnageActuel()">🔊 Lire la carte</button>
+      <button class="secondary" onclick="fermerSansValider()">Fermer</button>
+    </div>
+  </div>
+
+  <!-- LANCER DU DÉ -->
+  <section id="de" class="screen">
+    <div class="panel center">
+      <h2>Lance le dé</h2>
+      <p>Le résultat indique le domaine de la carte à jouer.</p>
+      <div id="die">?</div>
+      <div class="button-row">
+        <button onclick="lancerDe()">Lancer le dé</button>
+        <button id="continuerDe" onclick="aller('niveau')" disabled>Continuer</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- NIVEAU -->
+  <section id="niveau" class="screen">
+    <div class="panel center">
+      <h2>Choisis ton niveau</h2>
+      <div class="choices">
+        <button onclick="choisirNiveau('CM1')">CM1</button>
+        <button onclick="choisirNiveau('CM2')">CM2</button>
+        <button onclick="choisirNiveau('6E')">6e</button>
+      </div>
+      <p id="niveauInfo" class="muted"></p>
+    </div>
+  </section>
+
+  <!-- PAQUET DE CARTES -->
+  <section id="paquet" class="screen">
+    <div class="panel center">
+      <h2 id="titrePaquet">Carte</h2>
+      
+      <div class="deck-container">
+        <div class="deck-stack" id="deckStackStyle"></div>
+
+        <div id="carte" class="card" data-state="back" onclick="pivoterCarte()">
+          <div class="card-inner">
+            
+            <div class="card-face card-back-face" id="cardBackStyle">
+              <div class="card-back-pattern" id="backPattern">
+                <div class="card-label" style="color: white;">Joue-Maths-Gie</div>
+                <div class="card-back-title" id="backDomaineTitle">Domaine</div>
+              </div>
+            </div>
+            
+            <div class="card-face card-question-face">
+              <img id="questionImg" class="card-question-img" src="" alt="Carte question">
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <p id="aide" class="muted"></p>
+      <p id="reponseAffichee" class="muted"></p>
+      <p id="feedback"></p>
+      <div>
+        <button onclick="afficherAide()">Afficher l'aide</button>
+        <button onclick="afficherReponse()">Afficher la réponse</button>
+        <button id="btnLireQuestion" onclick="lireQuestion()">🔊 Lire</button>
+      </div>
+      <div style="margin-top: 10px;">
+        <button onclick="nouvelleCarte()">Autre carte</button>
+        <button class="secondary" onclick="aller('plateau')">Plateau</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLATEAU -->
+  <section id="plateau" class="screen">
+    <div class="panel center">
+      
+      <div class="plateau-top-container">
+        <!-- 1. Réceptacle Badges -->
+        <div class="chance-section">
+          <div id="receptacleBadges" class="badge-receptacle-box" title="Badges disponibles"></div>
+          <span style="font-size: 0.55rem; font-weight: bold; text-align: center; line-height: 1;">Badge</span>
+        </div>
+
+        <!-- 2. Réceptacle Badges Gagnés -->
+        <div class="chance-section">
+          <div id="receptacleBadgesActifs" class="badge-receptacle-box" title="Badges gagnés"></div>
+          <span style="font-size: 0.55rem; font-weight: bold; text-align: center; line-height: 1;">Badges gagnés</span>
+        </div>
+
+        <!-- 3. Réceptacle Vies Actives -->
+        <div class="chance-section">
+          <div id="receptacleViesActives" class="vie-receptacle-box" title="Vies actives"></div>
+          <span style="font-size: 0.55rem; font-weight: bold; text-align: center; line-height: 1;">Vies actives</span>
+        </div>
+
+        <!-- 4. Réceptacle Vies Perdues -->
+        <div class="chance-section">
+          <div id="receptacleViesPerdues" class="vie-receptacle-box" title="Vies perdues"></div>
+          <span style="font-size: 0.55rem; font-weight: bold; text-align: center; line-height: 1;">Vies perdues</span>
+        </div>
+
+        <!-- 5. Cartes Chance et Malchance -->
+        <div class="chance-section">
+          <div class="chance-deck-preview" onclick="tirerCarteChance()" title="Tirer une carte chance et malchance"></div>
+          <span style="font-size: 0.55rem; font-weight: bold; text-align: center; line-height: 1;">Carte chance</span>
+        </div>
+
+        <!-- 6. Carte Conservée -->
+        <div class="chance-section">
+          <div id="savedChanceSlot" class="saved-chance-slot" onclick="cliquerCarteConservee()" title="Aucune carte conservée"></div>
+          <span style="font-size: 0.55rem; font-weight: bold; text-align: center; line-height: 1;">Conservée</span>
+        </div>
+      </div>
+
+      <div id="board">
+        <img id="boardImg" src="https://raw.githubusercontent.com/phcasarotto/JMG/main/plateau_definitif.png" alt="Plateau de jeu" class="board-img">
+      </div>
+
+      <div id="pawns"></div>
+
+      <p style="font-size: 0.9rem; margin-top: 10px;">
+        Glisse et déplace ton pion sur le plateau en fonction des <span class="info-points" onclick="afficherInfoPoints()">points obtenus</span> à ta question.<br>
+        Si ton pion tombe sur une case chance, tire une carte chance, utilise-la ou conserve-la en haut à droite.<br>
+        <i>Astuce : clique sur le nom d'un des personnages pour afficher sa carte en grand.</i>
+      </p>
+
+      <br>
+      <button onclick="aller('de')">Prochaine question</button>
+      <button class="secondary" onclick="finDePartie()">Fin de partie</button>
+    </div>
+  </section>
+</main>
+
+<script>
+const domaines = {
+  VDN:  { nom: "Vallée des nombres", couleur: "#0066b2", textCouleur: "#ffffff" },
+  MDP:  { nom: "Montagne des problèmes", couleur: "#f39c12", textCouleur: "#ffffff" },
+  P2D:  { nom: "Plaine 2D", couleur: "#27ae60", textCouleur: "#ffffff" },
+  E3D:  { nom: "Espace 3D", couleur: "#8e44ad", textCouleur: "#ffffff" },
+  EM:   { nom: "English Maths", couleur: "#e74c3c", textCouleur: "#ffffff" }
+};
+
+const baseUrl = "https://raw.githubusercontent.com/phcasarotto/JMG/main/";
+
+const pagesReglesImages = [
+  baseUrl + "scenario_9_1.png",
+  baseUrl + "scenario_9_2.png",
+  baseUrl + "scenario_9_3.png",
+  baseUrl + "scenario_9_4.png"
+];
+let pageRegleIndex = 0;
+let zoomRegleEchelle = 1;
+let reglePanX = 0;
+let reglePanY = 0;
+let estEnTrainDeGlisser = false;
+let startX = 0, startY = 0;
+
+function ouvrirRegles() {
+  pageRegleIndex = 0;
+  zoomRegleEchelle = 1;
+  reglePanX = 0;
+  reglePanY = 0;
+  document.getElementById("modalRegles").classList.add("active");
+  mettreAJourAffichageRegles();
+  initialiserInteractionsZoomRegles();
+}
+
+function fermerRegles() {
+  document.getElementById("modalRegles").classList.remove("active");
+}
+
+function fermerReglesSurFond(e) {
+  if (e.target.id === "modalRegles") fermerRegles();
+}
+
+function changerPageRegles(direction) {
+  pageRegleIndex += direction;
+  if (pageRegleIndex < 0) pageRegleIndex = 0;
+  if (pageRegleIndex >= pagesReglesImages.length) pageRegleIndex = pagesReglesImages.length - 1;
+  zoomRegleEchelle = 1;
+  reglePanX = 0;
+  reglePanY = 0;
+  mettreAJourAffichageRegles();
+}
+
+function zoomerRegles(delta) {
+  zoomRegleEchelle = Math.max(1, Math.min(4, zoomRegleEchelle + delta));
+  if (zoomRegleEchelle === 1) {
+    reglePanX = 0;
+    reglePanY = 0;
+  }
+  appliquerTransformationRegle();
+}
+
+function reinitialiserZoomRegles() {
+  zoomRegleEchelle = 1;
+  reglePanX = 0;
+  reglePanY = 0;
+  appliquerTransformationRegle();
+}
+
+function appliquerTransformationRegle() {
+  const imgElement = document.getElementById("imgReglePage");
+  if (imgElement) {
+    imgElement.style.transform = `translate(${reglePanX}px, ${reglePanY}px) scale(${zoomRegleEchelle})`;
+  }
+}
+
+function initialiserInteractionsZoomRegles() {
+  const corpsLivre = document.getElementById("corpsLivreRegles");
+  const imgElement = document.getElementById("imgReglePage");
+  if (!corpsLivre || !imgElement) return;
+
+  corpsLivre.onwheel = function(e) {
+    e.preventDefault();
+    if (e.deltaY < 0) {
+      zoomerRegles(0.2);
+    } else {
+      zoomerRegles(-0.2);
+    }
+  };
+
+  imgElement.onpointerdown = function(e) {
+    if (zoomRegleEchelle > 1) {
+      estEnTrainDeGlisser = true;
+      startX = e.clientX - reglePanX;
+      startY = e.clientY - reglePanY;
+      imgElement.setPointerCapture(e.pointerId);
+    }
+  };
+
+  imgElement.onpointermove = function(e) {
+    if (!estEnTrainDeGlisser) return;
+    reglePanX = e.clientX - startX;
+    reglePanY = e.clientY - startY;
+    appliquerTransformationRegle();
+  };
+
+  imgElement.onpointerup = function(e) {
+    estEnTrainDeGlisser = false;
+    try { imgElement.releasePointerCapture(e.pointerId); } catch(err) {}
+  };
+
+  imgElement.onpointercancel = function() {
+    estEnTrainDeGlisser = false;
+  };
+}
+
+function mettreAJourAffichageRegles() {
+  const imgElement = document.getElementById("imgReglePage");
+  if (imgElement) {
+    imgElement.src = pagesReglesImages[pageRegleIndex];
+    imgElement.style.transform = `translate(0px, 0px) scale(${zoomRegleEchelle})`;
+  }
+  document.getElementById("numPageCourante").textContent = pageRegleIndex + 1;
+  document.getElementById("btnPagePrecedente").disabled = pageRegleIndex === 0;
+  document.getElementById("btnPageSuivante").disabled = pageRegleIndex === pagesReglesImages.length - 1;
+}
+
+const nomsPersonnages = {
+  1: "Euclide", 2: "Hipparque", 3: "Hypatie d'Alexandrie", 4: "Maria Gaetana Agnesi",
+  5: "Isaac Newton", 6: "Claude Ptolémée", 7: "Pythagore", 8: "Thalès",
+  9: "François Viète", 10: "Cédric Villani"
+};
+
+const nomsFichiersPions = {
+  1: "pioneuclide.png",
+  2: "pionhipparque.png",
+  3: "pionhypatie.png",
+  4: "pionmaria.png",
+  5: "pionnewton.png",
+  6: "pionptolémée.png",
+  7: "pionpythagore.png",
+  8: "pionthalès.png",
+  9: "pionviete.png",
+  10: "pionvillani.png"
+};
+
+const couleursPions = ["#e74c3c", "#3498db", "#2ecc71", "#f1c40f", "#9b59b6"];
+const badgesGithub = ["BADGE BLEU.png", "BADGE JAUNE.png", "BADGE ROUGE.png", "BADGE VERT.png", "BADGE VIOLET.png"];
+const viesGithub = ["vie1.png", "vie2.png", "vie3.png"];
+
+const etatsPersonnages = {}; 
+let carteEnCoursEnGrand = null;
+let audioActuel = null;
+let derniereCarteChanceTiree = "";
+let carteChanceConservee = "";
+let badgeIndexEnCours = null;
+const badgesGagnesEtat = [false, false, false, false, false]; 
+const viesEtat = [false, false, false];
+
+function initialiserPersonnages() {
+  const grille = document.getElementById("grillePersos");
+  if (!grille) return;
+  grille.innerHTML = "";
+  
+  for (let i = 1; i <= 10; i++) {
+    const url = baseUrl + `perso_${i}.png`;
+    etatsPersonnages[url] = { etat: 0, numero: i };
+
+    const card = document.createElement("div");
+    card.className = "perso-card";
+    card.id = `card_perso_${i}`;
+    card.onclick = () => gererClicPersonnage(url, card, i);
+    
+    const img = document.createElement("img");
+    img.className = "perso-img";
+    img.src = url;
+    img.alt = `Personnage ${i}`;
+    
+    card.appendChild(img);
+    grille.appendChild(card);
+  }
+}
+
+function gererClicPersonnage(url, elementCard, numero) {
+  let etatActuel = etatsPersonnages[url].etat;
+
+  if (etatActuel === 0) {
+    etatsPersonnages[url].etat = 1;
+    elementCard.classList.add("selected");
+  } 
+  else if (etatActuel === 1) {
+    ouvrirModalPleinEcran(url, numero, true, 'perso');
+  } 
+  else if (etatActuel === 3) {
+    etatsPersonnages[url].etat = 0;
+    elementCard.classList.remove("validated", "selected");
+    mettreAJourInterfaceSelection();
+  }
+}
+
+function selectionnerCinqAleatoire() {
+  Object.keys(etatsPersonnages).forEach(url => {
+    etatsPersonnages[url].etat = 0;
+  });
+  for (let i = 1; i <= 10; i++) {
+    const c = document.getElementById(`card_perso_${i}`);
+    if (c) c.classList.remove("selected", "validated");
+  }
+
+  let indicesAleatoires = [];
+  while (indicesAleatoires.length < 5) {
+    let rand = Math.floor(Math.random() * 10) + 1;
+    if (!indicesAleatoires.includes(rand)) {
+      indicesAleatoires.push(rand);
+    }
+  }
+
+  indicesAleatoires.forEach(num => {
+    let urlCible = baseUrl + `perso_${num}.png`;
+    if (etatsPersonnages[urlCible]) {
+      etatsPersonnages[urlCible].etat = 3;
+      const cardElement = document.getElementById(`card_perso_${num}`);
+      if (cardElement) {
+        cardElement.classList.add("validated");
+      }
+    }
+  });
+
+  mettreAJourInterfaceSelection();
+}
+
+function tirerCarteChance() {
+  const randNum = Math.floor(Math.random() * 40) + 1;
+  derniereCarteChanceTiree = baseUrl + `chance_${randNum}.png`;
+  ouvrirModalPleinEcran(derniereCarteChanceTiree, null, false, 'chance_nouveau');
+}
+
+function cliquerCarteConservee() {
+  if (!carteChanceConservee) return;
+  ouvrirModalPleinEcran(carteChanceConservee, null, false, 'chance_conservee');
+}
+
+function conserverCarteChance() {
+  carteChanceConservee = derniereCarteChanceTiree;
+  mettreAJourSlotChanceConservee();
+  fermerModalPleinEcran();
+}
+
+function conserverEncoreChance() {
+  fermerModalPleinEcran();
+}
+
+function utiliserMaintenantChance() {
+  carteChanceConservee = "";
+  mettreAJourSlotChanceConservee();
+  fermerModalPleinEcran();
+  alert("Carte Chance utilisée ! Applique la consigne sur le plateau.");
+}
+
+function mettreAJourSlotChanceConservee() {
+  const slot = document.getElementById("savedChanceSlot");
+  if (!slot) return;
+  if (carteChanceConservee) {
+    slot.style.backgroundImage = `url("${carteChanceConservee}")`;
+    slot.style.borderStyle = "solid";
+    slot.title = "Clique pour voir la carte conservée";
+  } else {
+    slot.style.backgroundImage = "none";
+    slot.style.borderStyle = "dashed";
+    slot.title = "Aucune carte conservée";
+  }
+}
+
+function basculerBadge(index) {
+  if (!badgesGagnesEtat[index]) {
+    badgeIndexEnCours = index;
+    const badgeUrl = baseUrl + encodeURIComponent(badgesGithub[index]);
+    ouvrirModalPleinEcran(badgeUrl, null, false, 'badge');
+  } else {
+    badgesGagnesEtat[index] = false;
+    actualiserAffichageBadges();
+  }
+}
+
+function validerBadgeGagne(gagne) {
+  if (gagne && badgeIndexEnCours !== null) {
+    badgesGagnesEtat[badgeIndexEnCours] = true;
+  }
+  fermerModalPleinEcran();
+  actualiserAffichageBadges();
+}
+
+function actualiserAffichageBadges() {
+  const receptDefaut = document.getElementById("receptacleBadges");
+  const receptActifs = document.getElementById("receptacleBadgesActifs");
+  if (!receptDefaut || !receptActifs) return;
+
+  receptDefaut.innerHTML = "";
+  receptActifs.innerHTML = "";
+
+  for (let i = 0; i < 5; i++) {
+    const badgeDiv = document.createElement("div");
+    badgeDiv.className = "badge-item";
+    badgeDiv.style.backgroundImage = `url("${baseUrl + encodeURIComponent(badgesGithub[i])}")`;
+    badgeDiv.onclick = () => basculerBadge(i);
+
+    if (!badgesGagnesEtat[i]) {
+      badgeDiv.title = `Badge ${i+1} (cliquer pour valider/gagner)`;
+      receptDefaut.appendChild(badgeDiv);
+    } else {
+      badgeDiv.title = `Badge ${i+1} gagné (cliquer pour le remettre)`;
+      receptActifs.appendChild(badgeDiv);
+    }
+  }
+}
+
+function basculerVie(index) {
+  viesEtat[index] = !viesEtat[index];
+  actualiserAffichageVies();
+}
+
+function actualiserAffichageVies() {
+  const receptacleActifs = document.getElementById("receptacleViesActives");
+  const receptaclePerdus = document.getElementById("receptacleViesPerdues");
+  if (!receptacleActifs || !receptaclePerdus) return;
+  
+  receptacleActifs.innerHTML = "";
+  receptaclePerdus.innerHTML = "";
+
+  for (let i = 0; i < 3; i++) {
+    const vieDiv = document.createElement("div");
+    vieDiv.className = "vie-item";
+    vieDiv.style.backgroundImage = `url("${baseUrl + viesGithub[i]}")`;
+    vieDiv.onclick = () => basculerVie(i);
+
+    if (!viesEtat[i]) {
+      vieDiv.title = `Vie ${i+1} (cliquer pour perdre)`;
+      receptacleActifs.appendChild(vieDiv);
+    } else {
+      vieDiv.classList.add("perdue");
+      vieDiv.style.filter = "grayscale(100%) brightness(1.4)";
+      vieDiv.style.opacity = "0.5";
+      vieDiv.title = `Vie ${i+1} perdue (cliquer pour réactiver)`;
+      receptaclePerdus.appendChild(vieDiv);
+    }
+  }
+}
+
+function ouvrirModalPleinEcran(url, numero, modeSelection = false, type = 'perso') {
+  carteEnCoursEnGrand = { url, numero, modeSelection, type };
+  document.getElementById("imgModalPleinEcran").src = url;
+  
+  const boutonValidationDiv = document.getElementById("modalBoutonsValidation");
+  const boutonChanceNouveauDiv = document.getElementById("modalBoutonsChanceNouveau");
+  const boutonChanceConserveeDiv = document.getElementById("modalBoutonsChanceConservee");
+  const boutonBadgeDiv = document.getElementById("modalBoutonsBadge");
+  const btnLire = document.getElementById("btnLirePerso");
+  const btnFermerBas = document.querySelector("#modalPleinEcran .secondary:last-of-type");
+
+  boutonValidationDiv.style.display = "none";
+  boutonChanceNouveauDiv.style.display = "none";
+  boutonChanceConserveeDiv.style.display = "none";
+  boutonBadgeDiv.style.display = "none";
+  if (btnLire) btnLire.style.display = "none";
+  if (btnFermerBas) btnFermerBas.style.display = "inline-block";
+
+  if (type === 'chance_nouveau') {
+    boutonChanceNouveauDiv.style.display = "block";
+    if (btnFermerBas) btnFermerBas.style.display = "none";
+  } else if (type === 'chance_conservee') {
+    boutonChanceConserveeDiv.style.display = "block";
+    if (btnFermerBas) btnFermerBas.style.display = "none";
+  } else if (type === 'badge') {
+    boutonBadgeDiv.style.display = "block";
+    if (btnFermerBas) btnFermerBas.style.display = "none";
+  } else if (type === 'perso') {
+    boutonValidationDiv.style.display = modeSelection ? "block" : "none";
+    if (btnLire) btnLire.style.display = "inline-block";
+  }
+
+  document.getElementById("modalPleinEcran").classList.add("active");
+}
+
+function troisiemeClicValider() {
+  if (!carteEnCoursEnGrand || !carteEnCoursEnGrand.modeSelection) return;
+  const { url, numero } = carteEnCoursEnGrand;
+
+  const nbvalides = Object.values(etatsPersonnages).filter(v => v.etat === 3).length;
+  if (nbvalides >= 5) {
+    alert("Tu as déjà validé 5 personnages maximum !");
+    fermerModalPleinEcran();
+    return;
+  }
+
+  etatsPersonnages[url].etat = 3;
+  const cardElement = document.getElementById(`card_perso_${numero}`);
+  if (cardElement) {
+    cardElement.classList.remove("selected");
+    cardElement.classList.add("validated");
+  }
+  
+  fermerModalPleinEcran();
+  mettreAJourInterfaceSelection();
+}
+
+function fermerSansValider() {
+  if (!carteEnCoursEnGrand) return;
+  if (carteEnCoursEnGrand.modeSelection) {
+    const { url, numero } = carteEnCoursEnGrand;
+    etatsPersonnages[url].etat = 0;
+    const cardElement = document.getElementById(`card_perso_${numero}`);
+    if (cardElement) cardElement.classList.remove("selected", "validated");
+  }
+  fermerModalPleinEcran();
+}
+
+function fermerModalPleinEcran() {
+  if (audioActuel) { audioActuel.pause(); audioActuel = null; }
+  document.getElementById("modalPleinEcran").classList.remove("active");
+  carteEnCoursEnGrand = null;
+  badgeIndexEnCours = null;
+}
+
+function fermerModalSurFond(e) {
+  if (e.target.id === "modalPleinEcran") fermerSansValider();
+}
+
+function lirePersonnageActuel() {
+  if (!carteEnCoursEnGrand || !carteEnCoursEnGrand.type.startsWith('perso')) return;
+  if (audioActuel) audioActuel.pause();
+
+  let nomFichierAudio;
+  const num = carteEnCoursEnGrand.numero;
+  
+  if (num === 10) nomFichierAudio = "Villani.mp3";
+  else if (num === 9) nomFichierAudio = "perso9.mp3";
+  else if (num === 8) nomFichierAudio = "Thales.mp3";
+  else if (num === 7) nomFichierAudio = "Pythagore.mp3";
+  else if (num === 6) nomFichierAudio = "Ptolemee.mp3";
+  else if (num === 4) nomFichierAudio = "Maria.mp3";
+  else if (num === 3) nomFichierAudio = "Hypathie.mp3";
+  else nomFichierAudio = `perso${num}.mp3`;
+
+  audioActuel = new Audio(baseUrl + nomFichierAudio);
+  audioActuel.play().catch(error => {
+    alert(`Le fichier audio '${nomFichierAudio}' n'est pas disponible.`);
+  });
+}
+
+function mettreAJourInterfaceSelection() {
+  const personnagesValides = Object.entries(etatsPersonnages).filter(([url, data]) => data.etat === 3);
+  const compteurEl = document.getElementById("compteurSelection");
+  const validerPersoEl = document.getElementById("validerPerso");
+  if (compteurEl) compteurEl.textContent = personnagesValides.length;
+  if (validerPersoEl) validerPersoEl.disabled = personnagesValides.length !== 5;
+
+  const boite = document.getElementById("pawns");
+  if (!boite) return;
+  boite.innerHTML = "";
+
+  personnagesValides.forEach(([url, data], i) => {
+    const couleur = couleursPions[i];
+    
+    const miniature = document.createElement("div");
+    miniature.className = "pawn-card-mini";
+    miniature.style.backgroundImage = `url("${url}")`;
+    miniature.style.borderBottom = "4px solid " + couleur;
+    miniature.title = nomsPersonnages[data.numero] || `Personnage ${data.numero}`;
+    miniature.onclick = () => {
+      ouvrirModalPleinEcran(url, data.numero, false, 'perso');
+    };
+    boite.appendChild(miniature);
+
+    const pion = document.getElementById("pion" + i);
+    if (pion) {
+      const nomFichierPion = nomsFichiersPions[data.numero] || "pionhypatie.png";
+      pion.style.backgroundImage = `url("${baseUrl + encodeURI(nomFichierPion)}")`;
+      pion.style.display = "block";
+      pion.dataset.url = url;
+      pion.dataset.numero = data.numero;
+    }
+  });
+
+  for (let i = personnagesValides.length; i < 5; i++) {
+    const pion = document.getElementById("pion" + i);
+    if (pion) pion.style.display = "none";
+  }
+
+  actualiserAffichageBadges();
+  actualiserAffichageVies();
+}
+
+function afficherInfoPoints() {
+  alert("Règle des points : Avance ton pion de 3 cases en cas de bonne réponse, de 2 cases en cas de bonne réponse avec une aide. Recule ton pion d'une case en cas de mauvaise réponse et de 2 cases en cas de mauvaise réponse avec de l'aide");
+}
+
+/* Dictionnaire des solutions et aides spécifiques */
+const solutionsSpecifiques = {
+  // --- PLAINE 2D (P2D) - CM1 ---
+  "P2D_CM1_1": { h: "Dessine-les.", a: "Tracer les figures géométriques demandées en respectant les consignes de dimensions." },
+  "P2D_CM1_2": { h: "Si on te dit polygone ?", a: "C'est un polygone car la figure est fermée et ses côtés sont des segments." },
+  "P2D_CM1_3": { h: "Que sont A et B ? Que représentent les parenthèses ?", a: "Place les points A et B et trace la droite (AB) : ligne qui ne s'arrête pas." },
+  "P2D_CM1_4": { h: "Trace le segment [AB] puis prends ton compas. Un triangle équilatéral a 3 côtés égaux.", a: "Tracer un triangle équilatéral dont les 3 côtés ont la même longueur que [AB]." },
+  "P2D_CM1_5": { h: "Triangle rectangle : angle droit. Attention à l'emplacement de l'angle droit.", a: "Tracer un triangle avec un angle droit à l'endroit indiqué." },
+  "P2D_CM1_6": { h: "Fais un schéma.", a: "Un triangle équilatéral." },
+  "P2D_CM1_7": { h: "Fais un schéma.", a: "Un losange." },
+  "P2D_CM1_8": { h: "Fais un schéma.", a: "Un losange." },
+  "P2D_CM1_9": { h: "Fais un schéma.", a: "Un parallélogramme." },
+  "P2D_CM1_10": { h: "Un trapèze est un quadrilatère qui a 2 côtés opposés parallèles.", a: "Tracer un trapèze." },
+  "P2D_CM1_11": { h: "Fais un schéma.", a: "Un carré." },
+  "P2D_CM1_12": { h: "Fais un schéma.", a: "Un trapèze." },
+  "P2D_CM1_13": { h: "Fais un schéma.", a: "Un triangle équilatéral." },
+  "P2D_CM1_14": { h: "Fais un schéma.", a: "Un triangle isocèle." },
+  "P2D_CM1_15": { h: "Il n'y a pas d'aide pour cette question.", a: "La figure c : elle n’a pas d’angle droit." },
+  "P2D_CM1_16": { h: "Il n'y a pas d'aide pour cette question.", a: "Un quadrilatère." },
+  "P2D_CM1_17": { h: "Il n'y a pas d'aide pour cette question.", a: "Un cercle." },
+  "P2D_CM1_18": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "8 + 6 = 14 ; 14 x 2 = 28 cm. Mon périmètre vaut 28 cm." },
+  "P2D_CM1_19": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "12 ÷ 4 = 3 cm. Mon côté mesure 3 cm." },
+  "P2D_CM1_20": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "13 + 13 + 13 = 13 x 3 = 39 cm. Mon périmètre vaut 39 cm." },
+
+  // --- PLAINE 2D (P2D) - CM2 ---
+  "P2D_CM2_1": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "P = 4 x c = 4 x 9 = 36 cm. Mon périmètre mesure 36 cm." },
+  "P2D_CM2_2": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "P = 36 cm et P = 3 x c. Le côté mesure 12 cm." },
+  "P2D_CM2_3": { h: "L'aire d'un rectangle est donnée par la formule : ... x ...", a: "A = L x l = 9 x 5 = 45 cm². Son aire est de 45 cm²." },
+  "P2D_CM2_4": { h: "Il n'y a pas d'aide pour cette question.", a: "Faux, le triangle rectangle ne possède pas d’axe de symétrie." },
+  "P2D_CM2_5": { h: "Un rectangle a 4 cotés égaux parallèles à 2 et 4 angles droits.", a: "On a besoin d'une règle et d'une équerre." },
+  "P2D_CM2_6": { h: "Un polygone est une figure fermée à plusieurs côtés.", a: "Les formes 1, 6 et 8 ne sont pas des polygones." },
+  "P2D_CM2_7": { h: "Compare les maisons 2 par 2 et regarde bien les formes.", a: "Les maisons A et D contiennent les mêmes formes." },
+  "P2D_CM2_8": { h: "Qu'est-ce que le rayon d'un cercle ? le diamètre ? Le rayon est ............du diamètre.", a: "r = 3,5 cm." },
+  "P2D_CM2_9": { h: "Des figures symétriques sont des figures semblables mais inversées comme dans un miroir.", a: "2 et 6 présentent une symétrie." },
+  "P2D_CM2_10": { h: "Fais un schéma.", a: "Je suis un rectangle." },
+  "P2D_CM2_11": { h: "Fais un schéma.", a: "Je suis un triangle rectangle." },
+  "P2D_CM2_12": { h: "Un parallélogramme a des côtés égaux et parallèles 2 à 2.", a: "b, c et d sont des parallélogrammes." },
+  "P2D_CM2_13": { h: "Fais un schéma.", a: "Je suis un losange." },
+  "P2D_CM2_14": { h: "Trace une diagonale de la longueur de ton choix et trace deux triangles isocèles.", a: "Tracer deux côtés [AB] et [AD] (on choisit l'angle que l'on veut) / Tracer un arc de cercle de centre B et de rayon 3 cm / Tracer un arc de cercle de centre D et de rayon 3 cm, nommer C / Tracer [BC] et [DC]." },
+  "P2D_CM2_15": { h: "Fais un schéma.", a: "Je suis un triangle équilatéral." },
+  "P2D_CM2_16": { h: "Il n'y a pas d'aide pour cette question.", a: "50 ÷ 2 = 25 ; 25 - 15 = 10 cm. Ma largeur mesure 10 cm." },
+  "P2D_CM2_17": { h: "Il n'y a pas d'aide pour cette question.", a: "P = 2 x pi x R." },
+  "P2D_CM2_18": { h: "Il n'y a pas d'aide pour cette question.", a: "On a besoin d'une règle et d'un compas." },
+  "P2D_CM2_19": { h: "Il n'y a pas d'aide pour cette question.", a: "On a besoin d'une règle et d'une équerre : 1. Pour tracer un carré 3 cm de côté, je trace un segment de 3 cm. 2. Je trace une droite perpendiculaire. 3. Je trace une deuxième droite perpendiculaire. 4. Je mesure ces deux droites pour qu'elles mesurent 3 cm et je trace le dernier côté." },
+  "P2D_CM2_20": { h: "Il n'y a pas d'aide pour cette question.", a: "On a besoin d'une règle et d'un compas." },
+
+  // --- PLAINE 2D (P2D) - 6E ---
+  "P2D_6E_1": { h: "L'aire d'un carré est donnée par la formule : ... x ...", a: "L'aire du carré de côté AB = 12 cm est 12 x 12 = 144 cm²." },
+  "P2D_6E_2": { h: "L'aire d'un rectangle est donnée par la formule : ... x ...", a: "L'aire du rectangle de côtés AB = 12 cm et BC = 7 cm est 12 x 7 = 84 cm²." },
+  "P2D_6E_3": { h: "La médiatrice d'un segment est la droite ... à ce segment passant par son ...", a: "La droite D2 est une des médiatrices du triangle ABC, elle est perpendiculaire à [AB] et passe par le milieu de [AB]." },
+  "P2D_6E_4": { h: "Il n'y a pas d'aide pour cette question.", a: "La notation EF représente la longueur du segment [EF]." },
+  "P2D_6E_5": { h: "L'aire d'un disque est donnée par la formule : ... x ...²", a: "L'aire (au dixième) du cercle C de diamètre 8 cm est pi x R² soit environ 3,14 x 4² = 50,2 cm²." },
+  "P2D_6E_6": { h: "Quelle est la différence entre [...], (...), [...] ?", a: "O appartient à (AB), car il est à droite du point B." },
+  "P2D_6E_7": { h: "Le périmètre d'un cercle est donné par la formule : ... x pi x ...", a: "Le périmètre du cercle de centre A et de rayon AB = 5 cm est 2 x pi x R soit environ 2 x 3,14 x 5 = 31,4 cm." },
+  "P2D_6E_8": { h: "Quelle est la différence entre [...], (...), [...] ?", a: "La notation [AB) représente la demi-droite d'origine A." },
+  "P2D_6E_9": { h: "Le périmètre d'une figure est la longueur du contour de cette figure.", a: "Pour le rectangle : P = 2L + 2l ou P = 2(L + l), pour le Cercle : P = 2 x pi x R." },
+  "P2D_6E_10": { h: "Il n'y a pas d'aide pour cette question.", a: "Il s'appelle l'angle aigu." },
+  "P2D_6E_11": { h: "Deux droites perpendiculaires sont deux droites sécantes qui forment 4 angles droits.", a: "Elles sont perpendiculaires dans la figure B." },
+  "P2D_6E_12": { h: "Utilise éventuellement les carreaux.", a: "Voici la figure symétrique A'B'C'." },
+  "P2D_6E_13": { h: "Il n'y a pas d'aide pour cette question.", a: "Elle possède 5 axes de symétrie." },
+  "P2D_6E_14": { h: "Il n'y a pas d'aide pour cette question.", a: "Si le point A est le symétrique du point B par rapport à la droite (d) alors la droite (d) est la médiatrice du segment [AB]." },
+  "P2D_6E_15": { h: "Il n'y a pas d'aide pour cette question.", a: "Les triangles suivants sont : Triangle isocèle, Triangle rectangle, Triangle rectangle et isocèle, Triangle équilatéral." },
+  "P2D_6E_16": { h: "Il n'y a pas d'aide pour cette question.", a: "Un carré de côté 200." },
+  "P2D_6E_17": { h: "La mesure d'un angle obtus est supérieure à 90°, celle d'un angle aigu est inférieur à 90° l'angle est droit pour 90°.", a: "L'angle est aigu." },
+  "P2D_6E_18": { h: "Il n'y a pas d'aide pour cette question.", a: "Voici la figure." },
+  "P2D_6E_19": { h: "Construire la perpendiculaire à la droite (d) passant par A.", a: "C'est la longueur du segment [AH]." },
+  "P2D_6E_20": { h: "Il n'y a pas d'aide pour cette question.", a: "Le segment [E'F'] mesure 3 cm car la symétrie axiale conserve les longueurs." },
+
+  // --- ESPACE 3D (E3D) - CM1 ---
+  "E3D_CM1_1": { h: "Tu peux compter le nombre de cubes dans une rangée et tu peux compter le nombre de rangées.", a: "Il y a 50 cubes : il y a 5 cubes dans une rangée, il y a 10 rangées, 5 x 10 = 50." },
+  "E3D_CM1_2": { h: "Compte étage par étage...", a: "3 x 3 + 2 x 2 + 1 = 14 cubes." },
+  "E3D_CM1_3": { h: "Compte étage par étage...", a: "4 x 4 + 3 x 3 + 2 x 2 + 1 = 30 cubes." },
+  "E3D_CM1_4": { h: "Compte étage par étage...", a: "10 x 10 x 10 = 1 000 cubes" },
+  "E3D_CM1_5": { h: "On peut taper sur une face.", a: "Un cube possède 6 faces." },
+  "E3D_CM1_6": { h: "Il n'y a pas d'aide pour cette question.", a: "Un cylindre." },
+  "E3D_CM1_7": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "4 + 4 = 8" },
+  "E3D_CM1_8": { h: "Observe les faces.", a: "C'est un solide dont toutes les faces sont des polygones." },
+  "E3D_CM1_9": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Une sphère ne possède pas d'arête." },
+  "E3D_CM1_10": { h: "Il n'y a pas d'aide pour cette question.", a: "Une pyramide à base triangulaire." },
+  "E3D_CM1_11": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Un parallélépipède possède 6 faces." },
+  "E3D_CM1_12": { h: "Observe les arêtes.", a: "La pyramide est le seul polyèdre parmi la liste." },
+  "E3D_CM1_13": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Un parallélépipède possède 8 sommets." },
+  "E3D_CM1_14": { h: "Il n'y a pas d'aide pour cette question.", a: "Un cube possède 6 faces de nature carrée." },
+  "E3D_CM1_15": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "La sphère possède une seule face." },
+  "E3D_CM1_16": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Un cône possède une arête." },
+  "E3D_CM1_17": { h: "Observe les arêtes.", a: "Le cône, ce n'est pas un polyèdre." },
+  "E3D_CM1_18": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Un cône possède 2 faces." },
+  "E3D_CM1_19": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "6 faces latérales + 2 bases donc il possède 8 faces." },
+  "E3D_CM1_20": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "Un cylindre ne possède pas de sommet." },
+
+  // --- ESPACE 3D (E3D) - CM2 ---
+  "E3D_CM2_1": { h: "Représente-toi le cube et dis-toi :\nfaces : ça claque, sommets : ça pique,\narêtes : ça coupe.", a: "Un cube possède 6 faces, 8 sommets, 12 arêtes." },
+  "E3D_CM2_2": { h: "Un cube est constitué de carrés.", a: "Un de ces 11 patrons." },
+  "E3D_CM2_3": { h: "Une pyramide à base carrée est constituée de carré(s) et de triangle(s).", a: "Exemple de patron." },
+  "E3D_CM2_4": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "5 sommets, 5 faces, 8 arêtes." },
+  "E3D_CM2_5": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "8 faces, 12 sommets, 18 arêtes." },
+  "E3D_CM2_6": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "5 faces, 9 arêtes, 6 sommets." },
+  "E3D_CM2_7": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "1 face, 0 sommet, 0 arête." },
+  "E3D_CM2_8": { h: "On peut taper sur une face.", a: "6 faces." },
+  "E3D_CM2_9": { h: "Il n'y a pas d'aide pour cette question.", a: "Une sphère." },
+  "E3D_CM2_10": { h: "Il n'y a pas d'aide pour cette question.", a: "Un cylindre." },
+  "E3D_CM2_11": { h: "Il n'y a pas d'aide pour cette question.", a: "Un parallélépipède." },
+  "E3D_CM2_12": { h: "Il n'y a pas d'aide pour cette question.", a: "Un cône." },
+  "E3D_CM2_13": { h: "Observe les arêtes.", a: "Le cylindre, ce n'est pas un polyèdre." },
+  "E3D_CM2_14": { h: "Imagine plier et fermer ce patron : qu'obtiens-tu ?", a: "C'est le patron d'un prisme." },
+  "E3D_CM2_15": { h: "Imagine plier et fermer ce patron : qu'obtiens-tu ?", a: "C'est le patron d'une pyramide à base carrée." },
+  "E3D_CM2_16": { h: "Compte étage par étage...", a: "7 x 7 + 5 x 5 + 3 x 3 + 1 = 84." },
+  "E3D_CM2_17": { h: "Il n'y a pas d'aide pour cette question.", a: "C'est un solide dont toutes les faces sont des polygones." },
+  "E3D_CM2_18": { h: "Imagine plier et fermer ce patron : qu'obtiens-tu ?", a: "C'est le patron d'un cône." },
+  "E3D_CM2_19": { h: "Sommet ça pique, arête ça coupe, face ça claque.", a: "7 faces, 15 arêtes, 10 sommets." },
+  "E3D_CM2_20": { h: "Observe les propriétés.", a: "Le prisme, c'est le seul polyèdre." },
+
+  // --- ESPACE 3D (E3D) - 6E ---
+  "E3D_6E_1": { h: "Imagine plier et fermer ce patron : qu'obtiens-tu ?", a: "Faux, la figure représente le patron d'un pavé droit." },
+  "E3D_6E_2": { h: "Imagine plier et fermer ce patron : qu'obtiens-tu ?", a: "Vrai, la figure représente le patron d'un cylindre." },
+  "E3D_6E_3": { h: "Volume d'un parallélépipède : L x l x h", a: "Le volume d'un pavé droit de 4 centimètres de hauteur, de 5 centimètres de largeur et de 6 centimètres de longueur est égal à 4 x 5 x 6 = 120 cm³." },
+  "E3D_6E_4": { h: "Volume d'un cube : c x c x c", a: "Le volume du cube de 6 centimètres de côté est égal à 6 x 6 x 6 = 216 cm³." },
+  "E3D_6E_5": { h: "Il n'y a pas d'aide pour cette question.", a: "Patron géométrique de pavé droit." },
+  "E3D_6E_6": { h: "Il n'y a pas d'aide pour cette question.", a: "La sphère en rouge, le cône en marron et le prisme en violet." },
+  "E3D_6E_7": { h: "Aide-toi des carreaux. Attention aux pointillés !", a: "Représentation en perspective cavalière (prisme)." },
+  "E3D_6E_8": { h: "Il n'y a pas d'aide pour cette question.", a: "Représentation en perspective cavalière (pyramide)." },
+  "E3D_6E_9": { h: "Décompose cet objet en deux parties.", a: "Un cylindre pour la partie basse et un cône de sommet O." },
+  "E3D_6E_10": { h: "Il n'y a pas d'aide pour cette question.", a: "Conversion d'unités de volume (cm³ en dm³)." },
+  "E3D_6E_11": { h: "Volume d'un parallélépipède : L x l x h. Attention aux unités de mesure.", a: "Calcul de volume avec conversion d'unités." },
+  "E3D_6E_12": { h: "Réfléchis à la définition d'un polyèdre.", a: "Identifier les solides dont toutes les faces sont planes." },
+  "E3D_6E_13": { h: "Il n'y a pas d'aide pour cette question.", a: "Conversion en litres et millilitres." },
+  "E3D_6E_14": { h: "Il n'y a pas d'aide pour cette question.", a: "Calcul de l'aire de la base du prisme ou du cylindre." },
+  "E3D_6E_15": { h: "Commence par convertir les nombres dans une même unité de mesure.", a: "Conversion de volume en capacité (1 L = 1 dm³)." },
+  "E3D_6E_16": { h: "Attention aux unités de mesure !", a: "Calcul de volume de béton." },
+  "E3D_6E_17": { h: "Il n'y a pas d'aide pour cette question.", a: "Calcul du volume avec la formule un tiers de l'aire de la base par la hauteur." },
+  "E3D_6E_18": { h: "Calcule d'abord le volume total d'eau de la piscine.", a: "Calcul du volume total de la piscine." },
+  "E3D_6E_19": { h: "1 L = 1 dm³", a: "Conversion en litres." },
+  "E3D_6E_20": { h: "1 L = 1 dm³", a: "Calcul final du volume en litres." },
+
+  // --- MONTAGNE DES PROBLÈMES (MDP) - CM1 ---
+  "MDP_CM1_1": { h: "Lis correctement et fais un schéma.", a: "72 x 2 = 144. Comme il en perd, il faut faire une soustraction : 144 - 84 = 60. Il reste 60 œufs en tout." },
+  "MDP_CM1_2": { h: "Fais un schéma.", a: "Carottes : 2 x 2 = 4, sardines : 2 x 3 = 6, gâteaux : 8 x 2 = 16, pastèques : 8 x 2,90 = 23,20 €. 4 + 6 + 16 + 23,20 = 49,20. Elle dépense 49 € 20." },
+  "MDP_CM1_3": { h: "« En deux fois » signifie « deux fois la moitié »", a: "La moitié de 6600 : c'est la moitié de 6000 (6000 : 2 = 3000) et la moitié de 600 (600 : 2 = 300). Il va payer 3300 € (3000 + 300)." },
+  "MDP_CM1_4": { h: "Il n'y a pas d'aide pour cette question.", a: "5 menus à 22 € = 5 x 22 = 110 et 5 boissons à 3 € = 5 x 3 = 15 soit au total 110 + 15 = 125 €." },
+  "MDP_CM1_5": { h: "Fais une frise du temps et cherche le temps qu'il faut pour aller de 17 h 35 à 18 h 20.", a: "18 h 55 - 17 h 35 = 1 h 20." },
+  "MDP_CM1_6": { h: "Additionne les centimes et les euros.", a: "4 € 20 + 3 € 20 + 5 € 90 + 50 € = 63 € 30." },
+  "MDP_CM1_7": { h: "Fais une frise du temps et cherche le temps qu'il faut pour aller de 8 h à 21 h.", a: "21 h - 8 h = 13 h, 13 h - 1 h 30 = 11 h 30." },
+  "MDP_CM1_8": { h: "Il n'y a pas d'aide pour cette question.", a: "16 + 14 + 15 = 45 km." },
+  "MDP_CM1_9": { h: "Additionne les différents montants.", a: "6 € 50 + 6 € 50 + 12 € 80 + 20 € 70 = 46 € 50." },
+  "MDP_CM1_10": { h: "Additionne les prix en euros et en centimes.", a: "3 € 40 + 3 € 40 + 90 c + 90 c + 90 c + 90 c + 90 c = 11 € 30." },
+  "MDP_CM1_11": { h: "Fais une frise du temps de 13 h 50 à 15 h 35.", a: "15 h 35 - 13 h 50 = 1 h 45." },
+  "MDP_CM1_12": { h: "Fais un calcul de différence.", a: "56 - 52 = 4 kg." },
+  "MDP_CM1_13": { h: "Calcule la durée entre les deux horaires.", a: "18 h 25 - 16 h 55 = 1 h 30." },
+  "MDP_CM1_14": { h: "Additionne les montants.", a: "1 € 10 + 1 € 20 = 2 € 30." },
+  "MDP_CM1_15": { h: "Calcule l'écart horaire.", a: "1 h 30 - 22 h 30 = 3 h." },
+  "MDP_CM1_16": { h: "Il n'y a pas d'aide pour cette question.", a: "6600 - 2000 = 4600, 4600 : 2 (la moitié de 4600) = 2300 €." },
+  "MDP_CM1_17": { h: "Convertis et additionne.", a: "2 € 50 + 90 centimes = 3 € 40." },
+  "MDP_CM1_18": { h: "Additionne la monnaie.", a: "11 € 80 + 90 centimes = 12 € 70." },
+  "MDP_CM1_19": { h: "Calcule la différence avec la monnaie.", a: "8 € 50 + 90 centimes = 9 € 40, 10 € - 9 € 40 = 60 centimes." },
+  "MDP_CM1_20": { h: "Durée écoulée.", a: "22 h 30 - 21 h 10 = 1 h 20." },
+
+  // --- MONTAGNE DES PROBLÈMES (MDP) - CM2 ---
+  "MDP_CM2_1": { h: "Utilise un tableau pour convertir.", a: "2453,8 dam = 2453800 cm." },
+  "MDP_CM2_2": { h: "Utilise un tableau pour convertir.", a: "8,46 hm²." },
+  "MDP_CM2_3": { h: "Calcule le périmètre et le prix.", a: "Je calcule le périmètre : 4 x 12 = 48. Je calcule le prix : 8 x 48 = 384. Le grillage coûte 384 €." },
+  "MDP_CM2_4": { h: "Fais un schéma.", a: "eau : 1 x 2,13 = 2,13 ; pâtes : 10 x 3 = 30 € ; fromages : 3 x 6 = 18. Total : 2,13 + 30 + 18 = 50,13. Elle paiera 50 € 13." },
+  "MDP_CM2_5": { h: "Une personne qui entre : addition ; une personne qui sort : soustraction.", a: "23 + 3 = 26 ; 26 - 15 - 3 = 9. 9 personnes sont dans le magasin." },
+  "MDP_CM2_6": { h: "Attention aux untés.", a: "1200 m + 17 km + 300 m : on va tout mettre dans la même unité. 1200 m + 17000 m + 300 m = 18500 m = 18,5 km." },
+  "MDP_CM2_7": { h: "Additionne les centimes, convertis-les en euros (1€ = 100 centimes) puis additionne les euros.", a: "100 € + 55 € 70 = 155 € 70." },
+  "MDP_CM2_8": { h: "Fais une frise du temps et cherche le temps qu'il faut pour aller de 20h55 à 22h45.", a: "22 h 45 - 20 h 55 = 1 h 50." },
+  "MDP_CM2_9": { h: "Il n'y a pas d'aide pour cette question", a: "48 - 20 = 28 kg." },
+  "MDP_CM2_10": { h: "Fais une frise du temps et attention aux données inutiles.", a: "17 h 15 - 14 h 45 = 2 h 30." },
+  "MDP_CM2_11": { h: "Il faut d'abord calculer ce qu'il dépense, avant de conclure pour le reste.", a: "45 € 40 - 10 € 10 = 35 € 30 ; 35 € 30 - 14 € 20 = 21 € 10." },
+  "MDP_CM2_12": { h: "Additionne les centimes, convertis-les en euros (1€ = 100 centimes) puis additionne les euros.", a: "4 € 30 + 90 c = 5 € 20." },
+  "MDP_CM2_13": { h: "Fais un dessin.", a: "2,24 x 8 = 17,92 ; 6 x 1,10 = 6,60 ; 17,92 + 6,60 + 1,60 + 14,80 + 12,46 = 53 € 38." },
+  "MDP_CM2_14": { h: "Il n'y a pas d'aide pour cette question.", a: "(2/3) x 96 = 192/3 = 64. 96 - 64 = 32. Il en reste 1/3 soit 32 billes." },
+  "MDP_CM2_15": { h: "Il n'y a pas d'aide pour cette question.", a: "4 kg coûtent 16 € ; 1 kg coûtent 4 € ; (16 : 4). 5 kg de fraises coûtent 20 € (5 x 4)." },
+  "MDP_CM2_16": { h: "Il n'y a pas d'aide pour cette question.", a: "1494 + 53 = 1547. Il est mort en 1547." },
+  "MDP_CM2_17": { h: "Il n'y a pas d'aide pour cette question.", a: "(1/4) x 420 = 105 € ; 420 - 105 = 315 ; Il lui reste 315 € à verser." },
+  "MDP_CM2_18": { h: "Il n'y a pas d'aide pour cette question.", a: "8 h 08 - 7 h 54 = 14 min." },
+  "MDP_CM2_19": { h: "Le périmètre est 2xL + 2xl.", a: "30 + 30 = 60 ; 160 - 60 = 100 ; 100 : 2 = 50 ; sa longueur est de 50 m." },
+  "MDP_CM2_20": { h: "Il n'y a pas d'aide pour cette question.", a: "Du 18 matin au 31 au soir : 14 jours, jusqu'au 8 au soir : 8 jours, soit un total de 22 jours." },
+
+  // --- MONTAGNE DES PROBLÈMES (MDP) - 6E ---
+  "MDP_6E_1": { h: "25 % = un quart.", a: "55 min - 15 min = 40 min ; 25% x 40 min = 10 min ; 40 min - 10 min = 30 min." },
+  "MDP_6E_2": { h: "Il ne faut pas additionner les pourcentages.", a: "20% x 150 € = 30 € ; 150 € - 30 € = 120 €. 10% x 120 € = 12 € ; 120 € - 12 € = 108 €. Son nouveau prix est de 108 €." },
+  "MDP_6E_3": { h: "Il n'y a pas d'aide pour cette question.", a: "60 x (1/20) = 3 ; 60 - 3 = 57 ; 57 x (1/3) = 19 ; 57 - 19 = 38. Il reste 38 pommes." },
+  "MDP_6E_4": { h: "Attention aux unités.", a: "108 x 0,40 L = 43,2 L ; 540 x 0,75 L = 405 L ; 150 x 2 L = 300 L. 43,2 + 405 + 300 = 748,2 L." },
+  "MDP_6E_5": { h: "Il faut utiliser les carreaux.", a: "Les dimensions en carreaux de l'avion n°2 sont toutes le double de celles de l'avion n°1." },
+  "MDP_6E_6": { h: "Le coefficient de proportionnalité est un nombre qui permet de passer du nombre de la première ligne à celui de la deuxième ligne en multipliant.", a: "Le coefficient de proportionnalité du tableau est 5,4 : 45 = 0,12." },
+  "MDP_6E_7": { h: "Aire du cercle = pi x R².", a: "Aire du carré = 1 cm², aire d'un disque environ 3,14 x 0,15² = 0,07 cm² arrondi au centième ; 1 - 2 x 0,07 = 0,86 cm²." },
+  "MDP_6E_8": { h: "Convertis ces masses dans la même unité.", a: "6,30 g < 166,13 g < 18 kg." },
+  "MDP_6E_9": { h: "Convertis ces masses dans la même unité.", a: "500 + 765 000 + 897 = 766 397 g." },
+  "MDP_6E_10": { h: "Conversions d'unités de masse.", a: "1760 kg = 1 760 000 g, 8 307 g = 830 700 cg, 943 q = 94 300 kg." },
+  "MDP_6E_11": { h: "Il n'y a pas d'aide pour cette question.", a: "Le tableau statistique complété donne pour Mars (532), Avril (376), Mai (1028), Juin (1936)." },
+  "MDP_6E_12": { h: "C'est un tableau de proportionnalité.", a: "Quantités de sucre proportionnelles pour 1, 2, 4 et 6 personnes (1/2 cuillère, 1 cuillère, 2 cuillères, 3 cuillères)." },
+  "MDP_6E_13": { h: "Il n'y a pas d'aide pour cette question.", a: "Non, car 5 x 3 = 15 et 6 x 3 = 18, il faut 6 œufs et non 5 pour faire 18 cookies." },
+  "MDP_6E_14": { h: "Il n'y a pas d'aide pour cette question.", a: "135 élèves pratiquent un sport collectif (38 + 52 + 45)." },
+  "MDP_6E_15": { h: "Il n'y a pas d'aide pour cette question.", a: "Résultat et explication pour MDP 6e question 15." },
+  "MDP_6E_16": { h: "Il n'y a pas d'aide pour cette question.", a: "24% de 575 ; (24 x 575) / 100 = 138 élèves externes." },
+  "MDP_6E_17": { h: "1 h = 60 minutes = 3600 secondes.", a: "15792 s = 4 h 23 min 12 s." },
+  "MDP_6E_18": { h: "Il n'y a pas d'aide pour cette question.", a: "14 x 80 : 60 = 18,7 km arrondi au dixième." },
+  "MDP_6E_19": { h: "Il n'y a pas d'aide pour cette question.", a: "21 h 25 - 7 h 45 = 13 h 40." },
+  "MDP_6E_20": { h: "Il n'y a pas d'aide pour cette question.", a: "Un ordre de grandeur de 23,5% de 119,45 € est par exemple 25% de 120 € soit 30 €." },
+
+  // --- VALLÉE DES NOMBRES (VDN) - CM1 ---
+  "VDN_CM1_1": { h: "58 x 100 = ? 1 x 58 = 58, on rajoute les 2 zéros ça fait : 5800", a: "100 x 26 = 2600 ; 10 x 45 = 450 ; 1000 x 40 = 40 000." },
+  "VDN_CM1_2": { h: "N'oublie pas : 4 x 9 = 9x4", a: "48, 54, 90." },
+  "VDN_CM1_3": { h: "Souligne les classes et nomme-les. Attention aux règles d'orthographe !", a: "Sept-millions-neuf-cent-quatre-vingt-dix-neuf-mille huit-cent quatre-vingt-huit ; Vingt-cinq-millions-soixante-seize ; Trois-cent-cinquante-millions-douze-mille." },
+  "VDN_CM1_4": { h: "Nombre qui précède : -1, nombre qui suit : +1, avant 0 : avant 10 c'est 9, après 9 c'est 10", a: "899 < 900 < 901 ; 8999 < 9000 < 9001 ; 4199 < 4200 < 4201" },
+  "VDN_CM1_5": { h: "Nombre qui précède : -1, nombre qui suit : +1, avant 0 : avant 10 c'est 9, après 9 c'est 10", a: "14 000 651 < 14 000 652 < 14 000 653 ; 16 020 698 < 16 020 699 < 16 020 700 ; 17 201 449 < 17 201 450 < 17 201 451 ; 18 999 998 < 18 999 999 < 19 000 000." },
+  "VDN_CM1_6": { h: "Le nombre le plus long est le plus grand. Si même longueur tu compares classe à classe en commençant par la plus grande.", a: "997 900 < 87 878 678 ; 47 000 999 < 97 020 931" },
+  "VDN_CM1_7": { h: "12 : 3 Là tu dois chercher 3 x quelque chose = 12", a: "54 ÷ 9 = 6 ; 56 ÷ 7 = 8 ; 21 ÷ 3 = 7 ; 18 ÷ 6 = 3 ; 10 ÷ 2 = 5 ; 30 ÷ 3 = 10" },
+  "VDN_CM1_8": { h: "Le 5 multiplie les unités, puis les dizaines, puis les centaines. N'oublie pas les retenues.", a: "458 x 5 = 2290" },
+  "VDN_CM1_9": { h: "Il faut chercher le complément à la dizaine puis à la centaine.", a: "Complément à 100 : - Pour 63 : 37 - Pour 49 : 51 - Pour 55 : 45" },
+  "VDN_CM1_10": { h: "Repère le nombre le plus grand. Et fais attention à la valeur des nombres.", a: "406 050" },
+  "VDN_CM1_11": { h: "Repère le nombre le plus grand.", a: "2 090 706" },
+  "VDN_CM1_12": { h: "On aligne les unités ; on va de haut en bas", a: "1201 - 1119 = 82 ; 13 402 - 1 148 = 12 254" },
+  "VDN_CM1_13": { h: "Tu peux décomposer en colonnes", a: "1 062 = 1 000 + 60 + 2 = (1 x 1 000) + (6 x 10) + (2 x 1) ; 4 040 = 4 000 + 40 = (4 x 1 000) + (4 x 10) ; 35 560 = 30 000 + 5 000 + 500 + 60 = (3 x 10 000) + (5 x 1 000) + (5 x 100) + (6 x 10)" },
+  "VDN_CM1_14": { h: "Souligne les classes en commençant par celle des unités", a: "Trois-millions-cent-mille-huit." },
+  "VDN_CM1_15": { h: "Complément à 100", a: "63 + 37 = 100 ; 49 + 51 = 100 ; 55 + 45 = 100" },
+  "VDN_CM1_16": { h: "Tu dois ajouter 1.", a: "503 000" },
+  "VDN_CM1_17": { h: "Tu dois enlever 1.", a: "104 799" },
+  "VDN_CM1_18": { h: "Tu dois enlever 1.", a: "700 999" },
+  "VDN_CM1_19": { h: "Repère les classes", a: "32 058 000 006" },
+  "VDN_CM1_20": { h: "Repère les classes", a: "400 003 001 000" },
+
+  // --- VALLÉE DES NOMBRES (VDN) - CM2 ---
+  "VDN_CM2_1": { h: "Prendre le double d'un nombre revient à le multiplier par 2.", a: "96, 112, 260 sont les doubles respectifs de 48, 56 et 130." },
+  "VDN_CM2_2": { h: "Repère la partie entière et la partie décimale.", a: "4 008 960,908" },
+  "VDN_CM2_3": { h: "Trouve les résultats des opérations", a: "L'intrus est 6 + 5 = 11, toutes les autres opérations donnent 10." },
+  "VDN_CM2_4": { h: "Il faut additionner les chiffres qui composent le nombre et vérifier si la somme est dans la table de 3.", a: "48-72-795-69 sont des multiples de 3." },
+  "VDN_CM2_5": { h: "Un multiple de 2 est un nombre divisible par 2, c'est un nombre pair.", a: "22-34-46-736-120 sont des multiples de 2." },
+  "VDN_CM2_6": { h: "Pose ta division", a: "11,67" },
+  "VDN_CM2_7": { h: "Pose ta division", a: "6,15" },
+  "VDN_CM2_8": { h: "Compare d'abord les parties entières puis les parties décimales", a: "10,9 (10,900)" },
+  "VDN_CM2_9": { h: "Centième : 2 chiffres après la virgule.", a: "48,74 < 48,749 < 48,75" },
+  "VDN_CM2_10": { h: "Compare d'abord les parties entières puis les parties décimales", a: "12,6 (12,600)" },
+  "VDN_CM2_11": { h: "Un nombre premier est un nombre uniquement divisible par 1 et par lui-même.", a: "3, 31 et 17 sont des nombres premiers." },
+  "VDN_CM2_12": { h: "Repère la partie entière et la partie décimale.", a: "5 908 000" },
+  "VDN_CM2_13": { h: "Il n'y a pas d'aide pour cette question.", a: "3/4 est l'intrus : ce n'est pas égal à 1/2 (0,5)" },
+  "VDN_CM2_14": { h: "Il n'y a pas d'aide pour cette question.", a: "3,58 x 10 = 35,8" },
+  "VDN_CM2_15": { h: "Il n'y a pas d'aide pour cette question.", a: "50,203" },
+  "VDN_CM2_16": { h: "Il n'y a pas d'aide pour cette question.", a: "122,5" },
+  "VDN_CM2_17": { h: "Il n'y a pas d'aide pour cette question.", a: "8 500" },
+  "VDN_CM2_18": { h: "Il n'y a pas d'aide pour cette question.", a: "8/12 est la plus grande car on prend 8 parts dans chaque cas mais si on partage en 14, les parts sont plus petites" },
+  "VDN_CM2_19": { h: "Il n'y a pas d'aide pour cette question.", a: "60/78 est la plus grande : c'est coupé en 78 dans les deux cas, et on prend plus de parts quand on en prend 60." },
+  "VDN_CM2_20": { h: "Il n'y a pas d'aide pour cette question.", a: "23/3 est la plus grande car 23/3 = 7 + 2/3 ; 26/9 = 2 + 8/9" },
+
+  // --- VALLÉE DES NOMBRES (VDN) - 6E ---
+  "VDN_6E_1": { h: "Pour passer de l'écriture décimale à l'écriture fractionnaire", a: "813,52 = 81352 / 100" },
+  "VDN_6E_2": { h: "Ranger des nombres dans l'ordre croissant ou décroissant", a: "337,588 > 337,458 > 331,654 > 331,598 > 37,45" },
+  "VDN_6E_3": { h: "Ranger des nombres dans l'ordre croissant ou décroissant", a: "85,182 < 85,274 < 85,275 < 856,274 < 857,27" },
+  "VDN_6E_4": { h: "Il n'y a pas d'aide pour cette question.", a: "60,709 = 60709 / 1000" },
+  "VDN_6E_5": { h: "Il n'y a pas d'aide pour cette question.", a: "0,4 = 4 / 10" },
+  "VDN_6E_6": { h: "Comparer deux nombres", a: "37,365 > 37,327" },
+  "VDN_6E_7": { h: "Il n'y a pas d'aide pour cette question.", a: "24,499 < 24,5" },
+  "VDN_6E_8": { h: "Il n'y a pas d'aide pour cette question.", a: "358,650 > 358,6" },
+  "VDN_6E_9": { h: "Il n'y a pas d'aide pour cette question.", a: "46 = 7 x 6 + 4" },
+  "VDN_6E_10": { h: "Fraction", a: "Dans la fraction a/b, \"a\" est le numérateur et \"b\" le dénominateur." },
+  "VDN_6E_11": { h: "Fractions égales", a: "25/100 et 2/8" },
+  "VDN_6E_12": { h: "Bien lire les graduations.", a: "8,7518" },
+  "VDN_6E_13": { h: "Addition de fractions", a: "26/25 + 31/25 + 43/25 = (26 + 31 + 43) / 25 = 100 / 25 = 4" },
+  "VDN_6E_14": { h: "Ordre de grandeur", a: "Un ordre de grandeur de 9,84 x 24,86 est par exemple 10 x 25 soit 250." },
+  "VDN_6E_15": { h: "Multiplication de décimaux", a: "9,84 x 24,86 soit 2446224 soit 244,6224 et il faut 4 chiffres après la virgule donc 244,6224." },
+  "VDN_6E_16": { h: "Pourcentage", a: "25% de 120 = (25 x 120) / 100 = 3000 / 100 = 30" },
+  "VDN_6E_17": { h: "Il n'y a pas d'aide pour cette question.", a: "7 559 288 300" },
+  "VDN_6E_18": { h: "Écriture en lettres", a: "Vingt-sept unités quatre mille cinquante deux dix-millièmes." },
+  "VDN_6E_19": { h: "Calcul astucieux", a: "25 x 31,5894 x 4 = 25 x 4 x 31,5894 = 100 x 31,5894 = 3158, 94" },
+  "VDN_6E_20": { h: "Intercalation", a: "Entre 13,723 et 13,724, il y a : 13,7231 ; 13,7232 ; 13,7233 ; ....... 13,7239." },
+
+  // --- ENGLISH MATHS - CM1 ---
+  "EM_CM1_1": { h: "dix = ten", a: "one, two, three, four, five, six, seven, eight, nine, ten." },
+  "EM_CM1_2": { h: "how many = combien ; there are = il y a", a: "4 + 3 = 7 ; 10 - 7 = 3 ; there are three dogs." },
+  "EM_CM1_3": { h: "how many = combien ; there are = il y a ; pen = stylo", a: "11 - 5 = 6 ; He has got six big red pens." },
+  "EM_CM1_4": { h: "marbles = billes ; how many = combien", a: "5 + 3 + 6 = 14 ; there are fourteen marbles." },
+  "EM_CM1_5": { h: "how many = combien ; cow = vache", a: "10 + 2 = 12 ; there are twelve animals." },
+  "EM_CM1_6": { h: "how many = combien ; bird = oiseau ; goldfish = poisson rouge", a: "5 + 2 = 7 ; 11 - 7 = 4 ; He has got four goldfish." },
+  "EM_CM1_7": { h: "how many = combien ; cow = vache ; bird = oiseau ; goldfish = poisson rouge", a: "5 + 7 + 8 = 20 ; He has got twenty animals." },
+  "EM_CM1_8": { h: "how many = combien ; brown = marron ; dog = chien ; under = sous", a: "5 - 2 = 3 ; there are three brown dogs." },
+  "EM_CM1_9": { h: "times = fois(X)", a: "6 x 8 = 48 : forty-eight." },
+  "EM_CM1_10": { h: "plus = +", a: "21 + 50 = 71 ; seventy-one." },
+  "EM_CM1_11": { h: "minus = moins(-)", a: "63 - 6 = 57 ; fifty-seven." },
+  "EM_CM1_12": { h: "times = fois(X)", a: "9 x 10 = 90 ; ninety." },
+  "EM_CM1_13": { h: "plus = +", a: "300 + 200 = 500 ; five hundred." },
+  "EM_CM1_14": { h: "minus = moins(-)", a: "84 - 20 = 64 ; sixty-four." },
+  "EM_CM1_15": { h: "times = fois(X)", a: "7 x 8 = 56 ; fifty-six." },
+  "EM_CM1_16": { h: "plus = +", a: "92 + 10 = 102 ; one hundred and two." },
+  "EM_CM1_17": { h: "minus = moins(-)", a: "75 - 9 = 66 ; sixty-six." },
+  "EM_CM1_18": { h: "plus = +", a: "30 + 80 = 110 ; one hundred and ten." },
+  "EM_CM1_19": { h: "times = fois(X)", a: "37 x 2 = 74" },
+  "EM_CM1_20": { h: "times = fois(X)", a: "46 x 2 = 92 ; ninety-two." },
+
+  // --- ENGLISH MATHS - CM2 ---
+  "EM_CM2_1": { h: "13 = thirteen ; 15 = fifteen", a: "One, two, three, four, five, six, seven, eight, nine, ten, eleven, twelve, thirteen, fourteen, fifteen, sixteen, seventeen, eighteen, nineteen, twenty." },
+  "EM_CM2_2": { h: "how many = combien ; have got = avoir", a: "4 + 6 + 8 + 1 = 19 ; she has got nineteen animals." },
+  "EM_CM2_3": { h: "how many = combien ; there are = il y a ; fish bowl = bocal", a: "6 - 2 = 4 ; there are four white fish." },
+  "EM_CM2_4": { h: "kid = enfant ; how many = combien ; have got = avoir ; son = fils ; daughter = fille", a: "5 + 2 = 7 ; she has got seven kids." },
+  "EM_CM2_5": { h: "how many = combien ; there are = il y a ; people = personnes ; kid = enfant", a: "4 + 5 + 6 = 15 ; there are fifteen people." },
+  "EM_CM2_6": { h: "how many = combien ; there are = il y a ; box = boîte", a: "10 - 4 = 6 ; there are six red balls." },
+  "EM_CM2_7": { h: "how many = combien ; there are = il y a ; in front of = devant", a: "9 + 4 = 13 ; there are thirteen cats." },
+  "EM_CM2_8": { h: "how many = combien ; there are = il y a ; fish = poisson", a: "2 + 3 + 4 = 9 ; 14 - 9 = 5 ; there are five grey fish." },
+  "EM_CM2_9": { h: "how many = combien ; have got = avoir ; pen = stylo", a: "4 pens, I have got four pens." },
+  "EM_CM2_10": { h: "how many = combien ; have got = avoir ; pet = animal de compagnie", a: "5 + 3 = 8 ; he has got eight pets." },
+  "EM_CM2_11": { h: "cook = cuisiner ; how many = combien ; there are = il y a ; cake = gâteau", a: "2 + 5 = 7 ; there are seven cakes." },
+  "EM_CM2_12": { h: "times = fois(X)", a: "13 x 10 = 130 ; one hundred and thirty." },
+  "EM_CM2_13": { h: "minus = moins(-)", a: "32 - 7 = 25 ; twenty-five." },
+  "EM_CM2_14": { h: "times = fois(X)", a: "9 x 7 = 63 ; sixty-three." },
+  "EM_CM2_15": { h: "times = fois(X)", a: "100 x 10 = 1000 ; one thousand." },
+  "EM_CM2_16": { h: "plus = +", a: "80 + 45 = 125 ; one hundred and twenty-five." },
+  "EM_CM2_17": { h: "times = fois(X)", a: "46 x 4 = 184 ; one hundred and eighty-four." },
+  "EM_CM2_18": { h: "plus = +", a: "53 + 39 = 92 ; ninety-two." },
+  "EM_CM2_19": { h: "times = fois(X)", a: "64 x 20 = 1280 ; one thousand two hundred and eighty." },
+  "EM_CM2_20": { h: "times = fois(X)", a: "50 x 20 = 1000 ; one thousand." },
+
+  // --- ENGLISH MATHS - 6E ---
+  "EM_6E_1": { h: "put = mettre ; following = suivant ; ascending = croissant", a: "2.02 ; 2.2 ; 2.22 ; 20.02 ; 22.002." },
+  "EM_6E_2": { h: "consigne en français : mets les nombres décimaux suivants dans l'ordre croissant.", a: "9.09 < 9.9 < 9.99 < 90.09 < 99.009" },
+  "EM_6E_3": { h: "Add = plus(additionner)", a: "39.25" },
+  "EM_6E_4": { h: "what = quelle ; Hundredths = Centièmes ; Digit = Chiffre ; Number = Nombre", a: "It is 424" },
+  "EM_6E_5": { h: "value = valeur", a: "4" },
+  "EM_6E_6": { h: "multiply = multiplier", a: "15" },
+  "EM_6E_7": { h: "times = fois", a: "132" },
+  "EM_6E_8": { h: "half = demi", a: "half past three" },
+  "EM_6E_9": { h: "quarter = quart ; to = moins", a: "quarter to five" },
+  "EM_6E_10": { h: "isosceles = isosocèle ; equilateral = équilatéral ; scalene = quelconque.", a: "equilateral" },
+  "EM_6E_11": { h: "isosceles = isosocèle ; equilateral = équilatéral ; scalene = quelconque.", a: "isosceles" },
+  "EM_6E_12": { h: "line=droite ; ray = demi-droite ; line segment = segment", a: "line segment" },
+  "EM_6E_13": { h: "line = ligne ; how many = combien", a: "1" },
+  "EM_6E_14": { h: "line = ligne ; how many = combien", a: "2" },
+  "EM_6E_15": { h: "losange = rhombus ; carré = square ; parallélogramme = parallelogram", a: "rhombus" },
+  "EM_6E_16": { h: "add = additionner ; times = heures", a: "5:15" },
+  "EM_6E_17": { h: "following = suivant ; descending = décroissant", a: "3.5 kg > 5.49 dag > 12 g > 132 cg" },
+  "EM_6E_18": { h: "convert = convertir", a: "80000 g" },
+  "EM_6E_19": { h: "shape = figure", a: "12.8 cm" },
+  "EM_6E_20": { h: "calculate = calculer ; perimeter = périmètre", a: "31.4 cm" }
+};
+
+/* Listes des cartes possédant des dessins complémentaires pour les réponses et les aides */
+const cartesAvecDessins = [
+  "MDP_6E_11", "MDP_6E_12", "MDP_6E_15",
+  "P2D_CM1_2", "P2D_CM1_3", "P2D_CM1_4", "P2D_CM1_5", "P2D_CM1_10",
+  "P2D_CM2_14", "P2D_CM2_18", "P2D_CM2_19", "P2D_CM2_20",
+  "P2D_6E_16", "P2D_6E_18", "P2D_6E_19",
+  "E3D_CM2_2", "E3D_CM2_3",
+  "E3D_6E_5", "E3D_6E_7", "E3D_6E_8", "E3D_6E_10"
+];
+
+const cartesAvecAides = [
+  "MDP_6E_15"
+];
+
+/* Génération automatique de la banque de cartes */
+function genererBanqueCartesDossiers() {
+  const banque = { VDN: {}, MDP: {}, P2D: {}, E3D: {}, EM: {} };
+  
+  ["CM1", "CM2", "6E"].forEach(n => {
+    let suffixeNiveauDossier = (n === "6E") ? "6" : n; 
+    let suffixeNiveauFichier = (n === "6E") ? "6" : n.toLowerCase(); 
+
+    Object.keys(banque).forEach(dom => {
+      let nomDossier = `${dom}${suffixeNiveauDossier}Q`; 
+      let prefixeFichier = `${dom.toLowerCase()}${suffixeNiveauFichier}q_`; 
+
+      banque[dom][n] = Array.from({length: 20}, (_, i) => {
+        let numId = i + 1;
+        let idUnique = `${dom}_${n}_${numId}`;
+        let cheminComplet = `${nomDossier}/${prefixeFichier}${numId}.png`;
+        
+        let infoSpecifique = solutionsSpecifiques[idUnique];
+
+        return {
+          id: idUnique,
+          imgUrl: baseUrl + cheminComplet,
+          a: infoSpecifique ? infoSpecifique.a : `Réponse de la carte ${numId}`,
+          h: infoSpecifique ? infoSpecifique.h : ""
+        };
+      });
+    });
+  });
+  
+  return banque;
+}
+
+const banqueCartes = genererBanqueCartesDossiers();
+let domaineActuel = "", niveauActuel = "", carteActuelle = null, cartesDisponibles = [], cartesUtilisees = [];
+
+function aller(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  if (id === 'de') {
+    const die = document.getElementById("die");
+    die.textContent = "?";
+    die.style.backgroundColor = "white";
+    die.style.color = "inherit";
+    document.getElementById("continuerDe").disabled = true;
+  }
+}
+
+function finDePartie() {
+  initialiserPersonnages();
+  carteChanceConservee = "";
+  badgesGagnesEtat.fill(false);
+  viesEtat.fill(false);
+  mettreAJourSlotChanceConservee();
+  mettreAJourInterfaceSelection();
+  aller('accueil');
+}
+
+const facesDe = ["VDN", "MDP", "P2D", "E3D", "EM"];
+
+function lancerDe() {
+  const die = document.getElementById("die");
+  const bouton = document.getElementById("continuerDe");
+  bouton.disabled = true;
+  die.classList.add("rolling");
+  
+  setTimeout(() => {
+    const idx = Math.floor(Math.random() * facesDe.length);
+    const face = facesDe[idx];
+    const infoDomaine = domaines[face];
+    die.classList.remove("rolling");
+    die.textContent = infoDomaine.nom;
+    die.style.backgroundColor = infoDomaine.couleur;
+    die.style.color = infoDomaine.textCouleur;
+    domaineActuel = face;
+    bouton.disabled = false;
+  }, 450);
+}
+
+function choisirNiveau(niveau) {
+  niveauActuel = niveau;
+  cartesUtilisees = [];
+  cartesDisponibles = banqueCartes[domaineActuel]?.[niveau] || [];
+  if (!cartesDisponibles.length) {
+    document.getElementById("niveauInfo").textContent = "Aucune carte disponible.";
+    return;
+  }
+  afficherPaquet();
+  aller("paquet");
+}
+
+function afficherPaquet() {
+  const dom = domaines[domaineActuel];
+  document.getElementById("titrePaquet").textContent = dom ? dom.nom : domaineActuel;
+  const dosCard = document.getElementById("cardBackStyle");
+  const deckStack = document.getElementById("deckStackStyle");
+  const pattern = document.getElementById("backPattern");
+  
+  const urlImage = baseUrl + `dos_${niveauActuel.toLowerCase()}_${domaineActuel.toLowerCase()}.png`;
+  dosCard.style.backgroundImage = `url("${urlImage}")`;
+  deckStack.style.backgroundImage = `url("${urlImage}")`;
+  if (pattern) pattern.style.display = "none";
+  tirerCarte();
+}
+
+function tirerCarte() {
+  if (!cartesDisponibles.length) return;
+  let restantes = cartesDisponibles.filter(c => !cartesUtilisees.includes(c.id));
+  if (!restantes.length) { cartesUtilisees = []; restantes = [...cartesDisponibles]; }
+  
+  carteActuelle = restantes[Math.floor(Math.random() * restantes.length)];
+  cartesUtilisees.push(carteActuelle.id);
+  
+  document.getElementById("questionImg").src = carteActuelle.imgUrl;
+  document.getElementById("carte").setAttribute("data-state", "back");
+  document.getElementById("aide").textContent = "";
+  document.getElementById("reponseAffichee").innerHTML = "";
+}
+
+function pivoterCarte() {
+  const cardElement = document.getElementById("carte");
+  cardElement.setAttribute("data-state", cardElement.getAttribute("data-state") === "back" ? "question" : "back");
+}
+
+function afficherAide() { 
+  if (!carteActuelle) return;
+  const elementAide = document.getElementById("aide");
+  let texteAide = "";
+  if (carteActuelle.h && carteActuelle.h.trim() !== "") {
+    texteAide = "Aide : " + carteActuelle.h;
+  } else {
+    texteAide = "il n'y a pas d'aide pour cette question";
+  }
+
+  if (cartesAvecAides.includes(carteActuelle.id)) {
+    let parts = carteActuelle.id.split("_");
+    let dom = parts[0].toLowerCase();
+    let niv = parts[1].toLowerCase();
+    let num = parts[2];
+    if (niv === "6e") {
+      niv = "6";
+    }
+    let nomFichierAide = `${dom}${niv}h${num}.png`;
+    texteAide += ` <span class="voir-dessins-link" onclick="ouvrirImageSolution('aides%20png/${nomFichierAide}')">Voir l'aide en image</span>`;
+  }
+
+  elementAide.innerHTML = texteAide;
+}
+
+function afficherReponse() {
+  if (!carteActuelle) return;
+  const elementReponse = document.getElementById("reponseAffichee");
+  let texte = `Réponse : ${carteActuelle.a}`;
+  
+  if (cartesAvecDessins.includes(carteActuelle.id)) {
+    let parts = carteActuelle.id.split("_");
+    let dom = parts[0].toLowerCase();
+    let niv = parts[1].toLowerCase();
+    let num = parts[2];
+    
+    if (niv === "6e") {
+      niv = "6";
+    }
+    
+    let nomFichierSolution = `${dom}${niv}a${num}.png`;
+    
+    texte += ` <span class="voir-dessins-link" onclick="ouvrirImageSolution('solutions%20png/${nomFichierSolution}')">Voir les dessins</span>`;
+  }
+  
+  elementReponse.innerHTML = texte;
+}
+
+function ouvrirImageSolution(cheminRelatif) {
+  const urlSolution = baseUrl + cheminRelatif;
+  ouvrirModalPleinEcran(urlSolution, null, false, 'solution');
+}
+
+function nouvelleCarte() { 
+  const cardElement = document.getElementById("carte");
+  cardElement.setAttribute("data-state", "back");
+  
+  setTimeout(() => {
+    tirerCarte();
+    cardElement.setAttribute("data-state", "question");
+  }, 300);
+}
+
+function lireQuestion() { 
+  if (!carteActuelle) return;
+  if (audioActuel) { audioActuel.pause(); audioActuel = null; }
+
+  let parts = carteActuelle.id.split("_"); 
+  let dom = parts[0]; 
+  let niv = parts[1]; 
+  let numStr = parts[2]; 
+
+  let dossier = "";
+  let fichier = "";
+
+  if (niv === "CM1") {
+    dossier = `${dom}CM1MP3`;
+    fichier = `${dom.toLowerCase()}cm1q_${numStr}.mp3`;
+  } else if (niv === "CM2") {
+    dossier = `${dom}CM2MP3`;
+    fichier = `${dom.toLowerCase()}cm2q_${numStr}.mp3`;
+  } else if (niv === "6E") {
+    dossier = `${dom}6MP3`;
+    fichier = `${dom.toLowerCase()}6q_${numStr}.mp3`;
+  }
+
+  if (dossier && fichier) {
+    let cheminAudio = `${dossier}/${fichier}`;
+    audioActuel = new Audio(baseUrl + cheminAudio);
+    audioActuel.play().catch(() => {
+      alert(`Le fichier audio '${cheminAudio}' n'est pas disponible.`);
+    });
+    return;
+  }
+
+  alert("La lecture audio n'est pas disponible pour cette carte.");
+}
+
+let boardEl;
+const positionsDepart = [
+  { left: "74%", top: "68%" }, { left: "78%", top: "72%" },
+  { left: "70%", top: "72%" }, { left: "74%", top: "75%" }, { left: "71%", top: "65%" }
+];
+
+document.addEventListener('DOMContentLoaded', function() {
+  boardEl = document.getElementById("board");
+  initialiserPersonnages();
+  initialiserPionsPlateau();
+  actualiserAffichageBadges();
+  actualiserAffichageVies();
+});
+
+function initialiserPionsPlateau() {
+  for (let i = 0; i < 5; i++) {
+    const pion = document.createElement("div");
+    pion.className = "pawn";
+    pion.id = "pion" + i;
+    pion.style.left = positionsDepart[i].left;
+    pion.style.top = positionsDepart[i].top;
+    pion.style.display = "none";
+    boardEl.appendChild(pion);
+    rendreDeplacable(pion);
+  }
+}
+
+function rendreDeplacable(element) {
+  let actif = false, decX = 0, decY = 0;
+  
+  element.addEventListener("pointerdown", e => {
+    actif = true;
+    element.setPointerCapture(e.pointerId);
+    const r = element.getBoundingClientRect();
+    decX = e.clientX - r.left - r.width / 2;
+    decY = e.clientY - r.top - r.height / 2;
+  });
+
+  element.addEventListener("pointermove", e => {
+    if (!actif) return;
+    const r = boardEl.getBoundingClientRect();
+    element.style.left = Math.max(0, Math.min(100, ((e.clientX - r.left - decX) / r.width) * 100)) + "%";
+    element.style.top = Math.max(0, Math.min(100, ((e.clientY - r.top - decY) / r.height) * 100)) + "%";
+    element.style.transform = "none";
+  });
+
+  element.addEventListener("pointerup", () => { actif = false; });
+  element.addEventListener("pointercancel", () => { actif = false; });
+}
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Joue Maths Gie</title>
 
 <style>
